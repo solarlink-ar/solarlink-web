@@ -6,6 +6,9 @@
 
 body{
     font-family: 'open sans';
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .contenedor{
@@ -19,9 +22,13 @@ body{
     color: #013c58;
     font-size: 30px;
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 30px;
+    padding: 30px 0px 0px;
 }
 
+ main{
+   min-height: calc(100vh - 100px);
+ }
 
 
 
@@ -30,8 +37,7 @@ body{
     width: 100%;
     height: 50px;
     background: #0b1e33;  
-    background: -webkit-linear-gradient(to right, #ff8800, #ffe600), url(./Fotos/IMG_6963.JPG);  
-    background: linear-gradient(to right, #ff8800, #ffe600), url(./Fotos/IMG_6963.JPG);
+    background: #FDDB3A;
     background-size: cover;
     background-attachment: fixed;
     position: relative;
@@ -69,7 +75,7 @@ body{
  }
 
  .textos-indice h1{
-   font-size: 25px;
+   font-size: 17px;
    color: #fff;
 }
 
@@ -81,11 +87,18 @@ body{
 
 
 
+ .contenedor-acerca-del-proyecto {
+   background: #F6F4E6;
+   margin: 0 auto;
+ }
 
+ .contenedor-desc-del-proyecto{
+   width: 90%;
+   max-width: 1000px;
 
- .contenedor-acerca-del-proyecto{
-    display: flex;
-    justify-content: space-evenly;
+   overflow: hidden;
+   display: flex;
+   justify-content: space-evenly;
  }
 
  .imagen-acerca{
@@ -118,9 +131,9 @@ body{
 
 
 
-
  .Los-chicos-a-cargo{
-    background: #f2f2f2;
+    background: #fff;
+    margin: 0 auto;
  }
 
  .chicos{
@@ -148,10 +161,12 @@ body{
 
 
 footer{
-    background: #0b1e33;
-    padding: 10px 0 10px 0;
-    margin: auto;
+    background: #41444B;
+    height: 50px;
+    margin-top: auto;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
 }
 
 .contenedor-footer{
@@ -159,8 +174,7 @@ footer{
     width: 90%;
     justify-content: space-evenly;
     margin: auto;
-    padding-bottom: 50px;
-    border-bottom: 1px solid #ccc;
+    padding: 25px 0 25px 0;
 }
 
 .content-foot{
@@ -169,7 +183,7 @@ footer{
 
 .content-foot h4{
     color: #fff;
-    border-bottom: 3px solid #00537a;
+    border-bottom: 3px solid #52575D;
     padding-bottom: 5px;
     margin-bottom: 10px;
 }
@@ -182,7 +196,7 @@ footer{
 .content-foot a:hover{
    tab-size: 12px;
    text-decoration: underline;
-   color: #00537a;
+   color: #B2B1B9;
 }
 
 .content-foot p{
@@ -191,9 +205,9 @@ footer{
 
 .titulo-final{
    text-align: center;
-   font-size: 24px;
-   margin: 5px 0 5px 0;
-   color: #00537a;
+   font-size: 19px;
+   margin: 12px 0 5px 0;
+   color: #B2B1B9;
 }
 
 @media screen and (max-width:900px){
