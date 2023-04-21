@@ -12,7 +12,7 @@ body{
 }
 
 .contenedor{
-    padding: 60px 0;
+    padding: 25 0 25 0;
     width: 90%;
     max-width: 1000px;
     margin: auto;
@@ -36,22 +36,14 @@ body{
  header{
     width: 100%;
     height: 50px;
+    display: flex;
+    flex-direction: row;
     background: #0b1e33;  
     background: #FDDB3A;
     background-size: cover;
     background-attachment: fixed;
     position: relative;
 }
-
- header .textos-header{
-    display: flex;
-    height: 430px;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
- }
 
  header .textos-indice{
    display: flex;
@@ -60,23 +52,31 @@ body{
    align-items: center;
    justify-content: top;
    flex-direction: row;
-   align-items: center;
-   justify-content: center;
+   justify-content: right;
 }
 
- .textos-header h1{
-    font-size: 50px;
-    color: #fff;
+ header .logo{
+   display: flex;
+   object-fit: cover;
+   height: 50px;
+   width: 100%;
+   justify-content: left;
  }
 
- .textos-header h2{
-    font-size: 25px;
-    color: #fff;
+ header .logo > img {
+   width: 50px;
+   display: flex;
  }
 
  .textos-indice h1{
    font-size: 17px;
+   padding: 0px 5px;
    color: #fff;
+ }
+ 
+ .textos-indice a{
+   color: #fff;
+   text-decoration: none;
 }
 
  .wave{
@@ -88,26 +88,25 @@ body{
 
 
  .contenedor-acerca-del-proyecto {
-   background: #F6F4E6;
-   margin: 0 auto;
- }
-
- .contenedor-desc-del-proyecto{
    width: 90%;
    max-width: 1000px;
-
    overflow: hidden;
    display: flex;
    justify-content: space-evenly;
  }
 
- .imagen-acerca{
-    width: 48%;
- }
+ 
 
  .contenedor-acerca-del-proyecto .contenedor-texto {
-    width: 48%;
+   text-align: center; 
+   width: 48%;
  }
+
+ .imagen-acerca{
+   width: 48%;
+   display: flex;
+   margin: auto;
+}
 
  .contenedor-texto h3{
     margin-bottom: 15px;
@@ -142,11 +141,17 @@ body{
     flex-wrap: wrap;
  }
 
+ .texto-contacto p {
+    padding: 0px 0px 30px 15px;
+    font-weight: 300;
+    text-align: center;
+ }
 .imagen-chicos{
     width: 24%;
     margin-bottom: 10px;
     overflow: hidden;
     position: relative;
+    height: fit-content;
 }
 
 .imagen-chicos > img{
@@ -154,6 +159,11 @@ body{
     height: 100%;
     object-fit: cover;
     display: block;
+}
+
+.imagen-chicos h3 {
+   margin-bottom: 5px 0px 5px 0px;
+   text-align: center;
 }
 
 
