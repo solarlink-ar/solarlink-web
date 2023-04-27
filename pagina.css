@@ -162,13 +162,13 @@ header .logo > img {
 
 @media (min-width: 700px) {
    .contenedor-acerca-del-proyecto .contenedor-texto h3{
-      text-align: right; 
+      text-align: center; 
    }
 }
 
 @media (min-width: 700px) {
    .contenedor-acerca-del-proyecto .contenedor-texto p{
-      text-align: right; 
+      text-align: center; 
    }
 }
 
