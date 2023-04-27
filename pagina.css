@@ -14,7 +14,7 @@ body{
 
 @media (max-width: 700px) {
    .contenedor{
-   padding: 25 0 25 0;
+   padding: 0px 0px 25px 0px;
    width: 90%;
    display: flex;
    flex-direction: column;
@@ -26,7 +26,7 @@ body{
 
 @media (min-width: 700px) {
    .contenedor{
-   padding: 25 0 25 0;
+   padding: 0px 0px 25px 0px;
    width: 90%;
    display: flex;
    flex-direction: column;
@@ -127,6 +127,7 @@ header .logo > img {
 @media (max-width: 700px) {
 }
 */
+
 @media (max-width: 700px) {
    .contenedor-acerca-del-proyecto {
    width: 90%;
@@ -150,26 +151,22 @@ header .logo > img {
 
 @media (max-width: 700px) {
    .contenedor-acerca-del-proyecto .contenedor-texto h3{
-      text-align: center; 
+      text-align: left; 
    }
 }
 
-@media (max-width: 700px) {
-   .contenedor-acerca-del-proyecto .contenedor-texto p{
-      text-align: center; 
-   }
+.contenedor-que-somos {
+   width: 90%;
+   overflow: hidden;
+   display: flex;
+   justify-content: center;
+   flex-direction: column;
+   align-items: center;
 }
 
-@media (min-width: 700px) {
-   .contenedor-acerca-del-proyecto .contenedor-texto h3{
-      text-align: center; 
-   }
-}
-
-@media (min-width: 700px) {
-   .contenedor-acerca-del-proyecto .contenedor-texto p{
-      text-align: center; 
-   }
+.contenedor-que-somos .contenedor-texto p{
+   text-align: left; 
+   padding: 5px 5px;
 }
 
 .contenedor-acerca-del-proyecto .imagen-acerca{
