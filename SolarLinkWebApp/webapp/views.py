@@ -18,13 +18,8 @@ def que_somos(request):
     return render(request, "que_somos.html")
 
 def contacto(request):
+    nombre = 15
     return render(request, "contacto.html")
 
 def galeria(request):
     return render(request, "galeria.html")
-
-def datos(request):
-    data = request.POST
-
-def leer(request):
-    return HttpResponse(data)
