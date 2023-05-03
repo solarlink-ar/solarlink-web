@@ -50,16 +50,6 @@ body{
    font-size: max(1.3vw, 25px);
 }
 
-.contenedor-texto h3 span{
-   background: #00537a;
-   color: #fff;
-   border-radius: 50%;
-   display: inline-block;
-   text-align: center;
-   
-   width: 30px;
-}
-
 .contenedor-texto p{
    padding: 0px 0px 30px 0px;
    font-weight: 300;
