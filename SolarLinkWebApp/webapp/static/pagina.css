@@ -61,10 +61,18 @@ body{
    background: url(https://media.discordapp.net/attachments/979766939381534850/1103406461339566282/Fondo_4.png?width=683&height=427);   
 }
 
+.blank-background {
+   background: #fff;
+   min-width: 90%;
+   position: absolute;
+   min-height: 100vh;
+}
+
 @media (max-width: 700px) {
    .contenedor{
    padding: 0px 0px 25px 0px;
-   width: 90%;
+   width: 100%;
+   background: #fff;
    display: flex;
    flex-direction: column;
    align-items: center;
@@ -77,6 +85,7 @@ body{
    .contenedor{
    padding: 0px 0px 25px 0px;
    width: 90%;
+   background: #fff;
    display: flex;
    flex-direction: column;
    align-items: center;
@@ -139,12 +148,6 @@ main{
    }
 }
 
-@media (max-width: 700px) {
-   .contenedor-acerca-del-proyecto .contenedor-texto h3{
-      text-align: left; 
-   }
-}
-
 .contenedor-que-somos {
    width: 90%;
    overflow: hidden;
@@ -156,7 +159,7 @@ main{
 
 .contenedor-que-somos .contenedor-texto p{
    text-align: left; 
-   padding: 5px 5px;
+   padding: 15px 15px;
 }
 
 .contenedor-acerca-del-proyecto .imagen-acerca{
@@ -173,6 +176,12 @@ main{
    margin-right: 0;
    margin-left: 0;
    border-width: 0.2rem;
+}
+
+@media (max-width: 700px) {
+   .contenedor-carousel {
+      max-width: 100%;
+   }
 }
 
 .carousel-item img {
