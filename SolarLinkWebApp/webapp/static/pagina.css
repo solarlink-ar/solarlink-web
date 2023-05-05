@@ -41,7 +41,7 @@ header .logo > img {
 }
 
 .textos-indice h1{
-   font-size: max(1vw, 15px);
+   font-size: max(1vw, 20px);
    padding: 0px 5px;
    color: #fff;
 }
@@ -58,7 +58,7 @@ body{
    min-height: 100vh;
    display: flex;
    flex-direction: column;
-   
+   background: url(https://media.discordapp.net/attachments/979766939381534850/1103406461339566282/Fondo_4.png?width=683&height=427);   
 }
 
 @media (max-width: 700px) {
@@ -168,10 +168,16 @@ main{
 
 
 .contenedor-carousel {
-   padding: 0% 15%;
+   max-width: 85%;
+   max-height: 30%;
    margin-right: 0;
    margin-left: 0;
    border-width: 0.2rem;
+}
+
+.carousel-item img {
+   max-height: 100%;
+   max-width: 100%;
 }
 
 
@@ -190,6 +196,7 @@ main{
 .imagen-chicos{
    width: 24%;
    margin-bottom: 10px;
+   margin: 0px 20px;
    overflow: hidden;
    position: relative;
    height: fit-content;
