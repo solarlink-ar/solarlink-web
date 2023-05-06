@@ -1,5 +1,4 @@
 # Proyecto Solar Link
-![logo](https://imgur.com/2xzFWUf)
 ## ¿Qué es Solar Link?
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Solar Link es un sistema inteligente que optimiza el uso de una energía renovable (por ejemplo, energía solar mediante paneles solares), de manera tal que siempre intentará usar toda la capacidad instalada para ahorrar energía y no consumirla de la red. Es un sistema microprocesado, con conexión a internet y adicionalmente se diseñará una aplicación que  le comunicará al usuario si está ahorrando, cuanto ahorró y una estimación de cuanto ahorrará según el pronóstico del clima.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dentro los sistemas solares, existen los sistemas *On-grid* y *Off-grid*, mientras que Solar Link es un ***Smart-Grid*** que combina ambos tipos. Este equipo monitorea constantemente el consumo de las líneas eléctricas del hogar y mientras pueda alimentarlas con energía renovables, lo hará posible.<br>
