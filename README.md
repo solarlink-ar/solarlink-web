@@ -15,4 +15,4 @@
 - Palmieri Hise, Agustín
 - Testa, Maximiliano Nicolás
 
-### <a href="https://www.linktr.ee/solarlink.ar" target="_blank">¡Contactanos!</a>
+### <a  target="_blank" href="https://www.linktr.ee/solarlink.ar">¡Contactanos!</a>
