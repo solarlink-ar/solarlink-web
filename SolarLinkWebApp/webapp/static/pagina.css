@@ -4,6 +4,9 @@
    box-sizing: border-box;
 }
 
+/*
+Header.
+*/
 
 header{
    width: 100%;
@@ -51,7 +54,9 @@ header .logo > img {
    text-decoration: none;
 }
 
-
+/*
+Body, elementos generales.
+*/
 
 body{
    font-family: 'open sans';
@@ -123,6 +128,10 @@ main{
 }
 
 /*
+Acerca de.
+*/
+
+/*
 @media (max-width: 700px) {
 }
 */
@@ -169,6 +178,9 @@ main{
    margin: auto;
 }
 
+/*
+Carousel de galería.
+*/
 
 .contenedor-carousel {
    max-width: 85%;
@@ -189,6 +201,9 @@ main{
    max-width: 100%;
 }
 
+/*
+Presentación de los miembros.
+*/
 
 .Los-chicos-a-cargo{
    background: #fff;
@@ -235,9 +250,60 @@ main{
    text-align: center;
 }
 
+/*
+Galería.
+*/
 
+div.gallery {
+   border: 1px solid #ccc;
+}
 
+div.gallery:hover {
+   border: 1px solid #777;
+}
 
+div.gallery img {
+   width: 100%;
+   height: auto;
+}
+
+div.desc {
+   padding: 15px;
+   text-align: center;
+}
+
+* {
+   box-sizing: border-box;
+}
+
+.responsive {
+   padding: 0 6px;
+   float: left;
+   width: 24.99999%;
+}
+
+@media only screen and (max-width: 700px) {
+.responsive {
+   width: 49.99999%;
+   margin: 6px 0;
+}
+}
+
+@media only screen and (max-width: 500px) {
+.responsive {
+   width: 100%;
+}
+}
+
+.clearfix:after {
+   content: "";
+   display: table;
+   clear: both;
+}
+
+/*
+Footer.
+*/
 
 footer{
    background: #41444B;
