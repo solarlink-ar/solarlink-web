@@ -11,4 +11,4 @@ while not wlan.isconnected():
     
 
 post_data = json.dumps({'data': '1234'})
-requests.get('https://web-solarlink.ivancenyko.repl.co/datos', data = post_data)
+requests.get('https://helyivan.pythonanywhere.com/datos', data = post_data)
