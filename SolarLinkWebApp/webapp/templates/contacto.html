@@ -7,11 +7,97 @@
 <main>
     <section class="contenedor">
         <h2 class="titulo">Contacto</h2>
-                    
-        <div class="contenedor">
+        <div class="contenedor-contacto">
             <div class="contenedor-texto">
-                <p>Hola</p>
+                <p>Encontrá la información de contacto de Solarlink acá, o envianos un correo por <a href="mailto:info@solarlink.ar">info@solarlink.ar</a><br>También podrás encontrarnos en nuestra página de <a href="https://instagram.com/solarlink.ar" target="_blank">Instagram</a>.</p>
             </div>
+            <form class="formulario" action="https://formsubmit.io/send/info@solarlink.ar" method="POST">
+                <!--API: FormSubmit // Forma facil para manejar los mensajes -->
+                <fieldset>
+                    <div class="campo">
+                        <input name="name" type="nombre" placeholder="Nombre" class="campo-text">
+                    </div>
+                    <div class="campo">
+                        <input name="email" type="email" placeholder="Email" class="campo-text">
+                    </div>
+                    <div class="campo">
+                        <textarea name="message" placeholder="Mensaje" class="campo-text-mensaje"></textarea>
+                    </div>
+                    <input class="btn btn-secondary" type="submit" value="Enviar">
+                </fieldset>
+            </form>
+            
+            <div class="contenedor Los-chicos-a-cargo">
+                <div class="chicos">
+
+                    <div class="imagen-chicos">
+                        <a href="{% url 'contacto' %}"><img src="https://media.discordapp.net/attachments/816355814205816832/1105180462596497578/image.png" alt=""></a>                       
+                        <div class="contacto-logo">
+                            <a href="https://www.google.com/" class="enlace_contacto" target="_blank"><img class="contacto_logo" src="static/img/linkedin.png" alt="linkedin" class="alumno_contacto"></a>
+                            <a href="https://www.google.com/" class="enlace_contacto" target="_blank"><img class="contacto_logo" src="static/img/instagram.png" alt="instagram" class="alumno_contacto"></a>
+                        </div>
+                        <h3>Agustín Palmieri Hise</h3>
+                        <h2>Project Leader</h2>
+                        <p>Hola. Soy Agustín Palmieri Hise. Soy de 7mo 1ra Aviónica y me gusta mucho SolarLink.</p>
+                    </div>
+                        
+                    <div class="imagen-chicos">
+                        <a href="{% url 'contacto' %}"><img src="https://cdn.discordapp.com/attachments/816355814205816832/1099085245011202048/image.png" alt=""></a>                       
+                        <div class="contacto-logo">
+                            <a href="https://www.google.com/" class="enlace_contacto" target="_blank"><img class="contacto_logo" src="static/img/linkedin.png" alt="linkedin" class="alumno_contacto"></a>
+                            <a href="https://www.google.com/" class="enlace_contacto" target="_blank"><img class="contacto_logo" src="static/img/instagram.png" alt="instagram" class="alumno_contacto"></a>
+                        </div>
+                        <h3>Maximiliano Testa</h3>
+                        <h2>Project Leader</h2>
+                        <p>Hola. Soy Agustín Palmieri Hise. Soy de 7mo 1ra Aviónica y me gusta mucho SolarLink.</p>
+                    </div>
+                    <div class="imagen-chicos">
+                        <a href="{% url 'contacto' %}"><img src="https://media.discordapp.net/attachments/816355814205816832/1105207711353811111/image.png" alt=""></a>                        
+                        <div class="contacto-logo">
+                            <a href="https://www.google.com/" class="enlace_contacto" target="_blank"><img class="contacto_logo" src="static/img/linkedin.png" alt="linkedin" class="alumno_contacto"></a>
+                            <a href="https://www.google.com/" class="enlace_contacto" target="_blank"><img class="contacto_logo" src="static/img/instagram.png" alt="instagram" class="alumno_contacto"></a>
+                        </div>
+                        <h3>Iván Cenyko</h3>
+                        <h2>Project Leader</h2>
+                        <p>Hola. Soy Agustín Palmieri Hise. Soy de 7mo 1ra Aviónica y me gusta mucho SolarLink.</p>
+                    </div>
+                    <div class="imagen-chicos">
+                        <a href="{% url 'contacto' %}"><img src="https://cdn.discordapp.com/attachments/816355814205816832/1099085245011202048/image.png" alt=""></a>                        
+                        <div class="contacto-logo">
+                            <a href="https://www.google.com/" class="enlace_contacto" target="_blank"><img class="contacto_logo" src="static/img/linkedin.png" alt="linkedin" class="alumno_contacto"></a>
+                            <a href="https://www.google.com/" class="enlace_contacto" target="_blank"><img class="contacto_logo" src="static/img/instagram.png" alt="instagram" class="alumno_contacto"></a>
+                        </div>
+                        <h3>Mateo Inza Fior</h3>
+                        <h2>Project Leader</h2>
+                        <p>Hola. Soy Agustín Palmieri Hise. Soy de 7mo 1ra Aviónica y me gusta mucho SolarLink.</p>
+                    </div>
+                    <div class="imagen-chicos">
+                        <a href="{% url 'contacto' %}"><img src="https://media.discordapp.net/attachments/816355814205816832/1105192409404551259/image.png" alt=""></a>
+                        <div class="contacto-logo">
+                            <a href="https://www.google.com/" class="enlace_contacto" target="_blank"><img class="contacto_logo" src="static/img/linkedin.png" alt="linkedin" class="alumno_contacto"></a>
+                            <a href="https://www.google.com/" class="enlace_contacto" target="_blank"><img class="contacto_logo" src="static/img/instagram.png" alt="instagram" class="alumno_contacto"></a>
+                        </div>
+                        <h3>Ian Gil Soria</h3>
+                        <h2>Project Leader</h2>
+                        <p>Hola. Soy Agustín Palmieri Hise. Soy de 7mo 1ra Aviónica y me gusta mucho SolarLink.</p>
+                    </div>
+                    <div class="imagen-chicos">
+                        <a href="{% url 'contacto' %}"><img src="https://media.discordapp.net/attachments/816355814205816832/1105192773038116964/image.png" alt=""></a>
+                        <div class="contacto-logo">
+                            <a href="https://www.google.com/" class="enlace_contacto" target="_blank"><img class="contacto_logo" src="static/img/linkedin.png" alt="linkedin" class="alumno_contacto"></a>
+                            <a href="https://www.google.com/" class="enlace_contacto" target="_blank"><img class="contacto_logo" src="static/img/instagram.png" alt="instagram" class="alumno_contacto"></a>
+                        </div>
+                        <h3>Nicolás Adell</h3>
+                        <h2>Project Leader</h2>
+                        <p>Hola. Soy Agustín Palmieri Hise. Soy de 7mo 1ra Aviónica y me gusta mucho SolarLink.</p>
+                    </div>
+                </div>
+                <div class="texto-contacto">
+                    <p><br></p>              
+                </div>
+            </div>
+
+            
         </div>
     </section>
 </main>
