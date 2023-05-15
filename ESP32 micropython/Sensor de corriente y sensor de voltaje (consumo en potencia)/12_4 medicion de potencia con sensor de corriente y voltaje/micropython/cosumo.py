@@ -14,7 +14,7 @@ adc_i.atten(ADC.ATTN_2_5DB) #atenuacion adc interno
 
 
 while 1:
-    v_sens = adc_e.raw_to_v(adc_e.read(7,0,1)) #mido V del sens. corriente 
+    v_sens = adc_e.raw_to_v(adc_e.read(7, 2, 3)) #mido V del sens. corriente 
     list.append(v_sens) #apendo a lista de voltajes del sens de corriente
     
     val = adc_i.read_uv() / 1000000 * 225 / 1.0193 #mido V del sens. tension de linea rms
