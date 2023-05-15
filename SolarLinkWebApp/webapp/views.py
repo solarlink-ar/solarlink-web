@@ -22,5 +22,8 @@ def galeria(request):
     return render(request, "galeria.html")
 
 def datos(request):
-    print(request.body.decode("utf-8"))
-    return HttpResponse('1')
+    def datos(request):
+    global data
+    if request.body.decode("utf-8"):
+        data = request.body.decode("utf-8")
+    return HttpResponse(f'{data}')
