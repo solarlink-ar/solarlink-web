@@ -13,7 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
 </head>
 <body>
-
     <header>
         <section class="logo">
             <a href="{% url 'index' %}"><img src='{% static "pagina/Logo/solarlink_logo_negro.png" %}' alt="" class="logo"></a>
@@ -24,9 +23,8 @@
             <h1><a href="{% url 'contacto' %}">Contacto</a></h1>
         </section>
     </header>
-
-    {% block main %}
-    {% endblock %}
+        {% block main %}
+        {% endblock %}
 
     <footer>
         <div class="contenedor-footer">
