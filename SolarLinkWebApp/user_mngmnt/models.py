@@ -1,12 +1,9 @@
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 from django.db import models
 
-# Create your models here.
 
-class Data(models.Model):
-    id_producto = models.CharField(max_length=40, primary_key=True)
-    email = models.EmailField()
-    password = models.CharField(max_length=20)
-    consumo_min = models.IntegerField()
-    voltaje_min = models.IntegerField()
-    corriente_min = models.IntegerField()
-    fecha_hora_min = models.DateTimeField()
+class Datos(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    product_id = models.CharField(max_length=50)
+
