@@ -5,15 +5,15 @@ from django.contrib.auth.models import User
 import datetime
 
 
-# Create your views here.
+def registered(request):
+    if request.method == "POST":
+        email = request.POST['email']
+        username = request.POST['username']
+        password = request.POST['password']
+        User.objects.create_user(email=email, username=username, password=password)
 
+    return HttpResponse('Estás registrado!')
 
-'''
-def register(response):
-    user = User.objects.create_user(email='jose24@gmail.com', password='1234', username='juan23')
-    return HttpResponse("Done!")
+def register(request):
+    return render(request, 'register.html')
 
-def user_data(response):
-    user = User.objects.get(email='jose24@gmail.com')
-    return HttpResponse(user.get_username())
-'''

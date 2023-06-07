@@ -1,0 +1,22 @@
+{% extends 'template_2.html' %}
+
+{% block main %}
+
+    <h1> Registro </h1>
+    <form method = "POST" action="{% url 'registered' %}">
+        {% csrf_token %}
+        email:
+        <br/>
+        <input type="text" name="email" />
+        <br/>
+        username:
+        <br/>
+        <input type="text" name="username" />
+        <br/>
+        contraseña:
+        <br/>
+        <input type="password" name="password" />
+        <br/>
+        <input class ="btn btn-primary" type="submit" value= "Login" />
+        <br/>
+{% endblock %}
