@@ -1,13 +1,14 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.contrib.auth.models import User
 import datetime
 
 
 def registered(request):
+    next_url = request.GET.get('next')
     if request.method == "POST":
-
+        
         email = request.POST['email']
         username = request.POST['username']
         password = request.POST['password']
@@ -22,7 +23,10 @@ def registered(request):
             except User.DoesNotExist:
                 User.objects.create_user(email=email, username=username, password=password)
                 error = 'Registrado!'
-                return render(request, 'register.html', {'error': error})
+                if next_url:
+                    return HttpResponseRedirect(next_url)
+                else:
+                    return render(request, 'register.html', {'error': error})
         else:
             error = 'Las contraseñas no concuerdan!'
             return render(request, 'register.html', {'error': error})
