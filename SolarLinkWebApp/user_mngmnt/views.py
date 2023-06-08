@@ -6,9 +6,8 @@ import datetime
 
 
 def registered(request):
-    next_url = request.GET.get('next')
     if request.method == "POST":
-        
+        next_url = request.GET.get('next')
         email = request.POST['email']
         username = request.POST['username']
         password = request.POST['password']
