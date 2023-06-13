@@ -3,7 +3,7 @@
 {% block main %}
 
     <h1> Registro </h1>
-    <form method = "POST" action="{% url 'registered' %}">
+    <form method = "POST" action="{% url 'register' %}">
         {% csrf_token %}
         email:
         <br/>
