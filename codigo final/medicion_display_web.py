@@ -13,6 +13,10 @@ v_max = 0
 timercount = False
 #
 #
+def calculo_corriente(v_max):
+    return (0.485816226 * pow(v_max,3) -1.1205922* pow(v_max,2) + 5.651277 * v_max) / math.sqrt(2)
+#
+#
 def values_restart():
     global suma_adc_e
     global suma_adc_i
@@ -60,23 +64,27 @@ while 1:
     v_act_sens_i = adc_e.raw_to_v(adc_e.read(7,2,3))
     if v_act_sens_i > v_max:
         v_max = v_act_sens_i
+    #
+    #
     v_act_sens_v = adc_i.read_uv() / 1000000 * 225 / 1.0193 # mido V del sens. tension de linea rms
     suma_adc_i += v_act_sens_v
     index += 1 # index para el promedio
-#  
-#
+    #
+    #
     if timercount:
         lcd.clear()
-        sens_corriente = (0.485816226 * pow(v_max,3) -1.1205922* pow(v_max,2) + 5.651277 * v_max) / math.sqrt(2)
+        sens_corriente = calculo_corriente(v_max)
         sens_voltaje = int(suma_adc_i/index)
         consumo = sens_voltaje * sens_corriente
-        
+        #
+        #
         lcd.putstr(f'{sens_voltaje} V')
         lcd.move_to(8,0)
         lcd.putstr(f'{round(sens_corriente, 2)} A')
         lcd.move_to(0,1)
         lcd.putstr(f'{round(consumo, 2)} W')
-        
+        #
+        #
         post_data = json.dumps({'sens_voltaje': sens_voltaje, 'sens_corriente': sens_corriente, 'consumo': consumo})
         requests.get('https://helyivan.pythonanywhere.com/datos', data = post_data)
         timercount = False
