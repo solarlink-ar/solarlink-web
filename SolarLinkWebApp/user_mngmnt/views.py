@@ -1,84 +1,99 @@
 from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template import loader
 from django.contrib import auth
 from . import models
 import datetime
 
-
+# registro
 def register(request):
+
+    # si se rellena un login
     if request.method == "POST":
-        next_url = request.GET.get('next')
+        # obtengo datos
         email = request.POST['email']
         username = request.POST['username']
         password = request.POST['password']
         password_conf = request.POST['password_conf']
 
+        # reviso si las contraseñas coinciden
         if password_conf == password:
+
+            # intento buscar el usuario
             try:
                 User.objects.get(username = username)
                 error = "El usuario ya está registrado"
                 return render(request, 'register.html', {'error': error})
             
+            # si no existe, lo registro, lo logueo y voy a product
             except User.DoesNotExist:
                 User.objects.create_user(email=email, username=username, password=password)
-                error = 'Registrado!'
-                if next_url:
-                    return HttpResponseRedirect(next_url)
-                else:
-                    return render(request, 'register.html', {'error': error})
+
+                user = auth.authenticate(username=username, password=password)
+                auth.login(request, user)
+
+                return redirect('product')
+        
+        # si las contraseñas no coinciden
         else:
             error = 'Las contraseñas no concuerdan!'
             return render(request, 'register.html', {'error': error})
+        
+    # si entro a la web con un GET
     else:
         return render(request, 'register.html')
 
+# Registro de product_id
+@login_required
 def product(request):
+
+    # si relleno el formulario
     if request.method == "POST":
-        next_url = request.GET.get('next')
-        username = request.POST['username']
-        password = request.POST['password']
+
+        # obtengo product_id del form        
         product_id = request.POST['product_id']
+        
+        # lo guardo en la db
+        models.User_link(user = request.user, product_id = product_id).save()
 
-        user = auth.authenticate(username=request.POST['username'],password = request.POST['password'])
-        if user:
-            auth.login(request, user)
-            models.User_link(user=user, product_id = product_id).save()
-
-            return HttpResponse('nashe')
-        else:
-            error = 'El usuario no existe'
-            return render(request, 'product.html', {'error': error})
     else:
         return render(request, 'product.html')
 
+
 def login(request):
-    if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        user = auth.authenticate(username=request.POST['username'],password = request.POST['password'])
-        
-        if user:
-            auth.login(request, user)
-            email = user.email
-            product_id = user.user_link.product_id
+    # si no está logueado
+    if request.user:
+        # si rellena formulario
+        if request.method == "POST":
+            #obtengo user y pass
+            username = request.POST['username']
+            password = request.POST['password']
 
-            data = models.Datos.objects.filter(product_id = product_id)
-            print(data)
+            #autentico
+            user = auth.authenticate(username=username, password = password)
             
-            for i in data:
-                print(i.consumo_mins, i.voltaje_mins)
+            # si existe, logueo
+            if user:
+                auth.login(request, user)
+                return redirect('product')
 
-        
-            return HttpResponse(f'{email}, {data}')
-
+            # si no existe, doy error
+            else:
+                error = 'El usuario no existe'
+                return render(request, 'login.html', {'error': error})
         else:
-            error = 'El usuario no existe'
-            return render(request, 'registration/login.html', {'error': error})
+            return render(request, "login.html")
+    
+    # si está logueado
     else:
-        return render(request, "login.html")
-
+        return redirect('index')
+    
+@login_required
+def logout(request):
+    auth.logout(request)
+    return redirect('index')
 
 def data(request):
     if request.method == "POST":
@@ -92,3 +107,16 @@ def data(request):
     else:
         return render(request, "data.html")
 
+
+
+
+'''
+email = user.email
+product_id = user.user_link.product_id
+
+data = models.Datos.objects.filter(product_id = product_id)
+print(data)
+
+for i in data:
+    print(i.consumo_mins, i.voltaje_mins)
+'''
