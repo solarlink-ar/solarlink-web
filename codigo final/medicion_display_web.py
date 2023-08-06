@@ -15,7 +15,7 @@ timercount = False
 #
 #
 def calculo_corriente(v_max):
-    return ((8.65714286 * v_max) / math.sqrt(2)) * 1.17
+    return ((8.65714286 * v_max) / math.sqrt(2)) * 1.17 #10.1288571642
 #
 #
 def values_restart():
