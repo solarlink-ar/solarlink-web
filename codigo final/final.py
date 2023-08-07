@@ -5,7 +5,7 @@ from i2c_lcd import I2cLcd
 import urequests as requests
 
 
-class solarlink(object):
+class Solarlink(object):
     def __init__(self):
         self.i2c_corriente_dir = 72
         self.scl = 22
@@ -35,6 +35,8 @@ class solarlink(object):
         voltaje = self.adc.read_uv() / 1000000 * self.ref # mido V del sens. tension de linea rms
         return voltaje
     
-    
+Solarlink.init()
+print(Solarlink.corriente_dif_read(0, 1))
+time.sleep(1)
     
     
