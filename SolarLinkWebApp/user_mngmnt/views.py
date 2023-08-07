@@ -64,7 +64,7 @@ def product(request):
 
 def login(request):
     # si no está logueado
-    if request.user:
+    if not request.user:
         # si rellena formulario
         if request.method == "POST":
             #obtengo user y pass
