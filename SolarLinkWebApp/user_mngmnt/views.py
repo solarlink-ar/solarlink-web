@@ -9,62 +9,49 @@ import datetime
 
 # registro
 def register(request):
+    #si no está logueado
+    if request.user.username == '':
+        # si se rellena un login
+        if request.method == "POST":
+            # obtengo datos
+            email = request.POST['email']
+            username = request.POST['username']
+            password = request.POST['password']
+            password_conf = request.POST['password_conf']
 
-    # si se rellena un login
-    if request.method == "POST":
-        # obtengo datos
-        email = request.POST['email']
-        username = request.POST['username']
-        password = request.POST['password']
-        password_conf = request.POST['password_conf']
+            # reviso si las contraseñas coinciden
+            if password_conf == password:
 
-        # reviso si las contraseñas coinciden
-        if password_conf == password:
+                # intento buscar el usuario
+                try:
+                    User.objects.get(username = username)
+                    error = "El usuario ya está registrado"
+                    return render(request, 'register.html', {'error': error})
+                
+                # si no existe, lo registro, lo logueo y voy a product
+                except User.DoesNotExist:
+                    User.objects.create_user(email=email, username=username, password=password)
 
-            # intento buscar el usuario
-            try:
-                User.objects.get(username = username)
-                error = "El usuario ya está registrado"
+                    user = auth.authenticate(username=username, password=password)
+                    auth.login(request, user)
+
+                    return redirect('product')
+            
+            # si las contraseñas no coinciden
+            else:
+                error = 'Las contraseñas no concuerdan!'
                 return render(request, 'register.html', {'error': error})
             
-            # si no existe, lo registro, lo logueo y voy a product
-            except User.DoesNotExist:
-                User.objects.create_user(email=email, username=username, password=password)
-
-                user = auth.authenticate(username=username, password=password)
-                auth.login(request, user)
-
-                return redirect('product')
-        
-        # si las contraseñas no coinciden
+        # si entro a la web con un GET
         else:
-            error = 'Las contraseñas no concuerdan!'
-            return render(request, 'register.html', {'error': error})
-        
-    # si entro a la web con un GET
+            return render(request, 'register.html')
+    #si está logueado
     else:
-        return render(request, 'register.html')
-
-# Registro de product_id
-@login_required
-def product(request):
-
-    # si relleno el formulario
-    if request.method == "POST":
-
-        # obtengo product_id del form        
-        product_id = request.POST['product_id']
-        
-        # lo guardo en la db
-        models.User_link(user = request.user, product_id = product_id).save()
-
-    else:
-        return render(request, 'product.html')
-
+        return redirect("index")
 
 def login(request):
     # si no está logueado
-    if not request.user:
+    if request.user.username == '':
         # si rellena formulario
         if request.method == "POST":
             #obtengo user y pass
@@ -89,11 +76,28 @@ def login(request):
     # si está logueado
     else:
         return redirect('index')
-    
+
+
 @login_required
 def logout(request):
     auth.logout(request)
     return redirect('index')
+
+# Registro de product_id
+@login_required
+def product(request):
+
+    # si relleno el formulario
+    if request.method == "POST":
+
+        # obtengo product_id del form        
+        product_id = request.POST['product_id']
+        
+        # lo guardo en la db
+        models.User_link(user = request.user, product_id = product_id).save()
+
+    else:
+        return render(request, 'product.html')
 
 def data(request):
     if request.method == "POST":
