@@ -21,7 +21,7 @@ class Solarlink(object):
     def init(self):
         self.i2c = I2C(1, scl=Pin(self.scl), sda=Pin(self.sda), freq=self.freq) #i2c init
         self.ads1115 = ads1115.ADS1115(self.i2c, self.i2c_corriente_dir, self.gain) #adc externo init
-        port = Pin(self.pin, Pin.IN) #pin init
+        port = Pin(self.adc_pin, Pin.IN) #pin init
         self.adc = ADC(port)
         self.adc.atten(self.atten)
     
@@ -34,9 +34,11 @@ class Solarlink(object):
     def voltaje_read(self):
         voltaje = self.adc.read_uv() / 1000000 * self.ref # mido V del sens. tension de linea rms
         return voltaje
-    
-Solarlink.init()
-print(Solarlink.corriente_dif_read(0, 1))
+
+solarlink = Solarlink()
+solarlink.init()
+
+print(solarlink.corriente_dif_read(0, 1))
 time.sleep(1)
     
     
