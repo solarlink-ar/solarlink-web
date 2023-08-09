@@ -51,7 +51,7 @@ def register(request):
 
 def login(request):
     # si no está logueado
-    if request.user.username == '':
+    if request.user.is_authenticated():
         # si rellena formulario
         if request.method == "POST":
             #obtengo user y pass
