@@ -49,6 +49,7 @@ def register(request):
     else:
         return redirect("index")
 
+# login
 def login(request):
     # si no está logueado
     if request.user.username == '':
@@ -96,6 +97,7 @@ def product(request):
         # lo guardo en la db
         models.User_link(user = request.user, product_id = product_id).save()
 
+    #si hago un GET
     else:
         return render(request, 'product.html')
 
