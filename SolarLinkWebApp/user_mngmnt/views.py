@@ -51,7 +51,7 @@ def register(request):
 
 def login(request):
     # si no está logueado
-    if request.user.is_authenticated():
+    if request.user.username == '':
         # si rellena formulario
         if request.method == "POST":
             #obtengo user y pass
@@ -77,7 +77,7 @@ def login(request):
     else:
         return redirect('index')
 
-
+#logout
 @login_required
 def logout(request):
     auth.logout(request)
