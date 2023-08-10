@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
-    'user_mngmnt'
+    'user_mngmnt',
+    "django_crontab"
 ]
 
 MIDDLEWARE = [
@@ -132,5 +133,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # default URL para redireccionar cuando no está logueado
 LOGIN_URL = "login"
 
-# CELERY
+# CRONTAB
+CRONJOBS = [
+    ('10 0 * * *', 'user_mngmnt.cron.sorter'),
+    ('*/1 * * * *', 'user_mngmnt.cron.test')
+]
 

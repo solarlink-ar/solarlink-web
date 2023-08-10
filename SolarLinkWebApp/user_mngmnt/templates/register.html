@@ -5,24 +5,32 @@
     <h1> Registro </h1>
     <form method = "POST" action="{% url 'register' %}">
         {% csrf_token %}
-        email:
         <br/>
-        <input type="text" name="email" />
+        Nombre:
         <br/>
-        username:
+        {{ form.first_name }}
         <br/>
-        <input type="text" name="username" />
+        Apellido:
         <br/>
-        contraseña:
+        {{ form.last_name }}
         <br/>
-        <input type="password" name="password" />
+        Email:
         <br/>
-        confirmar contraseña:
+        {{ form.email }}
         <br/>
-        <input type="password" name="password_conf" />
+        Nombre de usuario:
+        <br/>
+        {{ form.username }}
+        <br/>
+        Contraseña:
+        <br/>
+        {{ form.password }}
+        <br/>
+        Confirmar contraseña:
+        <br/>
+        {{ form.password_confirmation }}
         <br/>
         <input class ="btn btn-primary" type="submit" value= "Registrarse" />
         <br/>
-
         {{error}}
 {% endblock %}

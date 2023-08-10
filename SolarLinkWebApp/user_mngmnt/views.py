@@ -1,10 +1,11 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.template import loader
 from django.contrib import auth
 from . import models
+from .forms import RegisterForm
 import datetime
 
 # registro
@@ -13,38 +14,52 @@ def register(request):
     if request.user.username == '':
         # si se rellena un login
         if request.method == "POST":
-            # obtengo datos
-            email = request.POST['email']
-            username = request.POST['username']
-            password = request.POST['password']
-            password_conf = request.POST['password_conf']
+            
+            # armo form
+            form = RegisterForm(request.POST)
 
-            # reviso si las contraseñas coinciden
-            if password_conf == password:
+            if form.is_valid():
+                # tomo los datos
+                first_name = form.cleaned_data['first_name']
+                last_name = form.cleaned_data['last_name']
+                email = form.cleaned_data['email']
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password']
+                password_confirmation = form.cleaned_data['password_confirmation']
 
-                # intento buscar el usuario
-                try:
-                    User.objects.get(username = username)
-                    error = "El usuario ya está registrado"
-                    return render(request, 'register.html', {'error': error})
-                
-                # si no existe, lo registro, lo logueo y voy a product
-                except User.DoesNotExist:
-                    User.objects.create_user(email=email, username=username, password=password)
+                # armo template
+                form = RegisterForm()
 
-                    user = auth.authenticate(username=username, password=password)
-                    auth.login(request, user)
+                # reviso si las contraseñas coinciden
+                if password_confirmation == password:
+
+
+                    # intento buscar el usuario
+                    user = auth.authenticate(username=username, password = password)
+                    # si existe
+                    if user:
+                        error = "El usuario ya está registrado"
+                        return render(request, 'register.html', {'form': form,'error': error})
+                    
+                    # si no existe, lo registro, lo logueo y voy a product
+                    else:
+
+                        User.objects.create_user(email=email, username=username, password=password, first_name= first_name, last_name = last_name)
+                        user = auth.authenticate(username=username, password = password)
+                        auth.login(request, user)
 
                     return redirect('product')
-            
-            # si las contraseñas no coinciden
-            else:
-                error = 'Las contraseñas no concuerdan!'
-                return render(request, 'register.html', {'error': error})
+        
+                # si las contraseñas no coinciden
+                else:
+                    error = 'Las contraseñas no concuerdan!'
+                    return render(request, 'register.html', {'form': form, 'error': error})
             
         # si entro a la web con un GET
         else:
-            return render(request, 'register.html')
+            # armo template
+            form = RegisterForm()
+            return render(request, 'register.html', {'form': form})
     #si está logueado
     else:
         return redirect("index")
@@ -101,6 +116,22 @@ def product(request):
     else:
         return render(request, 'product.html')
 
+def load_data(request):
+    if request.method == "GET":
+        data = request.GET.dict()
+        user = auth.authenticate(username=data["username"], password=data["password"])
+        if user:
+            response = {"result": True}
+            # cargar datos proximamente
+        else:
+            response = {"result": False}
+        return JsonResponse(response)
+
+
+
+
+
+'''
 def data(request):
     if request.method == "POST":
         product_id = request.POST['product_id']
@@ -116,7 +147,7 @@ def data(request):
 
 
 
-'''
+
 email = user.email
 product_id = user.user_link.product_id
 
