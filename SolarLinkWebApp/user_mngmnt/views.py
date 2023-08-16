@@ -48,7 +48,7 @@ def register(request):
                         user = auth.authenticate(username=username, password = password)
                         auth.login(request, user)
 
-                    return redirect('product')
+                    return redirect('index')
         
                 # si las contraseñas no coinciden
                 else:
@@ -115,6 +115,7 @@ def load_data(request):
 #Userpage
 @login_required
 def userpage(request):
+    username = request
     return render(request, "userpage.html")
 
 
