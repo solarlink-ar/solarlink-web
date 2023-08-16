@@ -18,6 +18,7 @@ def contacto(request):
 
 def galeria(request):
     return render(request, "galeria.html")
+    
 
 '''
 def answer(request):
