@@ -112,6 +112,11 @@ def load_data(request):
         return JsonResponse(response)
 
 
+#Userpage
+@login_required
+def userpage(request):
+    return render(request, "userpage.html")
+
 
 
 '''
