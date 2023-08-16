@@ -115,8 +115,8 @@ def load_data(request):
 #Userpage
 @login_required
 def userpage(request):
-    username = request
-    return render(request, "userpage.html")
+    username = request.user.username
+    return render(request, "userpage.html", {"username": username})
 
 
 
