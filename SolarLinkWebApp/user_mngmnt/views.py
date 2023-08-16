@@ -80,11 +80,11 @@ def login(request):
             # si existe, logueo
             if user:
                 auth.login(request, user)
-                return redirect('product')
+                return redirect('index')
 
             # si no existe, doy error
             else:
-                error = 'El usuario no existe'
+                error = 'El usuario es incorrecto'
                 return render(request, 'login.html', {'error': error})
         else:
             return render(request, "login.html")
@@ -93,12 +93,33 @@ def login(request):
     else:
         return redirect('index')
 
-#logout
+# logout
 @login_required
 def logout(request):
     auth.logout(request)
     return redirect('index')
 
+
+def load_data(request):
+    if request.method == "GET":
+        data = request.GET.dict()
+        user = auth.authenticate(username=data["username"], password=data["password"])
+        if user:
+            response = {"result": True}
+            # cargar datos proximamente
+        else:
+            response = {"result": False}
+        return JsonResponse(response)
+
+
+
+
+'''
+def answer(request):
+    print(request.GET.dict())
+    return JsonResponse({"god": "god"})
+'''
+'''
 # Registro de product_id
 @login_required
 def product(request):
@@ -116,22 +137,6 @@ def product(request):
     else:
         return render(request, 'product.html')
 
-def load_data(request):
-    if request.method == "GET":
-        data = request.GET.dict()
-        user = auth.authenticate(username=data["username"], password=data["password"])
-        if user:
-            response = {"result": True}
-            # cargar datos proximamente
-        else:
-            response = {"result": False}
-        return JsonResponse(response)
-
-
-
-
-
-'''
 def data(request):
     if request.method == "POST":
         product_id = request.POST['product_id']
