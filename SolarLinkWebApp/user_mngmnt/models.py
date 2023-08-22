@@ -9,19 +9,21 @@ class User_data(models.Model):
 # datos del micro por hora
 class Datos_hora(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    
-    voltaje_hora_solar = models.FloatField(default=None)
+
     voltaje_hora_red = models.FloatField(default=None)
     consumo_hora_solar = models.FloatField(default=None)
     consumo_hora_red = models.FloatField(default=None)
 
+    hora = models.IntegerField(default=None)
     dia = models.IntegerField(default=None)
     mes = models.IntegerField(default=None)
-    hora = models.IntegerField(default=None)
+    año = models.IntegerField(default=None)
 
-    solar_ahora = models.IntegerField(default=None)
+
+    solar_ahora = models.BooleanField(default=None)
+    panel_potencia = models.BooleanField(default=None)
     cargando = models.BooleanField(default=None)
-    voltaje_bateria = models.IntegerField(default=None)
+    voltaje_bateria = models.IntegerField(default=None) # porcentaje bateria
 
     errores = models.BooleanField(default=None)
 
@@ -36,6 +38,16 @@ class Datos_dias(models.Model):
 
     consumo_dia_red = models.FloatField(default=None)
     consumo_dia_solar = models.FloatField(default=None)
+
+    dia = models.IntegerField(default=None)
+    mes = models.IntegerField(default=None)
+    año = models.IntegerField(default=None)
+
+    horas_potencia_panel = models.IntegerField(default=None)
+    total_potencia_panel = models.IntegerField(default=None)
+
+    errores = models.BooleanField(default=None)
+
     
 
 # lista de productos activos
@@ -59,3 +71,17 @@ class Emergencia(models.Model):
     red = models.BooleanField()
 
     corriente = models.BooleanField()
+
+class Tiempo_real(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    voltaje = models.FloatField(default=None)
+    consumo = models.FloatField(default=None)
+
+    solar = models.BooleanField(default=None)
+    cargando = models.BooleanField(default=None)
+    voltaje_bateria = models.IntegerField(default=None) # porcentaje bateria
+
+    errores = models.BooleanField(default=None)
+
+

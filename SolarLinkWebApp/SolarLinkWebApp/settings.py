@@ -135,7 +135,9 @@ LOGIN_URL = "login"
 
 # CRONTAB
 CRONJOBS = [
+    # todos los dias a las 00:10
     ('10 0 * * *', 'user_mngmnt.cron.sorter'),
+    # cada minuto
     ('*/1 * * * *', 'user_mngmnt.cron.test')
 ]
 
