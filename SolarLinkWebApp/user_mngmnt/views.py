@@ -48,7 +48,7 @@ def register(request):
                         user = auth.authenticate(username=username, password = password)
                         auth.login(request, user)
 
-                    return redirect('product')
+                    return redirect('index')
         
                 # si las contraseñas no coinciden
                 else:
@@ -80,11 +80,11 @@ def login(request):
             # si existe, logueo
             if user:
                 auth.login(request, user)
-                return redirect('product')
+                return redirect('index')
 
             # si no existe, doy error
             else:
-                error = 'El usuario no existe'
+                error = 'El usuario es incorrecto'
                 return render(request, 'login.html', {'error': error})
         else:
             return render(request, "login.html")
@@ -93,12 +93,66 @@ def login(request):
     else:
         return redirect('index')
 
-#logout
+# logout
 @login_required
 def logout(request):
     auth.logout(request)
     return redirect('index')
 
+
+def load_data(request):
+    if request.method == "GET":
+        data = request.GET.dict()
+        user = auth.authenticate(username=data["username"], password=data["password"])
+        if user:
+            response = {"result": True}
+            # cargar datos proximamente
+        else:
+            response = {"result": False}
+        return JsonResponse(response)
+
+
+#Userpage
+@login_required
+def userpage(request):
+    username = request.user.username
+    return render(request, "userpage.html", {"username": username})
+
+def data(request):
+    # lista de objetos de usuario
+    users = models.User.objects.all()
+
+    # para cada usuario
+    for user in users:
+        # se sube un dato por hora
+        for i in range(0, 24):
+            models.Datos_hora(user = user,
+                              voltaje_hora_red = 220,
+                              consumo_hora_red = 500,
+                              consumo_hora_solar = 300,
+                              hora = i,
+                              dia = 22,
+                              mes = 8,
+                              año = 2023,
+                              solar_ahora = True,
+                              panel_potencia = 340,
+                              cargando = True,
+                              voltaje_bateria = 12.5,
+                              errores = False,
+                              product_id = 'nashe23').save()
+        
+        # todos los datos de cierto usuario
+        data = models.Datos_hora.objects.filter(user = users[0])
+        # dentro del primer dato, su hora
+        print(data[0].hora)
+    return HttpResponse("nashe")
+
+'''
+def answer(request):
+    print(request.GET.dict())
+    return JsonResponse({"god": "god"})
+'''
+'''
 # Registro de product_id
 @login_required
 def product(request):
@@ -116,22 +170,6 @@ def product(request):
     else:
         return render(request, 'product.html')
 
-def load_data(request):
-    if request.method == "GET":
-        data = request.GET.dict()
-        user = auth.authenticate(username=data["username"], password=data["password"])
-        if user:
-            response = {"result": True}
-            # cargar datos proximamente
-        else:
-            response = {"result": False}
-        return JsonResponse(response)
-
-
-
-
-
-'''
 def data(request):
     if request.method == "POST":
         product_id = request.POST['product_id']
