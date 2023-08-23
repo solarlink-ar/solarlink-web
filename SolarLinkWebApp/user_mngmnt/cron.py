@@ -10,4 +10,11 @@ import datetime
 import requests
 
 def sorter():
+    '''
+    models.User.objects()
+    for i in range(0,23):
+        models.User_link(user = user, product_id = product_id).save()
+
+    models.Datos_hora.objects.filter()
+    '''
     pass

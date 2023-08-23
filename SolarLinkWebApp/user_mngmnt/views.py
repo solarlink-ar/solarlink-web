@@ -118,7 +118,34 @@ def userpage(request):
     username = request.user.username
     return render(request, "userpage.html", {"username": username})
 
+def data(request):
+    # lista de objetos de usuario
+    users = models.User.objects.all()
 
+    # para cada usuario
+    for user in users:
+        # se sube un dato por hora
+        for i in range(0, 24):
+            models.Datos_hora(user = user,
+                              voltaje_hora_red = 220,
+                              consumo_hora_red = 500,
+                              consumo_hora_solar = 300,
+                              hora = i,
+                              dia = 22,
+                              mes = 8,
+                              año = 2023,
+                              solar_ahora = True,
+                              panel_potencia = 340,
+                              cargando = True,
+                              voltaje_bateria = 12.5,
+                              errores = False,
+                              product_id = 'nashe23').save()
+        
+        # todos los datos de cierto usuario
+        data = models.Datos_hora.objects.filter(user = users[0])
+        # dentro del primer dato, su hora
+        print(data[0].hora)
+    return HttpResponse("nashe")
 
 '''
 def answer(request):

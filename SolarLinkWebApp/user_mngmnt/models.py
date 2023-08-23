@@ -3,13 +3,14 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # vinculo usuario-producto
+'''
 class User_data(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+'''
 
 # datos del micro por hora
 class Datos_hora(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     voltaje_hora_red = models.FloatField(default=None)
     consumo_hora_solar = models.FloatField(default=None)
     consumo_hora_red = models.FloatField(default=None)
@@ -21,7 +22,7 @@ class Datos_hora(models.Model):
 
 
     solar_ahora = models.BooleanField(default=None)
-    panel_potencia = models.BooleanField(default=None)
+    panel_potencia = models.IntegerField(default=None)
     cargando = models.BooleanField(default=None)
     voltaje_bateria = models.IntegerField(default=None) # porcentaje bateria
 
@@ -31,7 +32,7 @@ class Datos_hora(models.Model):
 
 # datos guardados por dia
 class Datos_dias(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ManyToManyField(User)
 
     voltaje_maximo_dia_red = models.FloatField(default=None)
     voltaje_maximo_dia_red = models.FloatField(default=None)
@@ -57,7 +58,7 @@ class Productos (models.Model):
 
 # mensajes de emergencia
 class Emergencia(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ManyToManyField(User)
 
     voltaje = models.FloatField(default=None)
     consumo = models.FloatField(default=None)
@@ -73,7 +74,7 @@ class Emergencia(models.Model):
     corriente = models.BooleanField()
 
 class Tiempo_real(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ManyToManyField(User)
 
     voltaje = models.FloatField(default=None)
     consumo = models.FloatField(default=None)
