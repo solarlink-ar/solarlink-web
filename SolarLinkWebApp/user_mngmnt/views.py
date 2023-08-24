@@ -8,97 +8,99 @@ from . import models
 from .forms import RegisterForm
 import datetime
 
+def unlogued_required(redirect_link):
+    def decorator(func):
+        def check(request):
+            if request.user.username == '':
+                return func(request)
+            else:
+                return redirect(redirect_link)
+        return check
+    return decorator
+
 # registro
+@unlogued_required(redirect_link="index")
 def register(request):
-    #si no está logueado
-    if request.user.username == '':
-        # si se rellena un login
-        if request.method == "POST":
-            
-            # armo form
-            form = RegisterForm(request.POST)
-
-            if form.is_valid():
-                # tomo los datos
-                first_name = form.cleaned_data['first_name']
-                last_name = form.cleaned_data['last_name']
-                email = form.cleaned_data['email']
-                username = form.cleaned_data['username']
-                password = form.cleaned_data['password']
-                password_confirmation = form.cleaned_data['password_confirmation']
-
-                # armo template
-                form = RegisterForm()
-
-                # reviso si las contraseñas coinciden
-                if password_confirmation == password:
-
-
-                    # intento buscar el usuario
-                    user = auth.authenticate(username=username, password = password)
-                    # si existe
-                    if user:
-                        error = "El usuario ya está registrado"
-                        return render(request, 'register.html', {'form': form,'error': error})
-                    
-                    # si no existe, lo registro, lo logueo y voy a product
-                    else:
-
-                        User.objects.create_user(email=email, username=username, password=password, first_name= first_name, last_name = last_name)
-                        user = auth.authenticate(username=username, password = password)
-                        auth.login(request, user)
-
-                    return redirect('index')
+    # si se rellena un login
+    if request.method == "POST":
         
-                # si las contraseñas no coinciden
-                else:
-                    error = 'Las contraseñas no concuerdan!'
-                    return render(request, 'register.html', {'form': form, 'error': error})
-            
-        # si entro a la web con un GET
-        else:
+        # armo form
+        form = RegisterForm(request.POST)
+
+        if form.is_valid():
+            # tomo los datos
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            email = form.cleaned_data['email']
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            password_confirmation = form.cleaned_data['password_confirmation']
+
             # armo template
             form = RegisterForm()
-            return render(request, 'register.html', {'form': form})
-    #si está logueado
+
+            # reviso si las contraseñas coinciden
+            if password_confirmation == password:
+
+
+                # intento buscar el usuario
+                user = auth.authenticate(username=username, password = password)
+                # si existe
+                if user:
+                    error = "El usuario ya está registrado"
+                    return render(request, 'register.html', {'form': form,'error': error})
+                
+                # si no existe, lo registro, lo logueo y voy a product
+                else:
+
+                    User.objects.create_user(email=email, username=username, password=password, first_name= first_name, last_name = last_name)
+                    user = auth.authenticate(username=username, password = password)
+                    auth.login(request, user)
+
+                return redirect('index')
+    
+            # si las contraseñas no coinciden
+            else:
+                error = 'Las contraseñas no concuerdan!'
+                return render(request, 'register.html', {'form': form, 'error': error})
+        
+    # si entro a la web con un GET
     else:
-        return redirect("index")
+        # armo template
+        form = RegisterForm()
+        return render(request, 'register.html', {'form': form})
+   
 
 # login
+@unlogued_required(redirect_link="index")
 def login(request):
-    # si no está logueado
-    if request.user.username == '':
-        # si rellena formulario
-        if request.method == "POST":
-            #obtengo user y pass
-            username = request.POST['username']
-            password = request.POST['password']
+    # si rellena formulario
+    if request.method == "POST":
+        #obtengo user y pass
+        username = request.POST['username']
+        password = request.POST['password']
 
-            #autentico
-            user = auth.authenticate(username=username, password = password)
-            
-            # si existe, logueo
-            if user:
-                auth.login(request, user)
-                return redirect('index')
+        #autentico
+        user = auth.authenticate(username=username, password = password)
+        
+        # si existe, logueo
+        if user:
+            auth.login(request, user)
+            return redirect('index')
 
-            # si no existe, doy error
-            else:
-                error = 'El usuario es incorrecto'
-                return render(request, 'login.html', {'error': error})
+        # si no existe, doy error
         else:
-            return render(request, "login.html")
-    
-    # si está logueado
+            error = 'El usuario es incorrecto'
+            return render(request, 'login.html', {'error': error})
     else:
-        return redirect('index')
+        return render(request, "login.html")
+    
 
 # logout
 @login_required
 def logout(request):
     auth.logout(request)
     return redirect('index')
-
 
 def load_data(request):
     if request.method == "GET":
