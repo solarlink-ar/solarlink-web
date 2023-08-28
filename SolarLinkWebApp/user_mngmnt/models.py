@@ -32,7 +32,7 @@ class Datos_hora(models.Model):
 
 # datos guardados por dia
 class Datos_dias(models.Model):
-    user = models.ManyToManyField(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
     voltaje_maximo_dia_red = models.FloatField(default=None)
     voltaje_maximo_dia_red = models.FloatField(default=None)
@@ -58,7 +58,7 @@ class Productos (models.Model):
 
 # mensajes de emergencia
 class Emergencia(models.Model):
-    user = models.ManyToManyField(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
     voltaje = models.FloatField(default=None)
     consumo = models.FloatField(default=None)
@@ -74,7 +74,7 @@ class Emergencia(models.Model):
     corriente = models.BooleanField()
 
 class Tiempo_real(models.Model):
-    user = models.ManyToManyField(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
     voltaje = models.FloatField(default=None)
     consumo = models.FloatField(default=None)
