@@ -1,13 +1,14 @@
 from machine import Pin
 import time
 
-p19 = Pin(19, Pin.OUT)
-p18 = Pin(18, Pin.OUT)
+p15 = Pin(15, Pin.IN)
+
+def commuter_interrupt(pin)
+    global commuterFlag 
+    commuterFlag = 1
+    
+p15.irq(trigger=3, handler=commuter_interrupt)
 
 while 1:
-    p19.on()
-    p18.off()
-    time.sleep(1)
-    p19.off()
-    p18.on()
-    time.sleep(1)    
+    if commuterFlag:
+        
