@@ -5,8 +5,10 @@
 #define PWM_WRAP                3787  // Definimos frecuencia del micro, sin prescaler, 33kHz
 #define ADC_GPIO_BATTERY        26
 #define ADC_CURRENT_BATTERY     27
+#define ADC_OUT                 28
 #define ADC_CHANNEL_BATTERY     0
 #define ADC_CURRENT_CHANNEL_BATTERY 1
+#define ADC_CHANNEL_OUT             2
 
 #define BATTERY_ADC_RATIO       5     // Habra un ratio de 5 a 1 en el voltaje leido por el ADC y la bat
 
@@ -24,6 +26,11 @@
 #define 
 #define BATTERY_MIN_VOLTAGE     12.9       
 #define 
+
+float battery_voltage = 0;
+float battery_current = 0;
+float prom_volt = 0;
+float prom_current = 0;
 
 typedef enum {
     BULK_MODE,
@@ -72,9 +79,13 @@ int main() {
     while (true) {
         // Selecciono el canal de la tension y se lee y se convierte
         adc_select_input(ADC_CHANNEL_BATTERY);
-        float battery_voltage = BATTERY_ADC_RATIO * adc_read() * 3.3 / (1 << 12);
+        for i in range(10){
+            float volt = BATTERY_ADC_RATIO * adc_read() * 3.3 / (1 << 12);
+            prom_volt += volt;
+            return prom_volt/10
+        }
         // Selecciono el canal de la corriente y se lee y se convierte
-        adc_select_input(ADC_CURRENT_BATTERY);
+        adc_select_input(ADC_CURRENT_CHANNEL_BATTERY);
         float battery_current = (adc_read() - 2.5) * (-10);
 
     ///////////////   MDOE VERIFICATION   ///////////////    
