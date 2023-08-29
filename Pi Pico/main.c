@@ -10,19 +10,19 @@
 
 #define BATTERY_ADC_RATIO       5     // Habra un ratio de 5 a 1 en el voltaje leido por el ADC y la bat
 
-#define BULK_MAX_BATTERY_VOLTAGE    14
+#define BULK_MAX_BATTERY_VOLTAGE    14.4
 #define BULK_MAX_CURRENT_VOLTAGE    2000
 
-#define ABSORTION_MAX_BATTERY_VOLTAGE   13.8   // Umbral de tension del modo ABSORTION
+#define ABSORTION_MAX_BATTERY_VOLTAGE   14.6   // Umbral de tension del modo ABSORTION
 #define ABSORTION_MAX_PANEL_CURRENT     2000
 #define ABSORTION_MIN_PANEL_CURRENT     100
 
-#define FLOAT_MAX_BATTERY_VOLTAGE       12.8
-#define FLOAT_MIN_BATTERY_VOLTAGE       12
-#define FLOAT_MAX_CURRENT_VOLTAGE       110
+#define FLOAT_MAX_BATTERY_VOLTAGE       13.8
+#define FLOAT_MIN_BATTERY_VOLTAGE       13.5
+#define FLOAT_MAX_CURRENT_VOLTAGE       120
 
 #define 
-#define BATTERY_MIN_VOLTAGE     11.8       
+#define BATTERY_MIN_VOLTAGE     12.9       
 #define 
 
 typedef enum {
@@ -75,7 +75,7 @@ int main() {
         float battery_voltage = BATTERY_ADC_RATIO * adc_read() * 3.3 / (1 << 12);
         // Selecciono el canal de la corriente y se lee y se convierte
         adc_select_input(ADC_CURRENT_BATTERY);
-        float battery_current = adc_read() * nose;
+        float battery_current = (adc_read() - 2.5) * (-10);
 
     ///////////////   MDOE VERIFICATION   ///////////////    
         if (charging_mode == BULK_MODE){
@@ -91,9 +91,9 @@ int main() {
                 }
         }
         if (charging_mode == FLOAT_MODE){
-            if (battery_voltage < FLOAT_MIN_BATTERY_VOLTAGE){
-                charging_mode = BULK_MODE;
-            }
+            if (battery_voltage < FLOAT_MIN_BATTERY_VOLTAGE) {
+                    charging_mode = BULK_MODE;
+                }  
             if (battery_current > FLOAT_MAX_CURRENT_VOLTAGE) {
                     // Cambio modo de carga en caso de que corriente exceda umbral
                     charging_mode = BULK_MODE;
