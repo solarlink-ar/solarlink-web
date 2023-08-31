@@ -2,18 +2,18 @@
 #include "pico/stdlib.h"
 #include "hardware/pwm.h"
 
-#define PWM_WRAP                3787  // Definimos frecuencia del micro, sin prescaler, 33kHz
-#define ADC_GPIO_BATTERY        26
-#define ADC_CURRENT_BATTERY     27
-#define ADC_OUT                 28
-#define ADC_CHANNEL_BATTERY     0
-#define ADC_CURRENT_CHANNEL_BATTERY 1
-#define ADC_CHANNEL_OUT             2
+#define PWM_WRAP                        3787  // Definimos frecuencia del micro, sin prescaler, 33kHz
+#define ADC_GPIO_BATTERY                26
+#define ADC_CURRENT_BATTERY             27
+#define ADC_OUT                         28
+#define ADC_CHANNEL_BATTERY             0
+#define ADC_CURRENT_CHANNEL_BATTERY     1
+#define ADC_CHANNEL_OUT                 2
 
-#define BATTERY_ADC_RATIO       5     // Habra un ratio de 5 a 1 en el voltaje leido por el ADC y la bat
+#define BATTERY_ADC_RATIO               5     // Habra un ratio de 5 a 1 en el voltaje leido por el ADC y la bat
 
-#define BULK_MAX_BATTERY_VOLTAGE    14.4
-#define BULK_MAX_CURRENT_VOLTAGE    2000
+#define BULK_MAX_BATTERY_VOLTAGE        14.4
+#define BULK_MAX_CURRENT_VOLTAGE        2000
 
 #define ABSORTION_MAX_BATTERY_VOLTAGE   14.6   // Umbral de tension del modo ABSORTION
 #define ABSORTION_MAX_PANEL_CURRENT     2000
@@ -22,15 +22,12 @@
 #define FLOAT_MAX_BATTERY_VOLTAGE       13.8
 #define FLOAT_MIN_BATTERY_VOLTAGE       13.5
 #define FLOAT_MAX_CURRENT_VOLTAGE       120
-
-#define 
+ 
 #define BATTERY_MIN_VOLTAGE     12.9       
-#define 
 
 float battery_voltage = 0;
 float battery_current = 0;
-float prom_volt = 0;
-float prom_current = 0;
+float x = 0;
 
 typedef enum {
     BULK_MODE,
@@ -47,6 +44,24 @@ inline static uint16_t saturador(uint16_t wrap, int16_t level) {
         return 0;
     }
     return level;
+}
+
+float med_volt(value){
+    float prom = 0;
+    for (int i = 0; i < 10; i++){
+        float volt = BATTERY_ADC_RATIO * adc_read() * 3.3 / (1 << 12);
+        prom = prom + volt;
+        }
+    return prom/10
+}
+
+float med_current(value){
+    float prom = 0;
+    for (int i = 0; i < 10; i++){
+        float current = ((BATTERY_ADC_RATIO * adc_read() * 3.3 / (1 << 12)) - 2.515) * (-10);
+        prom = prom + current;
+    }
+    return prom/10
 }
 
 int main() {
@@ -79,15 +94,13 @@ int main() {
     while (true) {
         // Selecciono el canal de la tension y se lee y se convierte
         adc_select_input(ADC_CHANNEL_BATTERY);
-        for i in range(10){
-            float volt = BATTERY_ADC_RATIO * adc_read() * 3.3 / (1 << 12);
-            prom_volt += volt;
-            return prom_volt/10
-        }
+        battery_voltage = med_volt(x);
+        printf("voltaje = %d", battery_voltage);
         // Selecciono el canal de la corriente y se lee y se convierte
         adc_select_input(ADC_CURRENT_CHANNEL_BATTERY);
-        float battery_current = (adc_read() - 2.5) * (-10);
-
+        battery_current = med_current(x);
+        printf("corriente = %d", battery_current);
+'''
     ///////////////   MDOE VERIFICATION   ///////////////    
         if (charging_mode == BULK_MODE){
             if (battery_voltage > BULK_MAX_BATTERY_VOLTAGE) {
@@ -166,6 +179,7 @@ int main() {
     ///////////////  END FLOAT  ////////////////
     }
     return 0;
+    '''
 }
 
 
