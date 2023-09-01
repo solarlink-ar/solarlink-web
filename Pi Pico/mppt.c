@@ -17,18 +17,20 @@
 #define BATTERY_ADC_RATIO               5.5     // Habra un ratio de 5 a 1 en el voltaje leido por el ADC y la bat
 #define BATTERY_IN_RATIO                14.8    
 
-#define BULK_MAX_BATTERY_VOLTAGE        14.4
-#define BULK_MAX_CURRENT_VOLTAGE        2000
+#define BULK_MAX_BATTERY_VOLTAGE        13.3
+#define BULK_MAX_CURRENT_VOLTAGE        2
 
-#define ABSORTION_MAX_BATTERY_VOLTAGE   14.6   // Umbral de tension del modo ABSORTION
-#define ABSORTION_MAX_PANEL_CURRENT     2000
-#define ABSORTION_MIN_PANEL_CURRENT     100
+#define ABSORTION_MAX_BATTERY_VOLTAGE   13.5   // Umbral de tension del modo ABSORTION
+#define ABSORTION_MAX_PANEL_CURRENT     2
+#define ABSORTION_MIN_PANEL_CURRENT     0.3
 
-#define FLOAT_MAX_BATTERY_VOLTAGE       13.8
-#define FLOAT_MIN_BATTERY_VOLTAGE       13.5
-#define FLOAT_MAX_CURRENT_VOLTAGE       120
+#define FLOAT_MAX_BATTERY_VOLTAGE       12.8
+#define FLOAT_MIN_BATTERY_VOLTAGE       12
+#define FLOAT_MAX_CURRENT_VOLTAGE       0.6
  
-#define BATTERY_MIN_VOLTAGE     12.9       
+#define BATTERY_MIN_VOLTAGE             11     
+
+#define INTEGRAL_CONSTANT               3  
 
 // Modes for lcd_send_byte
 #define LCD_CHARACTER  1
@@ -176,7 +178,7 @@ float med_volt(float value){
 float med_current(float value){
     float prom = 0;
     for (int i = 0; i < 10; i++){
-        float current = ((adc_read() * 3.3 / (1 << 12)) - 2.521) * (-10);
+        float current = ((adc_read() * 3.3 / (1 << 12)) - 2.565) * (-10);
         prom = prom + current;
     }
     return prom/10;
@@ -212,7 +214,7 @@ int main() {
     /* Inicializa el standard input/output de la pico */
     stdio_init_all();
     
-    uint8_t pwm = 22;
+    uint8_t pwm = 15;
     uint8_t slice = pwm_gpio_to_slice_num(pwm);
     int16_t pwm_level = PWM_WRAP / 2;
 
@@ -234,28 +236,28 @@ int main() {
     pwm_set_gpio_level(pwm, pwm_level);
     // Habilitar PWM
     pwm_set_enabled(slice, true);
-    
+    // Boot inicial LCD
     lcd_clear();
-    lcd_string("MPPT V 1.0");
+    lcd_string("MPPT V 1.0   MODE:");
     lcd_set_cursor(1, 0);
     lcd_string("Vin: ");
     lcd_set_cursor(2, 0);
-    lcd_string("Voltage bat: ");
+    lcd_string("Vo: ");
     lcd_set_cursor(3, 0);
-    lcd_string("Current bat: ");
+    lcd_string("Io:       PWM:   %");
 
     while (true) {
         // Selecciono el canal de la tension y se lee y se convierte
         adc_select_input(ADC_CHANNEL_BATTERY);
         battery_voltage = med_volt(x);
         sprintf(str, "%.2f", battery_voltage);
-        lcd_set_cursor(2, 12);
+        lcd_set_cursor(2, 4);
         lcd_string(str);
         // Selecciono el canal de la corriente y se lee y se convierte
         adc_select_input(ADC_CURRENT_CHANNEL_BATTERY);
         battery_current = med_current(x);
         sprintf(str, "%.2f", battery_current);
-        lcd_set_cursor(3, 12);
+        lcd_set_cursor(3, 4);
         lcd_string(str);
         // Selecciono el canal de la entrada de tension, se lee y se convierte
         adc_select_input(ADC_CHANNEL_IN);
@@ -263,85 +265,103 @@ int main() {
         sprintf(str, "%.2f", battery_in);
         lcd_set_cursor(1, 4);
         lcd_string(str);
-    // ///////////////   MDOE VERIFICATION   ///////////////    
-    //     if (charging_mode == BULK_MODE){
-    //         if (battery_voltage > BULK_MAX_BATTERY_VOLTAGE) {
-    //                 // Cambio modo de carga en caso de que corriente baje del umbral
-    //                 charging_mode = ABSORTION_MODE;
-    //             }
-    //     }
-    //     if (charging_mode == ABSORTION_MODE){
-    //         if (battery_current < ABSORTION_MIN_PANEL_CURRENT) {
-    //                 // Cambio modo de carga en caso de que corriente baje del umbral
-    //                 charging_mode = FLOAT_MODE;
-    //             }
-    //     }
-    //     if (charging_mode == FLOAT_MODE){
-    //         if (battery_voltage < FLOAT_MIN_BATTERY_VOLTAGE) {
-    //                 charging_mode = BULK_MODE;
-    //             }  
-    //         if (battery_current > FLOAT_MAX_CURRENT_VOLTAGE) {
-    //                 // Cambio modo de carga en caso de que corriente exceda umbral
-    //                 charging_mode = BULK_MODE;
-    //             }
-    //     }
-    // ///////////////   END MDOE VERIFICATION   ///////////////   
-    
-    // ///////////////   BULK   ///////////////
-    
-    //     if (charging_mode == BULK_MODE) {
-    //         if (battery_current > BULK_MAX_CURRENT_VOLTAGE) {
-    //             pwm_level--;
-    //         }
-    //         else {
-    //             pwm_level++;
-    //         }
-    //         // Verifico que no exceda los limites
-    //         pwm_level = saturador(PWM_WRAP, pwm_level);
-    //         // Ajusto PWM
-    //         pwm_set_gpio_level(slice, pwm_level);
+    ///////////////   MDOE VERIFICATION   ///////////////    
+        if (charging_mode == BULK_MODE){
+            if (battery_voltage > BULK_MAX_BATTERY_VOLTAGE) {
+                    // Cambio modo de carga en caso de que corriente baje del umbral
+                    charging_mode = ABSORTION_MODE;
+                }
+            else {
+                lcd_set_cursor(1, 11);
+                lcd_string("  BULK   ");
+            }
+        }
+        if (charging_mode == ABSORTION_MODE){
+            if (battery_current < ABSORTION_MIN_PANEL_CURRENT) {
+                    // Cambio modo de carga en caso de que corriente baje del umbral
+                    charging_mode = FLOAT_MODE;
+                }
+            else{
+                lcd_set_cursor(1, 11);
+                lcd_string("ABSORTION");
+            }
+        }
+        if (charging_mode == FLOAT_MODE){
+            if (battery_voltage < FLOAT_MIN_BATTERY_VOLTAGE) {
+                    charging_mode = BULK_MODE;
+                }  
+            if (battery_current > FLOAT_MAX_CURRENT_VOLTAGE) {
+                    // Cambio modo de carga en caso de que corriente exceda umbral
+                    charging_mode = BULK_MODE;
+                }
+            else{
+                lcd_set_cursor(1, 11);
+                lcd_string("  FLOAT  ");
+            }
+        }
 
-    //     }
-
-    // ///////////////   END BULK   ///////////////
+    ///////////////   END MDOE VERIFICATION   ///////////////   
     
-    // ///////////////   ABSORTION   ///////////////
-    //     if (charging_mode == ABSORTION_MODE)  {
-    //         if(battery_current > ABSORTION_MAX_PANEL_CURRENT) {
-    //             pwm_level--;
-    //         }  
-    //         else if(battery_voltage > ABSORTION_MAX_BATTERY_VOLTAGE) {
-    //             // Incremento el duty en una unidad
-    //             pwm_level++;
-    //         }
-    //         else {
-    //             pwm_level--;
-    //         }
-    //         // Verifico que no exceda los limites
-    //         pwm_level = saturador(PWM_WRAP, pwm_level);
-    //         // Ajusto PWM
-    //         pwm_set_gpio_level(slice, pwm_level);
-    //     }
-    // ///////////////  END ABSORTION  ////////////////
+    ///////////////   BULK   ///////////////
+    
+        if (charging_mode == BULK_MODE) {
+            float error = (BULK_MAX_CURRENT_VOLTAGE - battery_current) * 50;
+            if (battery_current > BULK_MAX_CURRENT_VOLTAGE) {
+                pwm_level = pwm_level - (-1 * error * INTEGRAL_CONSTANT);
+            }
+            else {
+                pwm_level += 1 * error * INTEGRAL_CONSTANT;
+            }
+            // Verifico que no exceda los limites
+            pwm_level = saturador(PWM_WRAP, pwm_level);
+            // Ajusto PWM
+            pwm_set_gpio_level(pwm, pwm_level);
 
-    // ///////////////  FLOAT  ////////////////
-    //     if(charging_mode == FLOAT_MODE) {
-    //         if (battery_voltage > FLOAT_MAX_BATTERY_VOLTAGE){
-    //             pwm_level--;
-    //         }
-    //         else {
-    //             pwm_level++;
-    //         }
-    //         // Verifico que no exceda los limites
-    //         pwm_level = saturador(PWM_WRAP, pwm_level);
-    //         // Ajusto PWM
-    //         pwm_set_gpio_level(slice, pwm_level);
+        }
+
+    ///////////////   END BULK   ///////////////
+    
+    ///////////////   ABSORTION   ///////////////
+        if (charging_mode == ABSORTION_MODE)  {
+            float errorv = (ABSORTION_MAX_BATTERY_VOLTAGE - battery_voltage) * 6.849315;
+            float errorc = (ABSORTION_MAX_PANEL_CURRENT - battery_current) * 50;
+            if(battery_current > ABSORTION_MAX_PANEL_CURRENT) {
+                pwm_level = pwm_level - (-1 * errorc * INTEGRAL_CONSTANT);
+            }  
+            else if(battery_voltage > ABSORTION_MAX_BATTERY_VOLTAGE) {
+                // Incremento el duty en una unidad
+                pwm_level += 1 * errorv * INTEGRAL_CONSTANT;
+            }
+            else {
+                pwm_level = pwm_level - (-1 * errorv * INTEGRAL_CONSTANT);
+            }
+            // Verifico que no exceda los limites
+            pwm_level = saturador(PWM_WRAP, pwm_level);
+            // Ajusto PWM
+            pwm_set_gpio_level(pwm, pwm_level);
+        }
+    ///////////////  END ABSORTION  ////////////////
+
+    ///////////////  FLOAT  ////////////////
+        if(charging_mode == FLOAT_MODE) {
+            float error = (FLOAT_MAX_BATTERY_VOLTAGE - battery_voltage) * 7.24638;
+            if (battery_voltage > FLOAT_MAX_BATTERY_VOLTAGE){
+                pwm_level = pwm_level - (-1 * error * INTEGRAL_CONSTANT);
+            }
+            else {
+                pwm_level += 1 * error * INTEGRAL_CONSTANT;
+            }
+            // Verifico que no exceda los limites
+            pwm_level = saturador(PWM_WRAP, pwm_level);
+            // Ajusto PWM
+            pwm_set_gpio_level(pwm, pwm_level);
             
-    //     }
-    // ///////////////  END FLOAT  ////////////////
+        }
+    ///////////////  END FLOAT  ////////////////
+        lcd_set_cursor(3, 14);
+        sprintf(str, "%d", (int) (pwm_level * 0.0264061262));
+        lcd_string(str);
     }
     return 0;
     
 }
-
-//fijarse voltaje ref de adc
