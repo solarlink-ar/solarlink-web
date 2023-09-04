@@ -8,6 +8,10 @@ from . import models
 from .forms import RegisterForm
 import datetime
 
+def index(request):
+    return render(request, "user_mngmnt/index.html")
+
+
 def unlogued_required(redirect_link):
     def decorator(func):
         def check(request):
@@ -126,6 +130,93 @@ def data(request):
 
     # para cada usuario
     for user in users:
+        voltaje_horas_red = []
+        consumo_horas_red = 0
+        consumo_horas_solar = 0
+        horas = []
+        dias = []
+        meses = []
+        años = []
+        solar_por_hora = []
+        panel_potencias = []
+        tiempos_carga = []
+        voltajes_bateria = []
+        errores = []
+        
+        # todos los datos de cierto usuario
+        user_data = models.Datos_hora.objects.filter(user=user)
+
+
+        # entre los datos del usuario
+        for data in user_data:
+            # hago una lista con todos los años que tenga datos
+            if not data.año in años:
+                años.append(data.año)
+            
+        # para cada año
+        for año in años:
+            # filtro los datos de todo ese año
+            año_data = user_data.filter(año = año)
+
+            # entre todos los datos del año
+            for data in año_data:
+                # hago una lista con todos los meses que tengan datos
+                if not data.mes in meses:
+                    meses.append(data.mes)
+            
+            
+            # para cada mes
+            for mes in meses:
+                # filtro los datos del mes
+                mes_data = año_data.filter(mes=mes)
+
+                # entre todos los datos del mes
+                for data in mes_data:
+                    # hago una lista con todos los dias que tengan datos
+                    if not data.dia in dias:
+                        dias.append(data.dia)
+                    
+                    #print(dias)
+                    # para cada dia
+                for dia in dias:
+                    # filtro los datos del dia
+                    dia_data = mes_data.filter(dia = dia)
+                    
+                    # entre todos los datos del dia
+                    for data in dia_data:
+                        # hago una lista con todas las horas que tengan datos
+                        if not data.hora in dia_data:
+                            horas.append(data.hora)
+                    
+                    # para cada hora
+                    for hora in horas:
+                        hora_data = dia_data.filter(hora=hora)
+                        print(hora_data)
+
+                        for data in hora_data:
+                            # guardado de datos
+                            try:
+                                consumo_horas_red += data.consumo_hora_red
+                                #print(consumo_horas_red)
+                            except:
+                                pass
+                            #consumo_horas_solar += hora_data.consumo_hora_solar
+
+        print(consumo_horas_red)
+                            
+                            
+
+        
+                
+
+            
+        
+
+
+
+
+
+"""
         # se sube un dato por hora
         for i in range(0, 24):
             models.Datos_hora(user = user,
@@ -142,58 +233,4 @@ def data(request):
                               voltaje_bateria = 12.5,
                               errores = False,
                               product_id = 'nashe23').save()
-        
-        # todos los datos de cierto usuario
-        data = models.Datos_hora.objects.filter(user = users[0])
-        # dentro del primer dato, su hora
-        print(data[0].hora)
-    return HttpResponse("nashe")
-
-'''
-def answer(request):
-    print(request.GET.dict())
-    return JsonResponse({"god": "god"})
-'''
-'''
-# Registro de product_id
-@login_required
-def product(request):
-
-    # si relleno el formulario
-    if request.method == "POST":
-
-        # obtengo product_id del form        
-        product_id = request.POST['product_id']
-        
-        # lo guardo en la db
-        models.User_link(user = request.user, product_id = product_id).save()
-
-    #si hago un GET
-    else:
-        return render(request, 'product.html')
-
-def data(request):
-    if request.method == "POST":
-        product_id = request.POST['product_id']
-        consumo = request.POST['consumo']
-        voltaje = request.POST['voltaje']
-        tiempo = datetime.datetime.now()
-
-        models.Datos.objects.create(product_id = product_id, consumo_mins=consumo, voltaje_mins=voltaje, tiempo = tiempo)
-        return HttpResponse("Hecho!")
-    else:
-        return render(request, "data.html")
-
-
-
-
-
-email = user.email
-product_id = user.user_link.product_id
-
-data = models.Datos.objects.filter(product_id = product_id)
-print(data)
-
-for i in data:
-    print(i.consumo_mins, i.voltaje_mins)
-'''
+"""

@@ -8,15 +8,15 @@ import json
 
 
 def index(request):
-    return render(request, "index.html")
+    return render(request, "home/index.html")
 
 def que_somos(request):
-    return render(request, "que_somos.html")
+    return render(request, "home/que_somos.html")
 
 def contacto(request):
-    return render(request, "contacto.html")
+    return render(request, "home/contacto.html")
 
 def galeria(request):
-    return render(request, "galeria.html")
+    return render(request, "home/galeria.html")
     
 
