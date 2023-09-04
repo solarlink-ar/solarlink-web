@@ -1,0 +1,36 @@
+{% extends 'empty.html' %}
+
+{% block main %}
+
+    <h1> Registro </h1>
+    <form method = "POST" action="{% url 'register' %}">
+        {% csrf_token %}
+        <br/>
+        Nombre:
+        <br/>
+        {{ form.first_name }}
+        <br/>
+        Apellido:
+        <br/>
+        {{ form.last_name }}
+        <br/>
+        Email:
+        <br/>
+        {{ form.email }}
+        <br/>
+        Nombre de usuario:
+        <br/>
+        {{ form.username }}
+        <br/>
+        Contraseña:
+        <br/>
+        {{ form.password }}
+        <br/>
+        Confirmar contraseña:
+        <br/>
+        {{ form.password_confirmation }}
+        <br/>
+        <input class ="btn btn-primary" type="submit" value= "Registrarse" />
+        <br/>
+        {{error}}
+{% endblock %}

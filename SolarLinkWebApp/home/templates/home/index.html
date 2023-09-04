@@ -1,0 +1,149 @@
+{% extends "home.html" %}
+
+{% load static %}
+
+{% block main %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Link</title>
+    <link rel="shortcut icon" href="{% static 'home/img/favicon-32x32.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'home/normalice.css' %}">
+    <link rel="stylesheet" href="{% static 'home/master.css' %}">
+</head>
+
+<body>
+
+    <header class="hero">
+        <nav class="nav container">
+            <div class="nav__logo">
+                <h2 class="nav__title">Solar Link</h2>
+            </div>
+
+            <ul class="nav__link nav__link--menu">
+                <li class="nav__items">
+                    <a href="#" class="nav__links">Inicio</a>
+                </li>
+                <li class="nav__items">
+                    <a href="galeria" class="nav__links">Galeria</a>
+                </li>
+                <li class="nav__items">
+                    <a href="#" class="nav__links">Contacto</a>
+                </li>
+        </nav>
+        <section class="hero__container container">
+            <h1 class="hero__title">¿Que es Solar Link?</h1>
+            <p class="hero__paragraph">Solar Link es un administrados de energia inteligente que, usando un sistema de switcheo y un smart grid logra, de manera rapida y eficiente, ahorrar energia y disminuir el consumo del hogar.</p>
+            <a href="#" class="cta">Conoce mas</a>
+        </section>
+    </header>
+
+    <main>
+        <section class="container about">
+            <h2 class="subtitle">Preguntas frecuentes</h2>
+            <p class="about__paragraph">A continuacion ampliaremos mas sobre el proyecto, explicando algunas dudas frecuentes </p>
+
+            <div class="about__main">
+                <article class="about__icons">
+                    <img src="{% static 'home/img/casita.png' %}" class="about__icon">
+                    <h3 class="about__title">¿Cual es su funcion?</h3>
+                    <p class="about__paragrah">El dispositivo mide el consumo hogareño y alimenta partes de la casa con energía solar, evitando el uso de electricidad proveniente de la red eléctrica.</p>
+                </article>
+
+                <article class="about__icons">
+                    <img src="{% static 'home/img/celu.png' %}" class="about__icon">
+                    <h3 class="about__title">¿Como se compone?</h3>
+                    <p class="about__paragrah">Es un tablero que se conecta térmica de la casa, además de paneles solares, baterías y una app para saber tu consumo y configurarlo!</p>
+                </article>
+
+                <article class="about__icons">
+                    <img src="{% static 'home/img/factura.png' %}" class="about__icon">
+                    <h3 class="about__title">¿Por que?</h3>
+                    <p class="about__paragrah">Aparte de ser muy bueno para el medio ambiente, SolarLink te permite controlar y ser dueño de tu consumo, a la vez que ahorrás en la factura de la luz! </p>
+                </article>
+            </div>
+        </section>
+        <section class="container about">
+            <h2 class="subtitle">¿Quienes somos?</h2>
+
+            <div class="about__main">
+                <article>
+                    <img src="{% static 'home/img/ceniko.png' %}" class="about__icon">
+                    <h3 class="about__title">CENYKO, Ivan</h3>
+                </article>
+
+                <article class="about__icons">
+                    <img src="{% static 'home/img/inza.png' %}" class="about__icon">
+                    <h3 class="about__title">INZA FIOR, Mateo</h3>
+                </article>
+
+                <article class="about__icons">
+                    <img src="{% static 'home/img/palmieri.png' %}" class="about__icon">
+                    <h3 class="about__title">PALMIERI HISE, Agustin</h3>
+                </article>
+
+                <article class="about__icons">
+                    <img src="{% static 'home/img/testa.png' %}" class="about__icon">
+                    <h3 class="about__title">TESTA, Maximiliano</h3>
+                </article>
+
+                <article class="about__icons">
+                    <img src="{% static 'home/img/adell.png' %}" class="about__icon">
+                    <h3 class="about__title">ADELL, Nicolas</h3>
+                </article>
+                <article class="about__icons">
+                    <img src="{% static 'home/img/gil_soria.png' %}" class="about__icon">
+                    <h3 class="about__title">GIL SORIA, Ian</h3>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <section class="footer__container container">
+            <nav class="nav nav--footer">
+                <h2 class="footer__title">Solar Link</h2>
+
+                <ul class="nav__link nav__link--footer">
+                    <li class="nav__items">
+                        <a href="#" class="nav__links">Inicio</a>
+                    </li>
+                    <li class="nav__items">
+                        <a href="#" class="nav__links">Galeria</a>
+                    </li>
+                    <li class="nav__items">
+                        <a href="#" class="nav__links">Contacto</a>
+                    </li>
+                    <li class="nav__items">
+                        <a href="https://www.linkedin.com/company/solarlink-ar/" class="nav__links">Linked in</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <form class="footer__form" action="https://formspree.io/f/mknkkrkj" method="POST">
+                <h2 class="footer__newsletter">Suscribete</h2>
+                <div class="footer__inputs">
+                    <input type="email" placeholder="Email:" class="footer__input" name="_replyto">
+                    <input type="submit" value="Registrate" class="footer__submit">
+                </div>
+            </form>
+        </section>
+
+        <section class="footer__copy container">
+            <div class="footer__social">
+                <a href="https://www.instagram.com/solarlink.ar/" target="_blank" class="footer__icons"><img src="{% static 'home/img/instagram.svg' %}" class="footer__img"></a>
+                <a href="mailto:info@solarlink.ar" class="footer__icons"><img src="{% static 'home/img/mail.svg' %}" class="footer__img"></a>
+            </div>
+
+            <h3 class="footer__copyright">Derechos reservados &copy; Solar Link</h3>
+        </section>
+    </footer>
+</body>
+
+</html>
+{% endblock %}
