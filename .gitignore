@@ -3,3 +3,5 @@
 *.env
 virtual_enviroment/
 
+
+SolarLinkWebApp/db.sqlite3
