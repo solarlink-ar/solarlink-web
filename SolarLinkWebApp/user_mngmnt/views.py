@@ -7,11 +7,18 @@ from django.contrib import auth
 from . import models
 from .forms import RegisterForm
 import datetime
+import json
+import random
 
 def index(request):
     return render(request, "user_mngmnt/index.html")
 
-
+def calculador_cantidad_true(lista:list):
+    index = 0
+    for i in lista:
+        if i:
+            index += 1
+    return index
 def unlogued_required(redirect_link):
     def decorator(func):
         def check(request):
@@ -52,7 +59,7 @@ def register(request):
                 # si existe
                 if user:
                     error = "El usuario ya está registrado"
-                    return render(request, 'register.html', {'form': form,'error': error})
+                    return render(request, 'user_mngmnt/register.html', {'form': form,'error': error})
                 
                 # si no existe, lo registro, lo logueo y voy a product
                 else:
@@ -66,13 +73,13 @@ def register(request):
             # si las contraseñas no coinciden
             else:
                 error = 'Las contraseñas no concuerdan!'
-                return render(request, 'register.html', {'form': form, 'error': error})
+                return render(request, 'user_mngmnt/register.html', {'form': form, 'error': error})
         
     # si entro a la web con un GET
     else:
         # armo template
         form = RegisterForm()
-        return render(request, 'register.html', {'form': form})
+        return render(request, 'user_mngmnt/register.html', {'form': form})
    
 
 # login
@@ -95,9 +102,9 @@ def login(request):
         # si no existe, doy error
         else:
             error = 'El usuario es incorrecto'
-            return render(request, 'login.html', {'error': error})
+            return render(request, 'user_mngmnt/login.html', {'error': error})
     else:
-        return render(request, "login.html")
+        return render(request, "user_mngmnt/login.html")
     
 
 # logout
@@ -122,7 +129,7 @@ def load_data(request):
 @login_required
 def userpage(request):
     username = request.user.username
-    return render(request, "userpage.html", {"username": username})
+    return render(request, "user_mngmnt/userpage.html", {"username": username})
 
 def data(request):
     # lista de objetos de usuario
@@ -130,16 +137,16 @@ def data(request):
 
     # para cada usuario
     for user in users:
-        voltaje_horas_red = []
-        consumo_horas_red = 0
-        consumo_horas_solar = 0
+        voltaje_dia_red = []
+        consumo_dia_red = 0
+        consumo_dia_solar = 0
         horas = []
         dias = []
         meses = []
         años = []
         solar_por_hora = []
-        panel_potencias = []
-        tiempos_carga = []
+        potencia_dia_panel = 0
+        horas_de_carga = []
         voltajes_bateria = []
         errores = []
         
@@ -195,14 +202,36 @@ def data(request):
 
                         for data in hora_data:
                             # guardado de datos
-                            try:
-                                consumo_horas_red += data.consumo_hora_red
-                                #print(consumo_horas_red)
-                            except:
-                                pass
-                            #consumo_horas_solar += hora_data.consumo_hora_solar
+                            voltaje_dia_red.append(data.voltaje_hora_red)
+                            consumo_dia_solar += data.consumo_hora_solar
+                            consumo_dia_red += data.consumo_hora_red
 
-        print(consumo_horas_red)
+                            solar_por_hora.append(data.solar_ahora)
+                            potencia_dia_panel += data.panel_potencia
+                            horas_de_carga.append(data.cargando)
+                            voltajes_bateria.append(data.voltaje_bateria)
+
+                            errores.append(data.errores)
+                            product_id = data.product_id
+                    
+                            
+                    
+                    models.Datos_dias(user = user,
+                                    voltaje_maximo_dia_red = max(voltaje_dia_red),
+                                    voltaje_minimo_dia_red = min(voltaje_dia_red),
+                                    consumo_dia_solar = consumo_dia_solar,
+                                    consumo_dia_red = consumo_dia_red,
+
+                                    dia = dia,
+                                    mes = mes,
+                                    año = año,
+
+                                    horas_potencia_panel = calculador_cantidad_true(solar_por_hora),
+                                    potencia_dia_panel = potencia_dia_panel,
+                                    horas_de_carga = calculador_cantidad_true(horas_de_carga),
+                                    voltajes_bateria = json.dumps(voltajes_bateria),
+                                    errores = calculador_cantidad_true(errores),
+                                    product_id = product_id).save()
                             
                             
 
@@ -216,21 +245,25 @@ def data(request):
 
 
 
-"""
-        # se sube un dato por hora
-        for i in range(0, 24):
-            models.Datos_hora(user = user,
-                              voltaje_hora_red = 220,
-                              consumo_hora_red = 500,
-                              consumo_hora_solar = 300,
-                              hora = i,
-                              dia = 22,
-                              mes = 8,
-                              año = 2023,
-                              solar_ahora = True,
-                              panel_potencia = 340,
-                              cargando = True,
-                              voltaje_bateria = 12.5,
-                              errores = False,
-                              product_id = 'nashe23').save()
-"""
+def creador_datos(request):
+        users = models.User.objects.all()
+        lista = [True,False]
+        for user in users:
+            # se sube un dato por hora
+            for d in range(1, 30):
+                for h in range(0, 24):
+                    models.Datos_hora(user = user,
+                                    voltaje_hora_red = random.randint(170, 240),
+                                    consumo_hora_red = random.randint(0, 4000),
+                                    consumo_hora_solar = random.randint(0, 340),
+                                    hora = h,
+                                    dia = d,
+                                    mes = 8,
+                                    año = 2023,
+                                    solar_ahora = random.choice(lista),
+                                    panel_potencia = random.randint(0, 340),
+                                    cargando = random.choice(lista),
+                                    voltaje_bateria = random.randint(10, 15),
+                                    errores = random.choice(lista),
+                                    product_id = 'nashe23').save()
+

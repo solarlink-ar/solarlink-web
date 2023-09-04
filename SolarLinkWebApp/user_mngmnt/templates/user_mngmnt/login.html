@@ -1,21 +1,22 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
     <title>Solar Link | Login </title>
     <base href="/">
-    <link rel="shortcut icon" href="../static/favicon-32x32.png" type="image/x-icon">
-    <link rel="stylesheet" href="./static/css/master-login.css">
+    <link rel="shortcut icon" href="{% static 'user_mngmnt/favicon-32x32.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'user_mngmnt/css/master-login.css' %}">
   </head>
   <body>
 
     <div class="login-box">
         
-      <img src="../static/img/logo-chico.png" class="avatar" alt="Imagen logo">
+      <img src="{% static 'user_mngmnt/img/logo-chico.png' %}" class="avatar" alt="Imagen logo">
       <h1>Log in </h1>
       <form>
         <!--USUARIO-->
-        <label for="username">Mail:</label>
+        <label for="username">Usuario:</label>
         <input type="text" placeholder="">
         
         <!-- CONTRASEÑA -->
