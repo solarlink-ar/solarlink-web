@@ -8,5 +8,6 @@ urlpatterns = [
     path("load-data/", views.load_data, name="load_data"),
     path("userpage/", views.userpage, name="userpage"),
     path("data", views.data, name="data"),
-    path("index", views.index, name="index")
+    path("index", views.index, name="index"),
+    path("creador", views.creador_datos, name="creador")
 ]
