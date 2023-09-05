@@ -39,24 +39,36 @@ class Solarlink(object):
 solarlink = Solarlink()
 solarlink.init()
 
+print(solarlink.corriente_dif_read(0, 1))
+time.sleep(1)
+
+#############
+#### WIP ####
+#############
+
 medicion = _thread.allocate_lock() 
 ##Permite bloquear la ejecución de otras partes del código mientras se está ejecutando el thread seleccionado.
 ##Funciona como un semáforo binario.
 
 def medicion_thread():
-    while 1:
+    while True:
         medicion.acquire() ##Bloquea el resto del código
 
         medicion.release() ##Desbloquea el resto del código
 
 
-
 _thread.start_new_thread(medicion_thread, ())
 
-print(solarlink.corriente_dif_read(0, 1))
-time.sleep(1)
+
 
 while True:
+    medicion.acquire() ##Bloquea el resto del código
+    ##Inserte código principal acá.
+    medicion.release() ##Desbloquea el resto del código
+
+#############
+#### WIP ####
+#############
 
     
     
