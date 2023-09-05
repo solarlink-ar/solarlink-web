@@ -67,7 +67,7 @@ class Datos_dias(models.Model):
     voltajes_bateria = models.CharField(max_length=400, default=None)    
 
     # si hubo errores en el dia
-    errores = models.BooleanField(default=None)
+    errores = models.IntegerField(default=None)
     # product id
     product_id = models.CharField(max_length=50, default=None)
 
