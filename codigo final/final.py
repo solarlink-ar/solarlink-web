@@ -3,6 +3,7 @@ from machine import Pin, ADC, I2C, Timer
 from lcd_api import LcdApi
 from i2c_lcd import I2cLcd
 import urequests as requests
+import _thread
 
 
 class Solarlink(object):
@@ -38,7 +39,24 @@ class Solarlink(object):
 solarlink = Solarlink()
 solarlink.init()
 
+medicion = _thread.allocate_lock() 
+##Permite bloquear la ejecución de otras partes del código mientras se está ejecutando el thread seleccionado.
+##Funciona como un semáforo binario.
+
+def medicion_thread():
+    while 1:
+        medicion.acquire() ##Bloquea el resto del código
+
+        medicion.release() ##Desbloquea el resto del código
+
+
+
+_thread.start_new_thread(medicion_thread, ())
+
 print(solarlink.corriente_dif_read(0, 1))
 time.sleep(1)
+
+while True:
+
     
     
