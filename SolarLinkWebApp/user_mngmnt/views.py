@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.template import loader
 from django.contrib import auth
 from . import models
-from .forms import RegisterForm
+from .forms import SignupForm
 import datetime
 import json
 import random
@@ -37,7 +37,7 @@ def register(request):
     if request.method == "POST":
         
         # armo form
-        form = RegisterForm(request.POST)
+        form = SignupForm(request.POST)
 
         if form.is_valid():
             # tomo los datos
@@ -45,43 +45,55 @@ def register(request):
             last_name = form.cleaned_data['last_name']
             email = form.cleaned_data['email']
             username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            password_confirmation = form.cleaned_data['password_confirmation']
+            password1 = form.cleaned_data['password1']
+            password2 = form.cleaned_data['password2']
 
             # armo template
-            form = RegisterForm()
+            form = SignupForm()
 
             # reviso si las contraseñas coinciden
-            if password_confirmation == password:
-
+            if password1 == password2:
 
                 # intento buscar el usuario
-                user = auth.authenticate(username=username, password = password)
-                # si existe
-                if user:
+                username_confirmation = User.objects.filter(username = username) 
+                # si existe un usuario con ese username
+                if username_confirmation:
+                    # codigo de error
                     error = "El usuario ya está registrado"
+                    # retorno con codigo de error
                     return render(request, 'user_mngmnt/register.html', {'form': form,'error': error})
                 
-                # si no existe, lo registro, lo logueo y voy a product
+                # si no existe un usuario con ese username
                 else:
-
-                    User.objects.create_user(email=email, username=username, password=password, first_name= first_name, last_name = last_name)
-                    user = auth.authenticate(username=username, password = password)
+                    # creo el usuario
+                    User.objects.create_user(email=email, username=username, password=password1, first_name= first_name, last_name = last_name)
+                    # lo autentico y logueo
+                    user = auth.authenticate(username=username, password = password1)
                     auth.login(request, user)
 
-                return redirect('index')
+                    # redirijo a pestaña a continuación
+                    return redirect('index')
     
             # si las contraseñas no coinciden
             else:
+                # codigo de error
                 error = 'Las contraseñas no concuerdan!'
+                # retorno con codigo de error
                 return render(request, 'user_mngmnt/register.html', {'form': form, 'error': error})
+        else:
+            # armo el template
+            form = SignupForm()
+            # codigo de error
+            error = 'Datos mal ingresados'
+            # retorno con codigo de error
+            return render(request, 'user_mngmnt/register.html', {'form': form, 'error': error})
+            
         
     # si entro a la web con un GET
     else:
         # armo template
-        form = RegisterForm()
+        form = SignupForm()
         return render(request, 'user_mngmnt/register.html', {'form': form})
-   
 
 # login
 @unlogued_required(redirect_link="index")
@@ -92,18 +104,27 @@ def login(request):
         username = request.POST['username']
         password = request.POST['password']
 
-        #autentico
+        # me fijo si existe un usuario con ese username
+        username_confirmation = User.objects.filter(username = username)
+        # autentico si existe un usuario con ese username y contraseña
         user = auth.authenticate(username=username, password = password)
-        
-        # si existe, logueo
-        if user:
-            auth.login(request, user)
-            return redirect('index')
 
-        # si no existe, doy error
-        else:
-            error = 'El usuario es incorrecto'
+        # si existe el usuario pero no con esa contraseña
+        if username_confirmation and not user:
+            error = 'La contraseña es incorrecta'
             return render(request, 'user_mngmnt/login.html', {'error': error})
+
+        # en el resto de casos
+        else:
+            # si existe, logueo
+            if user:
+                auth.login(request, user)
+                return redirect('index')
+
+            # si no existe, doy error
+            else:
+                error = 'El usuario no existe'
+                return render(request, 'user_mngmnt/login.html', {'error': error})
     else:
         return render(request, "user_mngmnt/login.html")
     
