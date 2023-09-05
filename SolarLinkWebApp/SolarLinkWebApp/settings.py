@@ -23,12 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-wo3v35!vw762hi-$z!-stv^tmf5uy)#()l2tcl@)5v@y!%w=!5'
+SECRET_KEY = 'lku#p+_&8ucbkd(jlc-48mx@pgf2r42g8eqlvm0148)(5xlovr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['.vercel.app']
+ALLOWED_HOSTS = ['.vercel.app', 'solarlink.ar']
 
 # Application definition
 
