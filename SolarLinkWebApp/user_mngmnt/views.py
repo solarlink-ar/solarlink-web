@@ -19,6 +19,7 @@ def calculador_cantidad_true(lista:list):
         if i:
             index += 1
     return index
+
 def unlogued_required(redirect_link):
     def decorator(func):
         def check(request):
@@ -183,7 +184,6 @@ def data(request):
                     if not data.dia in dias:
                         dias.append(data.dia)
                     
-                    #print(dias)
                     # para cada dia
                 for dia in dias:
                     # filtro los datos del dia
@@ -198,7 +198,6 @@ def data(request):
                     # para cada hora
                     for hora in horas:
                         hora_data = dia_data.filter(hora=hora)
-                        print(hora_data)
 
                         for data in hora_data:
                             # guardado de datos
@@ -213,6 +212,8 @@ def data(request):
 
                             errores.append(data.errores)
                             product_id = data.product_id
+
+
                     
                             
                     
@@ -232,6 +233,21 @@ def data(request):
                                     voltajes_bateria = json.dumps(voltajes_bateria),
                                     errores = calculador_cantidad_true(errores),
                                     product_id = product_id).save()
+                    
+                    voltaje_dia_red = []
+                    consumo_dia_red = 0
+                    consumo_dia_solar = 0
+                    solar_por_hora = []
+                    potencia_dia_panel = 0
+                    horas_de_carga = []
+                    voltajes_bateria = []
+                    errores = []
+                    horas = []
+                
+                dias = []
+            meses = []
+        años = []
+
                             
                             
 
@@ -250,7 +266,7 @@ def creador_datos(request):
         lista = [True,False]
         for user in users:
             # se sube un dato por hora
-            for d in range(1, 30):
+            for d in range(1, 31):
                 for h in range(0, 24):
                     models.Datos_hora(user = user,
                                     voltaje_hora_red = random.randint(170, 240),
