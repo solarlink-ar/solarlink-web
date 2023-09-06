@@ -32,7 +32,7 @@ def unlogued_required(redirect_link):
 
 # registro
 @unlogued_required(redirect_link="index")
-def register(request):
+def signup(request):
     # si se rellena un login
     if request.method == "POST":
         
@@ -61,7 +61,7 @@ def register(request):
                     # codigo de error
                     error = "El usuario ya está registrado"
                     # retorno con codigo de error
-                    return render(request, 'user_mngmnt/register.html', {'form': form,'error': error})
+                    return render(request, 'user_mngmnt/signup.html', {'form': form,'error': error})
                 
                 # si no existe un usuario con ese username
                 else:
@@ -79,21 +79,21 @@ def register(request):
                 # codigo de error
                 error = 'Las contraseñas no concuerdan!'
                 # retorno con codigo de error
-                return render(request, 'user_mngmnt/register.html', {'form': form, 'error': error})
+                return render(request, 'user_mngmnt/signup.html', {'form': form, 'error': error})
         else:
             # armo el template
             form = SignupForm()
             # codigo de error
             error = 'Datos mal ingresados'
             # retorno con codigo de error
-            return render(request, 'user_mngmnt/register.html', {'form': form, 'error': error})
+            return render(request, 'user_mngmnt/signup.html', {'form': form, 'error': error})
             
         
     # si entro a la web con un GET
     else:
         # armo template
         form = SignupForm()
-        return render(request, 'user_mngmnt/register.html', {'form': form})
+        return render(request, 'user_mngmnt/signup.html', {'form': form})
 
 # login
 @unlogued_required(redirect_link="index")

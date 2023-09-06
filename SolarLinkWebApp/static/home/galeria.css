@@ -1,0 +1,39 @@
+
+body{
+    font-family: 'Inter', sans-serif;
+    background-color: #615e5e;    
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+h2{
+    font-weight: 600;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 40px;
+    color: aliceblue;
+}
+
+.linea {
+    background-color: #fce93c;
+    height: 10px;
+    width: 100%;
+    display: block
+}
+.galeria{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    width: 95%;
+    margin: auto;
+    grid-gap: 1cm;
+    padding:20px 0;
+    overflow: hidden;
+}
+.galeria img{
+    width: 100%;
+    vertical-align: top;
+    height: 300px;
+    object-fit: cover;
+    
+}
