@@ -35,8 +35,24 @@ class Solarlink(object):
         voltaje = self.adc.read_uv() / 1000000 * self.ref # mido V del sens. tension de linea rms
         return voltaje
 
-class weblink():
-    
+## class weblink():
+##     def __init__(self):
+##         self.link = ...
+##     def calculos(voltaje):
+## 
+##     def post(self, dict):
+##         
+##         requests.post("", dict)
+
+class solarlinktestbench():
+
+    def tb_start():
+        ## función para probar pelotudeces
+        print("Hola")
+
+## tb = solarlinktestbench()
+## tb.tb_start()
+
 
 ## solarlink = Solarlink()
 ## solarlink.init()
@@ -44,5 +60,4 @@ class weblink():
 ## time.sleep(1)
 
 
-    
     
