@@ -4,6 +4,7 @@ from machine import Pin, ADC, I2C, Timer
 from lcd_api import LcdApi
 from i2c_lcd import I2cLcd
 import urequests as requests
+import _thread
 
 #
 #
@@ -110,3 +111,25 @@ while 1:
         timercount = False
         values_restart()
     
+
+
+#############
+#### WIP ####
+#############
+
+
+##Permite bloquear la ejecución de otras partes del código mientras se está ejecutando el thread seleccionado.
+##Funciona como un semáforo binario.
+
+def medicion_thread():
+    while True:
+        
+
+        
+_thread.start_new_thread(medicion_thread, ())
+
+
+
+#############
+#### WIP ####
+#############
