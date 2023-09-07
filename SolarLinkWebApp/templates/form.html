@@ -1,0 +1,23 @@
+{% load static %}
+{% load compress static %}
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Solar Link | Login </title>
+    <base href="/">
+    <link rel="shortcut icon" href="{% static 'general/favicon-32x32.png' %}" type="image/x-icon">
+
+    {% comment %}
+        Compresor para poder usar static directions en el master.scss
+    {% endcomment %}
+    {% compress css %}
+    <link rel="stylesheet" type="text/x-scss" href="{% static "user_mngmnt/master-login.scss" %}" />
+    {% endcompress %}
+  </head>
+
+  {% block body %}
+  {% endblock %}
+</html>

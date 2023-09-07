@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home',
     'user_mngmnt',
-    "django_crontab"
+    "django_crontab",
+    "compressor"
 ]
 
 MIDDLEWARE = [
@@ -125,6 +126,16 @@ USE_TZ = True
 STATIC_ROOT = "static/"
 STATIC_URL = "static/"
 
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # other finders..
+    'compressor.finders.CompressorFinder',
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
