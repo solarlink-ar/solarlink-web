@@ -1,0 +1,20 @@
+{% csrf_token %}
+{% if user.is_active == False %}
+<div id="message">
+    Gracias por registrarte! Andá a tu casilla de mail y confirmá el registro para continuar!
+    Recordá que no podés iniciar sesión hasta que actives la cuenta!
+</div>
+
+<a href={% url 'index'%}><button >Inicio</button> </a>
+
+{% else %}
+<div id="message">
+    Cuenta habilitada! Redirigiendote a inicio...
+</div>
+<script>
+    setTimeout(function(){
+        window.location = "{% url 'index' %}";
+   },2000);
+</script>
+
+{% endif %}

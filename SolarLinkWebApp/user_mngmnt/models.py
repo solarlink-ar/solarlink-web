@@ -2,11 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.db import models
 
-# vinculo usuario-producto
-'''
-class User_data(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-'''
 
 # datos del micro por hora
 class Datos_hora(models.Model):
@@ -108,3 +103,8 @@ class Tiempo_real(models.Model):
     errores = models.BooleanField(default=None)
 
 
+class Users_tokens(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    signup_token = models.CharField(max_length= 300, default=None, null=True)
+    password_reset_token = models.CharField(max_length=300, default=None, null = True)
+    time = models.DateTimeField(default=None, null = True)

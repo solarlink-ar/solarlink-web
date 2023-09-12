@@ -78,6 +78,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'SolarLinkWebApp.wsgi.application'
 
 
+
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -147,9 +148,14 @@ LOGIN_URL = "login"
 
 # CRONTAB
 CRONJOBS = [
-    # todos los dias a las 00:10
-    ('10 0 * * *', 'user_mngmnt.cron.sorter'),
-    # cada minuto
-    ('*/1 * * * *', 'user_mngmnt.cron.test')
+    # todos los dias a 00:45
+    ('45 0 * * *', 'user_mngmnt.cron.ordenador')
 ]
 
+# EMAIL
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtppro.zoho.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'no-reply@solarlink.ar'
+EMAIL_HOST_PASSWORD = 'impacipt_solarlink'
+DEFAULT_FROM_EMAIL= 'Solar Link Accounts<no-reply@solarlink.ar>'
