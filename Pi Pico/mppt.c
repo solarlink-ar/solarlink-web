@@ -5,6 +5,10 @@
 #include "hardware/i2c.h"
 #include "hardware/pwm.h"
 #include "hardware/adc.h"
+#include "hardware/irq.h"
+#include "hardware/uart.h"
+#include <cJSON.h>
+
 
 #define PWM_WRAP                        3787  // Definimos frecuencia del micro, sin prescaler, 33kHz
 #define ADC_GPIO_BATTERY                26
@@ -17,20 +21,20 @@
 #define BATTERY_ADC_RATIO               5.5     // Habra un ratio de 5 a 1 en el voltaje leido por el ADC y la bat
 #define BATTERY_IN_RATIO                14.8    
 
-#define BULK_MAX_BATTERY_VOLTAGE        13.3
-#define BULK_MAX_CURRENT_VOLTAGE        2
+#define BULK_MAX_BATTERY_VOLTAGE        14.5
+#define BULK_MAX_CURRENT_VOLTAGE        4
 
-#define ABSORTION_MAX_BATTERY_VOLTAGE   13.5   // Umbral de tension del modo ABSORTION
-#define ABSORTION_MAX_PANEL_CURRENT     2
-#define ABSORTION_MIN_PANEL_CURRENT     0.3
+#define ABSORTION_MAX_BATTERY_VOLTAGE   14.5   // Umbral de tension del modo ABSORTION
+#define ABSORTION_MAX_PANEL_CURRENT     4
+#define ABSORTION_MIN_PANEL_CURRENT     0.2
 
-#define FLOAT_MAX_BATTERY_VOLTAGE       12.8
+#define FLOAT_MAX_BATTERY_VOLTAGE       13.5
 #define FLOAT_MIN_BATTERY_VOLTAGE       12
 #define FLOAT_MAX_CURRENT_VOLTAGE       0.6
 
 #define SPIKE_BAT                       15
  
-#define BATTERY_MIN_VOLTAGE             11     
+#define BATTERY_MIN_VOLTAGE             11.5     
 
 #define INTEGRAL_CONSTANT               3  
 
@@ -44,6 +48,22 @@
 #define PICO_DEFAULT_I2C_SDA_PIN    4
 #define PICO_DEFAULT_I2C_SCL_PIN    5
 
+
+#define UART_ID     uart0
+#define BAUD_RATE   115200
+#define DATA_BITS   8
+#define STOP_BITS   1
+#define PARITY      UART_PARITY_NONE
+
+#define UART_TX_PIN 1
+#define UART_RX_PIN 2
+
+float prom_minute = 0;
+float prom_hour = 0;
+float real_prom = 0;
+int cont_minute = 0; 
+int cont_hour = 0;
+
 volatile bool spike_flag = 0;
 
 float battery_in = 0;
@@ -52,6 +72,7 @@ float battery_current = 0;
 float x = 0;
 
 char str [8];
+char json[14];
 
 // commands
 const int LCD_CLEARDISPLAY = 0x01;
@@ -90,10 +111,26 @@ const int LCD_ENABLE_BIT = 0x04;
 static int addr = 0x27;
 
 
+void on_uart_rx() {
+    while (uart_is_readable(UART_ID)) {
+        if (uart_is_writable(UART_ID)) {
+            real_prom = prom_hour / cont_hour;
+            sprintf(json, "{\"prom_hour\":%f,\"volt_actual\":%f}", real_prom, battery_voltage);
+            uart_putc(UART_ID, *json);
+        }
+    }
+}
+
 int64_t alarm_callback(alarm_id_t id, void *user_data) {
-    printf("Timer %d fired!\n", (int) id);
-    spike_flag = true;
-    // Can return a value here in us to fire in the future
+    if(cont_minute < 60){
+        prom_minute += (battery_in * battery_current);
+        cont_minute += 1;
+    }
+    else{
+        prom_hour += (prom_minute / cont_minute);
+        cont_hour += 1;
+        cont_minute = 0;
+    }
     return 0;
 }
 
@@ -170,9 +207,11 @@ typedef enum {
 // Saturador basico, se asegura que el PWM no sea ni negativo ni que se exceda del wrap
 inline static uint16_t saturador(uint16_t wrap, int16_t level) {
     if(level > PWM_WRAP) {
+        level = PWM_WRAP;
         return PWM_WRAP;
     }
     else if(level < 0) {
+        level = 0;
         return 0;
     }
     return level;
@@ -239,6 +278,19 @@ int main() {
     adc_gpio_init(ADC_CURRENT_BATTERY);
     adc_select_input(ADC_CHANNEL_BATTERY);
 
+    uart_init(UART_ID, 2400);
+    gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
+    gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
+    int __unused actual = uart_set_baudrate(UART_ID, BAUD_RATE);
+    uart_set_hw_flow(UART_ID, false, false);
+    uart_set_format(UART_ID, DATA_BITS, STOP_BITS, PARITY);
+    uart_set_fifo_enabled(UART_ID, false);
+    int UART_IRQ = UART_ID == uart0 ? UART0_IRQ : UART1_IRQ;
+    irq_set_exclusive_handler(UART_IRQ, on_uart_rx);
+    irq_set_enabled(UART_IRQ, true);
+    uart_set_irq_enables(UART_ID, true, false);
+
+
 
     // Habilito GPIO como salida de PWM
     gpio_set_function(pwm, GPIO_FUNC_PWM);
@@ -277,6 +329,11 @@ int main() {
         sprintf(str, "%.2f", battery_in);
         lcd_set_cursor(1, 4);
         lcd_string(str);
+        add_alarm_in_ms(-1000, alarm_callback, NULL, false);
+    ///////////////   UART COMMUNICATION   ///////////////
+
+    /////////////// UART COMMUNICATION END ///////////////
+
     ///////////////   MDOE VERIFICATION   ///////////////    
         if (charging_mode == BULK_MODE){
             if (battery_voltage < BATTERY_MIN_VOLTAGE && battery_in > SPIKE_BAT){
@@ -320,17 +377,16 @@ int main() {
                 lcd_string("  FLOAT  ");
             }
         }
-        if (charging_mode == SPIKE_MODE){
-            add_alarm_in_ms(2000, alarm_callback, NULL, false);
-            if (spike_flag == TRUE){
-                charging_mode = BULK_MODE;
-                spike_flag = FALSE;
-            }
-            else{
-                lcd_set_cursor(1, 11);
-                lcd_string("  SPIKE  ");
-            }
-        }
+        // if (charging_mode == SPIKE_MODE){
+        //     if (spike_flag == 1){
+        //         charging_mode = BULK_MODE;
+        //         spike_flag = 0;
+        //     }
+        //     else{
+        //         lcd_set_cursor(1, 11);
+        //         lcd_string("  SPIKE  ");
+        //     }
+        // }
 
     ///////////////   END MDOE VERIFICATION   ///////////////   
     
