@@ -1,10 +1,13 @@
 from solarlink import Solarlink
 import machine, time, json, math, ads1115, network
-from machine import Pin, ADC, I2C, Timer
+from machine import Pin, ADC, I2C, Timer, UART
 from lcd_api import LcdApi
 from i2c_lcd import I2cLcd
 import urequests as requests
 import _thread
+
+uart1 = UART(2, baudrate=9600, tx=Pin(28), rx=Pin(27))
+
 
 #
 #
@@ -121,12 +124,23 @@ while 1:
 ##Permite bloquear la ejecución de otras partes del código mientras se está ejecutando el thread seleccionado.
 ##Funciona como un semáforo binario.
 
-def medicion_thread():
+def threadCommWeb():
+    test = 0
     while True:
         
+        test = True
+        while test:
+            uart1.write("maxi puto")
+            nefastius = uart1.read() #nefastius almacena la información enviada
+            data = json.loads(nefastius)
+            voltaje = data["voltaje"]
+            consumo = data["consumo"]
+            test = 0
+            return voltaje, consumo
 
-        
-_thread.start_new_thread(medicion_thread, ())
+            
+
+_thread.start_new_thread(threadCommWeb, ())
 
 
 
