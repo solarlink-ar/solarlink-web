@@ -1,19 +1,22 @@
 from machine import UART, Pin
 import time
-uart1 = UART(2, baudrate=9600, tx=Pin(28), rx=Pin(27))
-# uart1.write('HOLA MUNDO')
-test = Pin(35, Pin.OUT)
+print("test")
+uart2 = UART(2, baudrate=9600, tx=17, rx=16)
+# uart2.write('HOLA MUNDO')
+# uart2.init()
+#print("HOLA")
+test = Pin(3, Pin.OUT)
 
+print("gordo")
 
 while 1:
-    uart1.write("puto")
+    uart2.write("puto")
     time.sleep(5)
-    if("hola" in uart1.read()):
-        test = 1
-        time.sleep(5)
-        test = 0
-        break
+    if("puto" in uart2.read()):
+        print("TROLA")
         
         
+        
+
 
 
