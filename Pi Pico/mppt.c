@@ -115,7 +115,8 @@ void on_uart_rx() {
     while (uart_is_readable(UART_ID)) {
         if (uart_is_writable(UART_ID)) {
             real_prom = prom_hour / cont_hour;
-            sprintf(json, "{\"prom_hour\":%f,\"volt_actual\":%f}", real_prom, battery_voltage);
+            // sprintf(json, "{\"prom_hour\":%f,\"volt_actual\":%f}", real_prom, battery_voltage);
+            sprintf(json, "puto");
             uart_putc(UART_ID, *json);
         }
     }
