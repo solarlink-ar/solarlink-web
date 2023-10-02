@@ -29,6 +29,8 @@
 
     <!-- Template Stylesheet -->
     <link href="{% static 'user_mngmnt/css/style.css' %}" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 </head>
 
 <body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="51">
@@ -94,8 +96,8 @@
             <div class="container py-5 px-lg-5">
                 <div class="row g-5 align-items-center">
                     <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
-                        <h5 class="text-primary-gradient fw-medium">About App</h5>
-                        <h1 class="mb-4">#1 App For Your Fitness</h1>
+                        <h5 class="text-primary-gradient fw-medium">Ahorro</h5>
+                        <h1 class="mb-4">Ahorro generado ultimos 7 dias</h1>
                         <p class="mb-4">Diam dolor diam ipsum et tempor sit. Aliqu diam amet diam et eos labore. Clita erat ipsum et lorem et sit, sed stet no labore lorem sit clita duo justo eirmod magna dolore erat amet</p>
                         <div class="row g-4 mb-4">
                             <div class="col-sm-6 wow fadeIn" data-wow-delay="0.5s">
@@ -116,6 +118,33 @@
                                     </div>
                                 </div>
                             </div>
+                            <canvas id="ahorro" style="width: 100%; max-width: 1000px;"></canvas>
+                            <script>
+                                const xValues = ['Dia 1', 'Dia 2', 'Dia 3', 'Dia 4', 'Dia 5', 'Dia 6', 'Dia 7'];
+                                const yValues = [10,15,25,30,21,14,50];
+                                
+                                new Chart("ahorro", {
+                                  type: "line",
+                                  data: {
+                                    labels: xValues,
+                                    datasets: [{
+                                      fill: false,
+                                      pointRadius: 1,
+                                      borderColor: "rgba(255,0,0,0.5)",
+                                      data: yValues
+                                    }]
+                                  },    
+                                  options: {
+                                    legend: {display: false},
+                                    title: {
+                                      display: true,
+                                      text: "Ahorro",
+                                      fontSize: 16
+                                    }
+                                  }
+                                });
+                                
+                                </script>
                         </div>
                         <a href="" class="btn btn-primary-gradient py-sm-3 px-4 px-sm-5 rounded-pill mt-3">Read More</a>
                     </div>
