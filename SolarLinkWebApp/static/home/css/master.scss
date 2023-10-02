@@ -335,21 +335,16 @@ body {
     .nav__menu{
         display: block;
     }
-
     .nav__link--menu{
-        position: fixed;
-        background-color: #000;
-        top: 0;
+        position: relative;
+        top: 35%;
         left: 0;
-        height: 100%;
         width: 100%;
         display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
+        flex-direction: row;
+        justify-content:flex-end;
         align-items: center;
         z-index: 100;
-        opacity: 0;
-        pointer-events: none;
         transition: .7s opacity;
     }
 
