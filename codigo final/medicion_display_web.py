@@ -6,7 +6,7 @@ from i2c_lcd import I2cLcd
 import urequests as requests
 import _thread
 
-uart1 = UART(2, baudrate=9600, tx=Pin(28), rx=Pin(27))
+
 
 
 #
@@ -130,15 +130,14 @@ def threadCommWeb():
         
         test = True
         while test:
-            uart1.write("maxi puto")
-            nefastius = uart1.read() #nefastius almacena la información enviada
-            data = json.loads(nefastius)
-            voltaje = data["voltaje"]
-            consumo = data["consumo"]
+            uart2.write("maxi puto")
+            rawdata = uart2.read() #nefastius almacena la información enviada
+            data = json.loads(rawdata)
+            voltaje = data["volt_actual"]
+            consumo = data["prom_hour"]
             test = 0
             return voltaje, consumo
 
-            
 
 _thread.start_new_thread(threadCommWeb, ())
 

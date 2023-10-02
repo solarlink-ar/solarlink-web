@@ -1,9 +1,9 @@
 import machine, time, json, math, ads1115, network
-from machine import Pin, ADC, I2C, Timer
+from machine import Pin, ADC, I2C, Timer, UART
 from lcd_api import LcdApi
 from i2c_lcd import I2cLcd
 import urequests as requests
-
+import _thread
 
 class Solarlink(object):
     # constructor
@@ -114,11 +114,12 @@ class Solarlink(object):
                 consumo_l2 = voltaje * corriente_l2
                 
                 # guardo en el atributo la medicion
-                self.medicion = {"voltaje": voltaje,
-                                "corriente_l1": corriente_l1,
-                                "corriente_l2": corriente_l2,
-                                "consumo_l1": consumo_l1,
-                                "consumo_l2": consumo_l2}
+                self.medicion = {"voltaje": voltaje, #voltaje de la línea
+                                "corriente_l1": corriente_l1, #corriente línea 1
+                                "corriente_l2": corriente_l2, #corriente línea 2
+                                "consumo_l1": consumo_l1, #consumo línea 1
+                                "consumo_l2": consumo_l2 #consumo línea 2
+                                }
                 
                 # reinicio la variable de callback
                 self.fin_mediciones = False
@@ -127,7 +128,19 @@ class Solarlink(object):
         # retorno la medicion
         return self.medicion
 
-            
+    def medicion_pi_pico(self):
+        self.uart2 = UART(2, baudrate=9600, tx=17, rx=16)
+        while True:
+            rawdata = self.uart2.read() #rawdata almacena la información enviada
+            data = json.loads(rawdata)
+            volt_actual = data["volt_actual"]
+            prom_hour = data["prom_hour"]
+            self.medicion_ext = {"volt_actual": volt_actual,
+                                "prom_hour": prom_hour
+                                } #diccionario que contiene los valores a publicar
+            return self.medicion_ext
+
+
         
 
         
@@ -144,11 +157,6 @@ class Solarlink(object):
 ##         
 ##         requests.post("", dict)
 
-class solarlinktestbench():
-
-    def tb_start():
-        ## función para probar pelotudeces
-        print("Hola")
 
 ## tb = solarlinktestbench()
 ## tb.tb_start()

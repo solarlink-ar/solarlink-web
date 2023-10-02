@@ -10,10 +10,9 @@ test = Pin(3, Pin.OUT)
 print("gordo")
 
 while 1:
-    uart2.write("puto")
+    data = uart2.read()
     time.sleep(5)
-    if("puto" in uart2.read()):
-        print("TROLA")
+    
         
         
         

@@ -34,3 +34,4 @@ while True:
     utime.sleep(0.25)
     # We release the semaphore lock
     baton.release()
+
