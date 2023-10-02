@@ -1,9 +1,9 @@
 /********** Template CSS **********/
 :root {
-    --primary: #d1df11;
-    --secondary: #29133d;
+    --primary: #858383;
+    --secondary: #242424;
     --light: #F0F6FF;
-    --dark: #262B47;
+    --dark: #000000;
 }
 
 
@@ -69,8 +69,9 @@ h6,
     transition: .5s;
 }
 
-.btn.btn-primary-gradient,
+.btn.btn-primary,
 .btn.btn-secondary-gradient {
+    background-color:#fce93c; 
     position: relative;
     overflow: hidden;
     border: none;
