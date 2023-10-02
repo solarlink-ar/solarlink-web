@@ -7,7 +7,6 @@ body {
     background-size: cover;
     font-family: 'Lato', sans-serif;
     height: 100vh;
-    
   }
   
   .login-box {
@@ -90,3 +89,11 @@ body {
     color: #000000;
     margin-bottom: 10%;
   }
+@media (max-width: 800px){
+  body {
+    display: flex;
+  }
+  .login-box {
+    top: 25%;
+  }
+}
