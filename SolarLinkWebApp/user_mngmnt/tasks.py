@@ -19,7 +19,7 @@ def creador_datos():
         # se sube un dato por hora
         for d in range(1, 31):
             for h in range(0, 24):
-                models.Datos_hora(user = user,
+                models.DatosHora(user = user,
                                 voltaje_hora_red = random.randint(170, 240),
                                 consumo_hora_red = random.randint(0, 4000),
                                 consumo_hora_solar = random.randint(0, 340),

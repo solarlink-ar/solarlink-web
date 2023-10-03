@@ -1,10 +1,20 @@
 <!DOCTYPE html>
+
+{% load static %}
+{% load compress static %}
+
 <html>
   <head>
     <meta charset="utf-8">
     <title>Solar Link | Login </title>
     <link rel="shortcut icon" href="{% static "/general/img/favicon-32x32" %}" type="image/x-icon">
-    <link rel="stylesheet" href="{% static  "/user_mngmnt/css/confirmaiocnes.css"%}">
+
+    {% comment %}
+        Compresor para poder usar static directions en el confirmaciones.scss
+    {% endcomment %}
+    {% compress css %}
+    <link rel="stylesheet" href="{% static  "/user_mngmnt/css/confirmacion.scss"%}">
+    {% endcompress %}
   </head>
   <body>
    
