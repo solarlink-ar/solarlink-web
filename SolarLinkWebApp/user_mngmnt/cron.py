@@ -1,3 +1,4 @@
+
 from django.core.mail import EmailMessage
 from . import models
 import json
@@ -96,7 +97,7 @@ def ordenador():
                     
                             
                     
-                    models.Datos_dias(user = user,
+                    models.DatosDias(user = user,
                                     voltaje_maximo_dia_red = max(voltaje_dia_red),
                                     voltaje_minimo_dia_red = min(voltaje_dia_red),
                                     consumo_dia_solar = consumo_dia_solar,
