@@ -1,8 +1,11 @@
 
 from django.core.mail import EmailMessage
+from django.utils import timezone
 from . import models
-import json
 import requests
+import datetime
+import json
+
 
 # funcion que calcula cantidad de trues en una lista de booleanos
 def calculador_cantidad_true(lista:list):
@@ -96,7 +99,7 @@ def ordenador():
 
                     
                             
-                    
+                    # creo dato dia
                     models.DatosDias(user = user,
                                     voltaje_maximo_dia_red = max(voltaje_dia_red),
                                     voltaje_minimo_dia_red = min(voltaje_dia_red),
@@ -113,7 +116,7 @@ def ordenador():
                                     voltajes_bateria = json.dumps(voltajes_bateria),
                                     errores = calculador_cantidad_true(errores),
                                     product_id = product_id).save()
-                    
+                    # limpio
                     voltaje_dia_red = []
                     consumo_dia_red = 0
                     consumo_dia_solar = 0
@@ -127,6 +130,18 @@ def ordenador():
                 dias = []
             meses = []
         años = []
-
+        # borro datos hora
         user_data.delete()
     requests.get("http://127.0.0.1:8000/")
+
+def token_clean():
+    # todos los tokens activos
+    data = models.UsersTokens.objects.all()
+    # hora en timezone
+    actual = timezone.now()
+    # para cada dato
+    for d in data:
+        # si el tiempo entre que el token fue creado y el actual es mayor a 2hs
+        if (actual - d.time) > datetime.timedelta(hours=2):
+            # borro el token
+            d.delete()

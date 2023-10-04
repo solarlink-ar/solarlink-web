@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from .tasks import no_reply_sender, creador_datos
-from .forms import SignupForm, PasswordSetForm
+from .forms import SignupForm, PasswordSetForm, LoginForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import auth
@@ -72,7 +72,7 @@ class Signup(View):
             # mando mail
             no_reply_sender.delay(mail_to=user.email, asunto='Confirma tu registro!', mensaje=f'''
 Hola, {user.first_name}. Abre este link para confirmar el registro de {user.username}: 
-http://127.0.0.1:8000/user/signup-verification/{token}''')
+http://192.168.111.3:8080/user/signup-verification/{token}''')
 
             # redirijo a pestaña a continuación
             return render(request, 'user_mngmnt/auth/signup_verification.html')
@@ -81,7 +81,22 @@ http://127.0.0.1:8000/user/signup-verification/{token}''')
         # si el form no es válido
         else:
             # codigo de error
-            error = form.errors.as_data()['__all__'][0].message
+            try:
+                # intento encontrar mensaje de error
+                error = form.errors.as_data()['__all__'][0].message
+            # si no lo encuentro
+            except:
+                # hago diccionario de errores
+                errors = form.errors.as_data()
+                # para cada error
+                for i in errors:
+                    # busco el ultimo mensaje
+                    error = errors[i][0].message
+                # si el mensaje es el mencionado abajo
+                if error == 'This field is required.':
+                    # devuelvo error
+                    error = 'Caracteres no validos'
+
             # retorno con codigo de error
             return render(request, 'user_mngmnt/auth/signup.html', {'form': form, 'error': error})
             
@@ -140,7 +155,7 @@ class PasswordReset(View):
                 # mando mail
                 no_reply_sender.delay(mail_to=user.email, asunto=f'Cambiá tu contraseña para {user.username}', mensaje=f'''
 Hola, {user.first_name}. Cambiá la contraseña para el usuario {user.username} con el siguiente link:
-http://127.0.0.1:8000/user/password-set/{token}''')
+http://192.168.111.3:8080/user/password-set/{token}''')
             # devuelvo vista con booleano para avisar que ya se envió mail
             return render(request, 'user_mngmnt/auth/password-reset.html', {'done': True})
     
@@ -192,40 +207,46 @@ class PasswordSet(View):
 
 class Login(View):
 
-    def get(self, request, *args, **kwargs):
-        return render(request, "user_mngmnt/auth/login.html")
+    def get(self, request):
+        form = LoginForm()
+        return render(request, "user_mngmnt/auth/login.html", {"form":form})
     
     def post(self, request):
-        #obtengo user y pass
-        username = request.POST['username']
-        password = request.POST['password']
+        form = LoginForm(request.POST)
 
-        # me fijo si existe un usuario con ese username
-        username_confirmation = User.objects.filter(username = username)
-        # autentico si existe un usuario con ese username y contraseña
-        user = auth.authenticate(username=username, password = password)
+        # si el form es valido
+        if form.is_valid():
+            #obtengo user y pass
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
 
-        # si existe el usuario pero su cuenta no está activa
-        if not username_confirmation[0].is_active:
-            error = 'Verifica tu cuenta para iniciar sesión'
-            return render(request, 'user_mngmnt/auth/login.html', {'error': error})
-        
-        # si existe el usuario pero no con esa contraseña
-        elif username_confirmation and not user:
-            error = 'La contraseña es incorrecta'
-            return render(request, 'user_mngmnt/auth/login.html', {'error': error})
-
-        # en el resto de casos
+            # autentico si existe usuario
+            user = auth.authenticate(username=username, password = password)
+            
+            # logueo
+            auth.login(request, user)
+            # redirijo a index
+            return redirect('index')
+        # si el form no es valido
         else:
-            # si existe, logueo
-            if user:
-                auth.login(request, user)
-                return redirect('index')
-
-            # si no existe, doy error
-            else:
-                error = 'El usuario no existe'
-                return render(request, 'user_mngmnt/auth/login.html', {'error': error})
+            # codigo de error
+            try:
+                # intento encontrar mensaje de error
+                error = form.errors.as_data()['__all__'][0].message
+            # si no lo encuentro
+            except:
+                # hago diccionario de errores
+                errors = form.errors.as_data()
+                # para cada error
+                for i in errors:
+                    # busco el ultimo mensaje
+                    error = errors[i][0].message
+                # si el mensaje es el mencionado abajo
+                if error == 'This field is required.':
+                    # devuelvo error
+                    error = 'Caracteres no validos'
+                
+            return render(request, 'user_mngmnt/auth/login.html', {"form": form, 'error': error})
 
 
 # logout
@@ -261,8 +282,9 @@ def sender(request):
     no_reply_sender.delay(mail_to='ivanchicago70@gmail.com', asunto='nashe', mensaje='nashe')
 
 def creador(request):
-    creador_datos.delay()
-    return HttpResponse(request, "Hecho")
+    #creador_datos.delay()
+    #return HttpResponse(request, "Hecho")
+    models.UsersTokens(user=request.user, signup_token = 'dajkalsd').save()
 
 def confirmation(request):
     return render(request, "user_mngmnt/auth/confirmacion.html")

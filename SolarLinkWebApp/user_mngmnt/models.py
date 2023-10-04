@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.db import models
+import datetime
 
 # datos del micro por hora
 class DatosHora(models.Model):
@@ -106,4 +107,4 @@ class UsersTokens(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     signup_token = models.CharField(max_length= 300, default=None, null=True)
     password_reset_token = models.CharField(max_length=300, default=None, null = True)
-    time = models.DateTimeField(default=None, null = True)
+    time = models.DateTimeField(default=datetime.datetime.now, null = True)
