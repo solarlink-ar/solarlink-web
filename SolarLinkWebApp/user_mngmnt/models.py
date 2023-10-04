@@ -1,10 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.db import models
-
+import datetime
 
 # datos del micro por hora
-class Datos_hora(models.Model):
+class DatosHora(models.Model):
     # usuario
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     # promedio del voltaje en la hora proveniente de la red
@@ -35,7 +35,7 @@ class Datos_hora(models.Model):
     product_id = models.CharField(max_length=50)
 
 # datos guardados por dia
-class Datos_dias(models.Model):
+class DatosDias(models.Model):
     # usuario
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     # voltaje maximo del dia en la red
@@ -90,7 +90,7 @@ class Emergencia(models.Model):
 
     corriente = models.BooleanField()
 
-class Tiempo_real(models.Model):
+class TiempoReal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
     voltaje = models.FloatField(default=None)
@@ -103,8 +103,8 @@ class Tiempo_real(models.Model):
     errores = models.BooleanField(default=None)
 
 
-class Users_tokens(models.Model):
+class UsersTokens(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     signup_token = models.CharField(max_length= 300, default=None, null=True)
     password_reset_token = models.CharField(max_length=300, default=None, null = True)
-    time = models.DateTimeField(default=None, null = True)
+    time = models.DateTimeField(default=datetime.datetime.now, null = True)

@@ -28,7 +28,7 @@ SECRET_KEY = 'lku#p+_&8ucbkd(jlc-48mx@pgf2r42g8eqlvm0148)(5xlovr'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app', 'solarlink.ar', '127.0.0.1']
+ALLOWED_HOSTS = ['.vercel.app', 'solarlink.ar', '127.0.0.1', '192.168.125.221']
 
 # Application definition
 
@@ -114,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/Buenos_Aires'
+TIME_ZONE = 'America/Argentina/Buenos_Aires'
 
 USE_I18N = True
 
@@ -149,7 +149,9 @@ LOGIN_URL = "login"
 # CRONTAB
 CRONJOBS = [
     # todos los dias a 00:45
-    ('45 0 * * *', 'user_mngmnt.cron.ordenador')
+    ('45 0 * * *', 'user_mngmnt.cron.ordenador'),
+    #('10 * * * *', 'user_mngmnt.cron.token_clean')
+    ('* * * * *', 'user_mngmnt.cron.token_clean')
 ]
 
 # EMAIL

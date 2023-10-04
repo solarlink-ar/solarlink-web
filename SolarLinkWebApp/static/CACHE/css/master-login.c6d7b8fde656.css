@@ -1,0 +1,101 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+/* line 3, static/user_mngmnt/master-login.scss */
+body {
+  margin: 0;
+  padding: 0;
+  background-image: linear-gradient(180deg, #0000008c 0%, #0000008c 100%), url(/static/general/img/fondito.png?ebbbb8878bd0);
+  background-size: cover;
+  font-family: 'Lato', sans-serif;
+  height: 100vh; }
+
+/* line 12, static/user_mngmnt/master-login.scss */
+.login-box {
+  width: 320px;
+  height: 420px;
+  background: #d1d1c9;
+  color: black;
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  padding: 70px 30px; }
+
+/* line 25, static/user_mngmnt/master-login.scss */
+.login-box .avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  position: absolute;
+  top: -50px;
+  left: calc(50% - 50px); }
+
+/* line 34, static/user_mngmnt/master-login.scss */
+.login-box h1 {
+  margin: 0;
+  padding: 0 0 20px;
+  text-align: center;
+  font-size: 22px; }
+
+/* line 40, static/user_mngmnt/master-login.scss */
+.login-box a {
+  text-align: center;
+  font-size: 22px; }
+
+/* line 46, static/user_mngmnt/master-login.scss */
+.login-box input {
+  width: 100%;
+  margin-bottom: 20px; }
+
+/* line 51, static/user_mngmnt/master-login.scss */
+.login-box input[type="text"], .login-box input[type="password"] {
+  border: none;
+  border-bottom: 1px solid #000000;
+  background: transparent;
+  outline: none;
+  height: 40px;
+  color: #000000;
+  font-size: 16px; }
+
+/* line 61, static/user_mngmnt/master-login.scss */
+.login-box input[type="submit"] {
+  border: none;
+  outline: none;
+  height: 40px;
+  background: #fac331;
+  color: #fff;
+  font-size: 18px;
+  border-radius: 20px; }
+
+/* line 71, static/user_mngmnt/master-login.scss */
+.login-box input[type="submit"]:hover {
+  cursor: pointer;
+  background: #ffb726;
+  color: #000; }
+
+/* line 77, static/user_mngmnt/master-login.scss */
+.login-box a {
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 20px;
+  color: #696969; }
+
+/* line 84, static/user_mngmnt/master-login.scss */
+.login-box a:hover {
+  color: #000; }
+
+/* line 87, static/user_mngmnt/master-login.scss */
+.h2 {
+  text-decoration: none;
+  font-size: 20px;
+  line-height: 20px;
+  color: #000000;
+  margin-bottom: 10%; }
+
+@media (max-width: 800px) {
+  /* line 96, static/user_mngmnt/master-login.scss */
+  body {
+    display: flex; }
+  /* line 99, static/user_mngmnt/master-login.scss */
+  .login-box {
+    top: 25%; } }
