@@ -35,7 +35,7 @@ def ordenador():
         errores = []
         
         # todos los datos de cierto usuario
-        user_data = models.Datos_hora.objects.filter(user=user)
+        user_data = models.DatosHora.objects.filter(user=user)
 
 
         # entre los datos del usuario
