@@ -86,9 +86,12 @@ class LoginForm(forms.Form):
     password = forms.CharField(label='Contraseña:', max_length=32, min_length=8, widget=forms.PasswordInput(attrs={'placeholder':'Contraseña'}))
 
     def clean(self):
-        password = self.cleaned_data["password"]
-        username = self.cleaned_data["username"]
-        
+        try:
+            password = self.cleaned_data["password"]
+            username = self.cleaned_data["username"]
+        except:
+            # si hay problemas con lo ingresado, derivo la resolucion al backend
+            return self.cleaned_data
         # me fijo si existe un usuario con ese username
         username_confirmation = User.objects.filter(username = username)
         # autentico si existe un usuario con ese username y contraseña
