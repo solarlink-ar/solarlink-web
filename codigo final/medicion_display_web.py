@@ -20,6 +20,7 @@ sens_corriente_2 = 0
 timercount = False
 #
 #
+
 def values_restart():
     global suma_adc_e
     global suma_adc_i
@@ -33,7 +34,7 @@ def values_restart():
     valores_sens_corriente = []
     sens_corriente_1 = 0
     sens_corriente_2 = 0
-#
+
 #
 def callback_web(tim1): #minute callback
     global timercount
@@ -55,9 +56,13 @@ while not wlan.isconnected():
 #
 #
 solarlink = Solarlink()
-solarlink.init()
 #
 #
+
+'''
+while 1:
+    print(solarlink.medicion_default_segundo())
+'''
 while 1:
     corriente_actual_1 = solarlink.corriente_dif_read(2, 3)
     if corriente_actual_1 > sens_corriente_1:
@@ -120,7 +125,7 @@ while 1:
 #### WIP ####
 #############
 
-
+'''
 ##Permite bloquear la ejecución de otras partes del código mientras se está ejecutando el thread seleccionado.
 ##Funciona como un semáforo binario.
 
@@ -141,7 +146,7 @@ def threadCommWeb():
 
 _thread.start_new_thread(threadCommWeb, ())
 
-
+'''
 
 #############
 #### WIP ####

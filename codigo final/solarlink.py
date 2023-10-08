@@ -28,7 +28,7 @@ class Solarlink(object):
         # atenuacion ADC
         self.atten = ADC.ATTN_2_5DB
         # referencia sensor voltaje
-        self.ref = 222 / 0.9580893
+        self.ref = 214 / 0.5246797
 
         ##########################
 
@@ -127,7 +127,7 @@ class Solarlink(object):
                 break
         # retorno la medicion
         return self.medicion
-
+'''
     def medicion_pi_pico(self):
         self.uart2 = UART(2, baudrate=9600, tx=17, rx=16)
         while True:
@@ -139,7 +139,7 @@ class Solarlink(object):
                                 "prom_hour": prom_hour
                                 } #diccionario que contiene los valores a publicar
             return self.medicion_ext
-
+'''
 
         
 
