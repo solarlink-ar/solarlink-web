@@ -6,8 +6,17 @@ import urequests as requests
 import _thread
 
 class Solarlink(object):
-    # constructor
+    
+    #####################################################################################################
+    #####################################################################################################
+    ######################################## CONSTRUCTOR ################################################
+    #####################################################################################################
+    #####################################################################################################
+
     def __init__(self):
+
+        ################################### ADC EXTERNO PARAMS ##############################################
+
         # direccion i2c ADC externo
         self.i2c_corriente_dir = 72
         # scl
@@ -21,7 +30,7 @@ class Solarlink(object):
         # pendiente de sensor de corriente
         self.pendiente_corriente = 10.1288571642
 
-        ########################################
+        ################################### ADC INTERNO PARAMS ##############################################
 
         # pin adc sensor voltaje
         self.adc_pin = 33
@@ -30,7 +39,7 @@ class Solarlink(object):
         # referencia sensor voltaje
         self.ref = 214 / 0.5246797
 
-        ##########################
+        ######################################### INITS #####################################################
 
         # i2c init
         self.i2c = I2C(1, scl=Pin(self.scl), sda=Pin(self.sda), freq=self.freq)
@@ -43,19 +52,34 @@ class Solarlink(object):
         # display init
         self.lcd = I2cLcd(self.i2c, 0x27, 4, 20)
 
-        ########################################
+
+        ################################# TIMER Y CALLBACK ATTR #############################################
+
         # timer 0
         self.timer0 = None
         # trigger fin mediciones
         self.fin_mediciones = False
 
-        ###########################
+        
+        ################################## MEDICION POR SEG ATTR ############################################
+
         # medicion final
         self.medicion = None
     
-    #callback que corta las mediciones
+
+    #####################################################################################################
+    #####################################################################################################
+    ########################################## METODOS ##################################################
+    #####################################################################################################
+    #####################################################################################################
+
+
+    ##################################### CALLBACK TIMER0 ###############################################
+
     def callback_fin_mediciones(self):
         self.fin_mediciones = True
+
+    ############################### CORRIENTE ADC EN DIFERENCIAL ########################################
 
     # medicion de sensor de corriente en el instante 
     def corriente_dif_read(self, pin_a, pin_b):
@@ -66,12 +90,16 @@ class Solarlink(object):
 
         return corriente
 
+    ##################################### VOLTAJE ADC INTERNO ###########################################
+
     # medicion de sensor de voltaje en el instante
     def voltaje_read(self):
         # mido sensor de voltaje en el pin ADC, valor en RMS
         voltaje = self.adc.read_uv() / 1000000 * self.ref
 
         return voltaje
+    
+    ################################### MEDICION COMPLETA 1 SEG #########################################
 
     def medicion_default_segundo(self):
 
@@ -123,10 +151,11 @@ class Solarlink(object):
                 
                 # reinicio la variable de callback
                 self.fin_mediciones = False
-                # rompo el bucle
-                break
-        # retorno la medicion
-        return self.medicion
+                # rompo el bucle y retorno
+                return self.medicion
+
+
+
 '''
     def medicion_pi_pico(self):
         self.uart2 = UART(2, baudrate=9600, tx=17, rx=16)
