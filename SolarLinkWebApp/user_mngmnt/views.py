@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
-from .tasks import no_reply_sender, creador_datos, ordenador
+from .tasks import no_reply_sender, creador_datos, calculo
 from .forms import SignupForm, PasswordSetForm, LoginForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
@@ -269,11 +269,20 @@ def logout(request):
 ###############################################################################################################
 
 #Userpage
-@login_required
-def userpage(request):
-    username = request.user.username
-    return render(request, "user_mngmnt/userpage.html", {"username": username})
+class UserPage(View):
+    
+    def get(self, request):
+        user = request.user
 
+
+
+    #username = request.user.username
+    #return render(request, "user_mngmnt/userpage.html", {"username": username})
+
+class UserCalc(View):
+
+    def get(self, request):
+        ...
 ###############################################################################################################
 ################################################# API #########################################################
 ###############################################################################################################

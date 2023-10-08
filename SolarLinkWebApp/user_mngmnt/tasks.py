@@ -3,6 +3,7 @@ from django.core import mail
 from celery import shared_task
 from . import models
 import json
+import time
 import random
 
 # funcion que calcula cantidad de trues en una lista de booleanos
@@ -71,70 +72,8 @@ def creador_datos():
                                 errores = random.choice(lista),
                                 product_id = 'nashe23').save()
 
-@shared_task()
-def ordenador():
-    users = models.User.objects.all()
+
+
     
-    for user in users:
-        voltaje_dia_red = []
-        consumo_dia_red = 0
-        consumo_dia_solar = 0
-        solar_por_hora = []
-        potencia_dia_panel = 0
-        horas_de_carga = []
-        voltajes_bateria = []
-        errores = []
 
-        user_data = models.DatosHora.objects.filter(user=user)
 
-        ultimo_dia =  None
-        ultimo_mes = None
-        ultimo_año = None
-
-        for data in user_data:
-            if data.dia != ultimo_dia:
-                # creo dato dia
-                models.DatosDias(user = user,
-                                voltaje_maximo_dia_red = max(voltaje_dia_red),
-                                voltaje_minimo_dia_red = min(voltaje_dia_red),
-                                consumo_dia_solar = consumo_dia_solar,
-                                consumo_dia_red = consumo_dia_red,
-
-                                dia = ultimo_dia,
-                                mes = ultimo_mes,
-                                año = ultimo_año,
-
-                                horas_potencia_panel = calculador_cantidad_true(solar_por_hora),
-                                potencia_dia_panel = potencia_dia_panel,
-                                horas_de_carga = calculador_cantidad_true(horas_de_carga),
-                                voltajes_bateria = json.dumps(voltajes_bateria),
-                                errores = calculador_cantidad_true(errores),
-                                product_id = data.product_id).save()
-                # limpio
-                voltaje_dia_red = []
-                consumo_dia_red = 0
-                consumo_dia_solar = 0
-                solar_por_hora = []
-                potencia_dia_panel = 0
-                horas_de_carga = []
-                voltajes_bateria = []
-                errores = []
-                
-            else:
-                voltaje_dia_red.append(data.voltaje_hora_red)
-                consumo_dia_solar += data.consumo_hora_solar
-                consumo_dia_red += data.consumo_hora_red
-
-                solar_por_hora.append(data.solar_ahora)
-                potencia_dia_panel += data.panel_potencia
-                horas_de_carga.append(data.cargando)
-                voltajes_bateria.append(data.voltaje_bateria)
-
-                errores.append(data.errores)
-
-                #product_id = data.product_id
-                ultimo_dia = data.dia
-                ultimo_mes = data.mes
-                ultimo_año = data.año
-
-        user_data.delete()

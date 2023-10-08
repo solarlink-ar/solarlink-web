@@ -1,4 +1,5 @@
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import path, include
 from . import views
@@ -37,7 +38,7 @@ urlpatterns = [
     # USER INFO #
     path("api-login/", csrf_exempt(views.APILogin.as_view()), name="api_login"),
     path("load-data/", views.load_data, name="load_data"),
-    path("userpage/", views.userpage, name="userpage"),
+    path("userpage/", login_required(views.UserPage.as_view()), name="userpage"),
     path("index/", views.index, name="index2"),
     # TESTS #
     path("creador/", views.creador, name="creador"),
