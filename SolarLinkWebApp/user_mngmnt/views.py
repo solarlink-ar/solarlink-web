@@ -268,6 +268,17 @@ def logout(request):
 ################################################ DATOS ########################################################
 ###############################################################################################################
 
+#Userpage
+@login_required
+def userpage(request):
+    username = request.user.username
+    return render(request, "user_mngmnt/userpage.html", {"username": username})
+
+###############################################################################################################
+################################################# API #########################################################
+###############################################################################################################
+
+
 def load_data(request):
     if request.method == "GET":
         data = request.GET.dict()
@@ -278,7 +289,7 @@ def load_data(request):
         else:
             response = {"result": False}
         return JsonResponse(response)
-
+    
 class APILogin(View):
     def post(self, request):
         # datos de la ESP
@@ -296,81 +307,48 @@ class APILogin(View):
         
         return JsonResponse(response)
         
-
-
-
-
-#Userpage
-@login_required
-def userpage(request):
-    username = request.user.username
-    return render(request, "user_mngmnt/userpage.html", {"username": username})
-
+###############################################################################################################
+################################################ TOOLS ########################################################
+###############################################################################################################
 
 def sender(request):
     no_reply_sender.delay(mail_to='ivanchicago70@gmail.com', asunto='nashe', mensaje='nashe')
 
 def creador(request):
-    #creador_datos.delay()
+    creador_datos.delay()
     #models.UsersTokens(user=request.user, signup_token = 'dajkalsd').save()
     #import time
     #time.sleep(1)
     #data = models.DatosHora.objects.all()
     #for i in data:
     #    print(i.hora, i.dia, i.mes, i.año)
-    return render(request, "user_mngmnt/auth/confirmacion.html")
+    #return render(request, "user_mngmnt/auth/confirmacion.html")
 
 def confirmation(request):
     #ordenador.delay()
     users = models.User.objects.all()
     
     for user in users:
-        voltaje_dia_red = []
-        consumo_dia_red = 0
-        consumo_dia_solar = 0
-        solar_por_hora = []
-        potencia_dia_panel = 0
-        horas_de_carga = []
-        voltajes_bateria = []
-        errores = []
 
         user_data = models.DatosHora.objects.filter(user=user)
 
-        dia_actual = user_data[0].dia
+        while user_data:
 
+            voltaje_dia_red = []
+            consumo_dia_red = 0
+            consumo_dia_solar = 0
+            solar_por_hora = []
+            potencia_dia_panel = 0
+            horas_de_carga = []
+            voltajes_bateria = []
+            errores = []
 
-        for data in user_data:
-            if data.dia != dia_actual:
-                # creo dato dia
-                models.DatosDias(user = user,
-                                voltaje_maximo_dia_red = max(voltaje_dia_red),
-                                voltaje_minimo_dia_red = min(voltaje_dia_red),
-                                consumo_dia_solar = consumo_dia_solar,
-                                consumo_dia_red = consumo_dia_red,
+            referencia = user_data[0]
 
-                                dia = dia_actual,
-                                mes = mes_actual,
-                                año = año_actual,
-
-                                horas_potencia_panel = calculador_cantidad_true(solar_por_hora),
-                                potencia_dia_panel = potencia_dia_panel,
-                                horas_de_carga = calculador_cantidad_true(horas_de_carga),
-                                voltajes_bateria = json.dumps(voltajes_bateria),
-                                errores = calculador_cantidad_true(errores),
-                                product_id = data.product_id).save()
-                # limpio
-                voltaje_dia_red = []
-                consumo_dia_red = 0
-                consumo_dia_solar = 0
-                solar_por_hora = []
-                potencia_dia_panel = 0
-                horas_de_carga = []
-                voltajes_bateria = []
-                errores = []
-
-                dia_actual = data.dia
-                
-            else:
+            dia_data = user_data.filter(dia=referencia.dia, mes=referencia.mes, año=referencia.año)
+            
+            for data in dia_data:
+                # guardado de datos
                 voltaje_dia_red.append(data.voltaje_hora_red)
                 consumo_dia_solar += data.consumo_hora_solar
                 consumo_dia_red += data.consumo_hora_red
@@ -381,10 +359,26 @@ def confirmation(request):
                 voltajes_bateria.append(data.voltaje_bateria)
 
                 errores.append(data.errores)
+                product_id = data.product_id
 
-                #product_id = data.product_id
-                dia_actual = data.dia
-                mes_actual = data.mes
-                año_actual = data.año
+                data.delete()
+            
+            # creo dato dia
+            models.DatosDias(user = user,
+                            voltaje_maximo_dia_red = max(voltaje_dia_red),
+                            voltaje_minimo_dia_red = min(voltaje_dia_red),
+                            consumo_dia_solar = consumo_dia_solar,
+                            consumo_dia_red = consumo_dia_red,
 
-        #user_data.delete()
+                            dia = referencia.dia,
+                            mes = referencia.mes,
+                            año = referencia.año,
+
+                            horas_potencia_panel = calculador_cantidad_true(solar_por_hora),
+                            potencia_dia_panel = potencia_dia_panel,
+                            horas_de_carga = calculador_cantidad_true(horas_de_carga),
+                            voltajes_bateria = json.dumps(voltajes_bateria),
+                            errores = calculador_cantidad_true(errores),
+                            product_id = data.product_id).save()
+            
+            user_data = models.DatosHora.objects.filter(user=user)

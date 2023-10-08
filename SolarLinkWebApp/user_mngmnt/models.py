@@ -19,7 +19,7 @@ class DatosHora(models.Model):
     mes = models.IntegerField(default=None)
     año = models.IntegerField(default=None)
 
-    # booleano que indica si la linea esta alimentada ahora por el sistema solar
+    # booleano que indica si las lineas estan alimentadas ahora por el sistema solar
     solar_ahora = models.BooleanField(default=None)
     # potencia entregada por el panel en esa hora
     panel_potencia = models.IntegerField(default=None)
