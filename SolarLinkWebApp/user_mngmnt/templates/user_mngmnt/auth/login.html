@@ -1,6 +1,17 @@
 {% extends 'form.html' %}
 
+{% load compress static %}
 {% load static %}
+
+{% block head %}
+  <title>Solar Link | Login</title>
+  {% comment %}
+      Compresor para poder usar static directions en el master.scss
+  {% endcomment %}
+  {% compress css %}
+  <link rel="stylesheet" type="text/x-scss" href="{% static "user_mngmnt/master-login.scss" %}" />
+  {% endcompress %}
+{% endblock %}
 
 {% block body %}
 

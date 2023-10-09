@@ -2,77 +2,77 @@
 
 {% load static %}
 
+{% block head %}
+{% endblock %}
 
 {% block header %}
-<section class="hero__container container">
-    <h1 class="hero__title">¿Que es Solar Link?</h1>
-    <p class="hero__paragraph">Solar Link es un administrados de energia inteligente que, usando un sistema de switcheo y un smart grid logra, de manera rapida y eficiente, ahorrar energia y disminuir el consumo del hogar.</p>
-    <a href="#" class="cta">Conoce mas</a>
-</section>
+    <section class="hero__container container">
+        <h1 class="hero__title">¿Qué es Solar Link?</h1>
+        <p class="hero__paragraph">Solar Link es un administrador de energia inteligente que usando un sistema de switcheo y un smart grid logra, de manera rapida y eficiente, ahorrar energia y disminuir el consumo del hogar.</p>
+        <a href="#" class="cta">Conocé más</a>
+    </section>
 {% endblock %}
 
 {% block main %}
-<main>
+    <main>
+        <section class="container about">
+            <h2 class="subtitle">Preguntas frecuentes</h2>
+            <p class="about__paragraph">A continuación ampliaremos más sobre el proyecto, explicando algunas dudas frecuentes </p>
 
-    <section class="container about">
-        <h2 class="subtitle">Preguntas frecuentes</h2>
-        <p class="about__paragraph">A continuacion ampliaremos mas sobre el proyecto, explicando algunas dudas frecuentes </p>
+            <div class="about__main">
+                <article class="about__icons">
+                    <img src="{% static 'home/img/casita.png' %}" class="about__icon">
+                    <h3 class="about__title">¿Cuál es su función?</h3>
+                    <p class="about__paragrah">El dispositivo mide el consumo hogareño y alimenta partes de la casa con energía solar, evitando el uso de electricidad proveniente de la red eléctrica.</p>
+                </article>
 
-        <div class="about__main">
-            <article class="about__icons">
-                <img src="{% static 'home/img/casita.png' %}" class="about__icon">
-                <h3 class="about__title">¿Cual es su funcion?</h3>
-                <p class="about__paragrah">El dispositivo mide el consumo hogareño y alimenta partes de la casa con energía solar, evitando el uso de electricidad proveniente de la red eléctrica.</p>
-            </article>
+                <article class="about__icons">
+                    <img src="{% static 'home/img/celu.png' %}" class="about__icon">
+                    <h3 class="about__title">¿Cómo se compone?</h3>
+                    <p class="about__paragrah">Es un tablero que se conecta térmica de la casa, además de paneles solares, baterías y una app para saber tu consumo y configurarlo!</p>
+                </article>
 
-            <article class="about__icons">
-                <img src="{% static 'home/img/celu.png' %}" class="about__icon">
-                <h3 class="about__title">¿Como se compone?</h3>
-                <p class="about__paragrah">Es un tablero que se conecta térmica de la casa, además de paneles solares, baterías y una app para saber tu consumo y configurarlo!</p>
-            </article>
+                <article class="about__icons">
+                    <img src="{% static 'home/img/factura.png' %}" class="about__icon">
+                    <h3 class="about__title">¿Por qué?</h3>
+                    <p class="about__paragrah">Aparte de ser muy bueno para el medio ambiente, Solar Link te permite controlar y ser dueño de tu consumo, a la vez que ahorrás en la factura de la luz! </p>
+                </article>
+            </div>
+        </section>
+        <section class="container about">
+            <h2 class="subtitle">¿Quienes somos?</h2>
 
-            <article class="about__icons">
-                <img src="{% static 'home/img/factura.png' %}" class="about__icon">
-                <h3 class="about__title">¿Por que?</h3>
-                <p class="about__paragrah">Aparte de ser muy bueno para el medio ambiente, SolarLink te permite controlar y ser dueño de tu consumo, a la vez que ahorrás en la factura de la luz! </p>
-            </article>
-        </div>
-    </section>
-    <section class="container about">
-        <h2 class="subtitle">¿Quienes somos?</h2>
+            <div class="about__main">
+                <article class="about__icons">
+                    <img src="{% static 'home/img/ceniko.png' %}" class="about__icon">
+                    <h3 class="about__title">CENYKO, Ivan</h3>
+                    <a href="https://www.linkedin.com/in/ivan-cenyko/" target="_blank" class="footer__icons"><img src="{% static 'home/img/linkediin.svg' %}" class="footer__img"></a>
+                </article>
 
-        <div class="about__main">
-            <article class="about__icons">
-                <img src="{% static 'home/img/ceniko.png' %}" class="about__icon">
-                <h3 class="about__title">CENYKO, Ivan</h3>
-                <a href="https://www.linkedin.com/in/ivan-cenyko/" target="_blank" class="footer__icons"><img src="{% static 'home/img/linkediin.svg' %}" class="footer__img"></a>
-            </article>
+                <article class="about__icons">
+                    <img src="{% static 'home/img/inza.png' %}" class="about__icon">
+                    <h3 class="about__title">INZA FIOR, Mateo</h3>
+                    <a href="https://www.linkedin.com/in/mateoinzafior/" target="_blank" class="footer__icons"><img src="{% static 'home/img/linkediin.svg' %}" class="footer__img"></a>
+                </article>
 
-            <article class="about__icons">
-                <img src="{% static 'home/img/inza.png' %}" class="about__icon">
-                <h3 class="about__title">INZA FIOR, Mateo</h3>
-                <a href="https://www.linkedin.com/in/mateoinzafior/" target="_blank" class="footer__icons"><img src="{% static 'home/img/linkediin.svg' %}" class="footer__img"></a>
-            </article>
+                <article class="about__icons">
+                    <img src="{% static 'home/img/palmieri.png' %}" class="about__icon">
+                    <h3 class="about__title">PALMIERI HISE, Agustin</h3>
+                    <a href="https://www.linkedin.com/in/agustin-palmieri-hise" target="_blank" class="footer__icons"><img src="{% static 'home/img/linkediin.svg' %}" class="footer__img"></a>
+                </article>
 
-            <article class="about__icons">
-                <img src="{% static 'home/img/palmieri.png' %}" class="about__icon">
-                <h3 class="about__title">PALMIERI HISE, Agustin</h3>
-                <a href="https://www.linkedin.com/in/agustin-palmieri-hise" target="_blank" class="footer__icons"><img src="{% static 'home/img/linkediin.svg' %}" class="footer__img"></a>
-            </article>
-
-            <article class="about__icons">
-                <img src="{% static 'home/img/testa.png' %}" class="about__icon">
-                <h3 class="about__title">TESTA, Maximiliano</h3>
-                <a href="https://www.linkedin.com/in/maximiliano-testa/" target="_blank" class="footer__icons"><img src="{% static 'home/img/linkediin.svg' %}" class="footer__img"></a>
-            </article>
-            <article class="about__icons">
-                <img src="{% static 'home/img/paloma.png' %}" class="about__icon">
-                <h3 class="about__title">DIAS, Lara Paloma</h3>
-                <a href="https://www.linkedin.com/in/mateoinzafior/" target="_blank" class="footer__icons"><img src="{% static 'home/img/linkediin.svg' %}" class="footer__img"></a>
-            </article>
-        </div>
-    </section>
-</main>
-
+                <article class="about__icons">
+                    <img src="{% static 'home/img/testa.png' %}" class="about__icon">
+                    <h3 class="about__title">TESTA, Maximiliano</h3>
+                    <a href="https://www.linkedin.com/in/maximiliano-testa/" target="_blank" class="footer__icons"><img src="{% static 'home/img/linkediin.svg' %}" class="footer__img"></a>
+                </article>
+                <article class="about__icons">
+                    <img src="{% static 'home/img/paloma.png' %}" class="about__icon">
+                    <h3 class="about__title">DIAS, Lara Paloma</h3>
+                    <a href="https://www.linkedin.com/in/mateoinzafior/" target="_blank" class="footer__icons"><img src="{% static 'home/img/linkediin.svg' %}" class="footer__img"></a>
+                </article>
+            </div>
+        </section>
+    </main>
 
 {% endblock %}
