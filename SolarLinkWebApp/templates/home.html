@@ -38,9 +38,6 @@
                 <li class="nav__items">
                     <a href="{% url 'galeria' %}" class="nav__links">Galeria</a>
                 </li>
-                <li class="nav__items">
-                    <a href="{% url 'contacto' %}" class="nav__links">Contacto</a>
-                </li>
                 {% if request.user.is_authenticated %}
                 <li class="nav__items">
                     <p class="nav__links"> ¡Hola, {{ request.user.first_name }}!</p>
