@@ -1,7 +1,11 @@
 *.pyc
 *.env
-virtual_enviroment/
 *.sqlite3
+virtual_enviroment/
+SolarLinkWebApp/.vscode/
+SolarLinkWebApp/static/CACHE/
+SolarLinkWebApp/user_mngmnt/migrations/
+
 
 
 
