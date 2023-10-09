@@ -37,7 +37,7 @@ class Solarlink(object):
         # atenuacion ADC
         self.atten = ADC.ATTN_2_5DB
         # referencia sensor voltaje
-        self.ref = 214 / 0.5246797
+        self.ref = 221 / 0.5150402
 
         ######################################### INITS #####################################################
 
@@ -76,7 +76,7 @@ class Solarlink(object):
 
     ##################################### CALLBACK TIMER0 ###############################################
 
-    def callback_fin_mediciones(self):
+    def callback_fin_mediciones(self, t):
         self.fin_mediciones = True
 
     ############################### CORRIENTE ADC EN DIFERENCIAL ########################################
@@ -106,21 +106,21 @@ class Solarlink(object):
         # timer 0 init, timer de fin de mediciones
         self.timer0 = Timer(0).init(period=1000, mode=Timer.ONE_SHOT, callback=self.callback_fin_mediciones)
 
+        # pico de corriente en ambas lineas (l1, l2) en el tiempo de medicion
+        pico_corriente_l1 = 0
+        pico_corriente_l2 = 0
+        # suma de valores de voltaje para promediar
+        suma_voltaje = 0
+        # index para promediar
+        index = 0
+        
         while True:
-            # pico de corriente en ambas lineas (l1, l2) en el tiempo de medicion
-            pico_corriente_l1 = 0
-            pico_corriente_l2 = 0
-            # suma de valores de voltaje para promediar
-            suma_voltaje = 0
-            # index para promediar
-            index = 0
-
             suma_voltaje += self.voltaje_read()
             index += 1
 
             # mido sensores de corriente
-            corriente_actual_l1 = self.corriente_dif_read(0, 1)
-            corriente_actual_l2 = self.corriente_dif_read(2, 3)
+            corriente_actual_l1 = self.corriente_dif_read(2, 3)
+            corriente_actual_l2 = self.corriente_dif_read(0, 1)
 
             # si la corriente medida es mas alta que el pico previo, sobreescribo
             if corriente_actual_l1 > pico_corriente_l1:
@@ -142,18 +142,23 @@ class Solarlink(object):
                 consumo_l2 = voltaje * corriente_l2
                 
                 # guardo en el atributo la medicion
-                self.medicion = {"voltaje": voltaje, #voltaje de la línea
-                                "corriente_l1": corriente_l1, #corriente línea 1
-                                "corriente_l2": corriente_l2, #corriente línea 2
-                                "consumo_l1": consumo_l1, #consumo línea 1
-                                "consumo_l2": consumo_l2 #consumo línea 2
+                self.medicion = {"voltaje": int(voltaje), #voltaje de la línea
+                                "corriente_l1": round(corriente_l1, 2), #corriente línea 1
+                                "corriente_l2": round(corriente_l2, 2), #corriente línea 2
+                                "consumo_l1": int(consumo_l1), #consumo línea 1
+                                "consumo_l2": int(consumo_l2) #consumo línea 2
                                 }
+                
+                # reinicio variables                
+                pico_corriente_l1 = 0
+                pico_corriente_l2 = 0
+                suma_voltaje = 0
+                index = 0
                 
                 # reinicio la variable de callback
                 self.fin_mediciones = False
                 # rompo el bucle y retorno
                 return self.medicion
-
 
 
 '''
