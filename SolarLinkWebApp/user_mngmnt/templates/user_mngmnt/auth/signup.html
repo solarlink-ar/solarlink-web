@@ -1,6 +1,12 @@
 
 {% load static %}
 
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SL-Resgitrarse </title>
+<link rel="shortcut icon" href="{% static 'general/img/favicon-32x32.png' %}" type="image/x-icon">
+<link rel="stylesheet" href="{% static 'home/css/normalice.css' %}">
 
 <h1> Registro </h1>
 <form method = "POST" action="{% url 'signup' %}">
@@ -33,4 +39,6 @@
     <input class ="btn btn-primary" type="submit" value= "Registrarse" />
     <br/>
     {{error}}
+
+    
 
