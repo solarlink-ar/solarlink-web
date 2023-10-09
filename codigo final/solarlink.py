@@ -170,11 +170,6 @@ class Solarlink(object):
             return self.medicion_ext
 '''
 
-        
-
-        
-
-
 
 
 ## class weblink():
