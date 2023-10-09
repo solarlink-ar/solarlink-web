@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
-from .tasks import no_reply_sender, creador_datos, calculo
+from .tasks import no_reply_sender, creador_datos
 from .forms import SignupForm, PasswordSetForm, LoginForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
