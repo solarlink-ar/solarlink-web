@@ -1,25 +1,9 @@
-
-body{
-    font-family: 'Inter', sans-serif;
-    background-color: #615e5e;    
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-h2{
-    font-weight: 600;
-    text-align: center;
-    padding: 20px 0;
-    font-size: 40px;
-    color: aliceblue;
-}
-
 .linea {
     background-color: #fce93c;
-    height: 10px;
+    height: 12px;
     width: 100%;
-    display: block
+    display: block;
+
 }
 .galeria{
     display: grid;
@@ -29,6 +13,7 @@ h2{
     grid-gap: 1cm;
     padding:20px 0;
     overflow: hidden;
+    padding-top: 30px;
 }
 .galeria img{
     width: 100%;
@@ -37,3 +22,4 @@ h2{
     object-fit: cover;
     
 }
+
