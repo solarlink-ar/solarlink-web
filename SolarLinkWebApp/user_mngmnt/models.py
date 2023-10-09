@@ -19,7 +19,7 @@ class DatosHora(models.Model):
     mes = models.IntegerField(default=None)
     año = models.IntegerField(default=None)
 
-    # booleano que indica si la red esta alimentada ahora por el sistema solar
+    # booleano que indica si las lineas estan alimentadas ahora por el sistema solar
     solar_ahora = models.BooleanField(default=None)
     # potencia entregada por el panel en esa hora
     panel_potencia = models.IntegerField(default=None)
@@ -33,6 +33,9 @@ class DatosHora(models.Model):
 
     # id de producto
     product_id = models.CharField(max_length=50)
+
+    class Meta:
+        ordering = ["user", "año", "mes", "dia", "hora"]
 
 # datos guardados por dia
 class DatosDias(models.Model):
@@ -65,6 +68,9 @@ class DatosDias(models.Model):
     errores = models.IntegerField(default=None)
     # product id
     product_id = models.CharField(max_length=50, default=None)
+
+    class Meta:
+        ordering = ["user", "año", "mes", "dia"]
 
     
 

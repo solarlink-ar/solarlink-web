@@ -5,6 +5,7 @@ from .forms import SignupForm, PasswordSetForm, LoginForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import auth
+from django.template.loader import render_to_string
 from django.views import View
 from . import models
 import secrets
@@ -15,6 +16,13 @@ import json
 ###############################################################################################################
 ############################################ FUNCIONES ########################################################
 ###############################################################################################################
+
+def calculador_cantidad_true(lista:list):
+    index = 0
+    for i in lista:
+        if i:
+            index += 1
+    return index
 
 def index(request):
     return render(request, "user_mngmnt/index.html")
@@ -72,7 +80,8 @@ class Signup(View):
             # mando mail
             no_reply_sender.delay(mail_to=user.email, asunto='Confirma tu registro!', mensaje=f'''
 Hola, {user.first_name}. Abre este link para confirmar el registro de {user.username}: 
-http://192.168.111.3:8080/user/signup-verification/{token}''')
+{request.build_absolute_uri('/')}user/signup-verification/{token}''')
+            #no_reply_sender.delay(mail_to=user.email, asunto='Confirma tu registro!', mensaje=render_to_string("user_mngmnt/auth/confirmacion.html"))
 
             # redirijo a pestaña a continuación
             return render(request, 'user_mngmnt/auth/signup_verification.html')
@@ -155,7 +164,7 @@ class PasswordReset(View):
                 # mando mail
                 no_reply_sender.delay(mail_to=user.email, asunto=f'Cambiá tu contraseña para {user.username}', mensaje=f'''
 Hola, {user.first_name}. Cambiá la contraseña para el usuario {user.username} con el siguiente link:
-http://192.168.111.3:8080/user/password-set/{token}''')
+{request.build_absolute_uri('/')}user/password-set/{token}''')
             # devuelvo vista con booleano para avisar que ya se envió mail
             return render(request, 'user_mngmnt/auth/password-reset.html', {'done': True})
     
@@ -222,7 +231,6 @@ class Login(View):
 
             # autentico si existe usuario
             user = auth.authenticate(username=username, password = password)
-            
             # logueo
             auth.login(request, user)
             # redirijo a index
@@ -259,6 +267,26 @@ def logout(request):
 ################################################ DATOS ########################################################
 ###############################################################################################################
 
+#Userpage
+class UserPage(View):
+    
+    def get(self, request):
+        user = request.user
+
+
+
+    #username = request.user.username
+    #return render(request, "user_mngmnt/userpage.html", {"username": username})
+
+class UserCalc(View):
+
+    def get(self, request):
+        ...
+###############################################################################################################
+################################################# API #########################################################
+###############################################################################################################
+
+
 def load_data(request):
     if request.method == "GET":
         data = request.GET.dict()
@@ -269,22 +297,96 @@ def load_data(request):
         else:
             response = {"result": False}
         return JsonResponse(response)
+    
+class APILogin(View):
+    def post(self, request):
+        # datos de la ESP
+        username = request.POST["username"]
+        password = request.POST["password"]
 
+        # autentico
+        user = auth.authenticate(username=username, password=password)
 
-#Userpage
-@login_required
-def userpage(request):
-    username = request.user.username
-    return render(request, "user_mngmnt/userpage.html", {"username": username})
-
+        # si existe el usuario, respondo aprobación
+        if user:
+            response = {"login": True}
+        else:
+            response = {"login": False}
+        
+        return JsonResponse(response)
+        
+###############################################################################################################
+################################################ TOOLS ########################################################
+###############################################################################################################
 
 def sender(request):
     no_reply_sender.delay(mail_to='ivanchicago70@gmail.com', asunto='nashe', mensaje='nashe')
 
 def creador(request):
-    #creador_datos.delay()
-    #return HttpResponse(request, "Hecho")
-    models.UsersTokens(user=request.user, signup_token = 'dajkalsd').save()
+    creador_datos.delay()
+    #models.UsersTokens(user=request.user, signup_token = 'dajkalsd').save()
+    #import time
+    #time.sleep(1)
+    #data = models.DatosHora.objects.all()
+    #for i in data:
+    #    print(i.hora, i.dia, i.mes, i.año)
+    #return render(request, "user_mngmnt/auth/confirmacion.html")
 
 def confirmation(request):
-    return render(request, "user_mngmnt/auth/confirmacion.html")
+    #ordenador.delay()
+    users = models.User.objects.all()
+    
+    for user in users:
+
+        user_data = models.DatosHora.objects.filter(user=user)
+
+        while user_data:
+
+            voltaje_dia_red = []
+            consumo_dia_red = 0
+            consumo_dia_solar = 0
+            solar_por_hora = []
+            potencia_dia_panel = 0
+            horas_de_carga = []
+            voltajes_bateria = []
+            errores = []
+
+            referencia = user_data[0]
+
+            dia_data = user_data.filter(dia=referencia.dia, mes=referencia.mes, año=referencia.año)
+            
+            for data in dia_data:
+                # guardado de datos
+                voltaje_dia_red.append(data.voltaje_hora_red)
+                consumo_dia_solar += data.consumo_hora_solar
+                consumo_dia_red += data.consumo_hora_red
+
+                solar_por_hora.append(data.solar_ahora)
+                potencia_dia_panel += data.panel_potencia
+                horas_de_carga.append(data.cargando)
+                voltajes_bateria.append(data.voltaje_bateria)
+
+                errores.append(data.errores)
+                product_id = data.product_id
+
+                data.delete()
+            
+            # creo dato dia
+            models.DatosDias(user = user,
+                            voltaje_maximo_dia_red = max(voltaje_dia_red),
+                            voltaje_minimo_dia_red = min(voltaje_dia_red),
+                            consumo_dia_solar = consumo_dia_solar,
+                            consumo_dia_red = consumo_dia_red,
+
+                            dia = referencia.dia,
+                            mes = referencia.mes,
+                            año = referencia.año,
+
+                            horas_potencia_panel = calculador_cantidad_true(solar_por_hora),
+                            potencia_dia_panel = potencia_dia_panel,
+                            horas_de_carga = calculador_cantidad_true(horas_de_carga),
+                            voltajes_bateria = json.dumps(voltajes_bateria),
+                            errores = calculador_cantidad_true(errores),
+                            product_id = data.product_id).save()
+            
+            user_data = models.DatosHora.objects.filter(user=user)

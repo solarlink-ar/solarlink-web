@@ -1,19 +1,57 @@
 from django.core.mail import EmailMessage
+from django.core import mail
 from celery import shared_task
 from . import models
 import json
+import time
 import random
+
+# funcion que calcula cantidad de trues en una lista de booleanos
+def calculador_cantidad_true(lista:list):
+    index = 0
+    for i in lista:
+        if i:
+            index += 1
+    return index
+
 
 @shared_task()
 def no_reply_sender(**kwargs):
-    email = EmailMessage( kwargs["asunto"],
-                          kwargs["mensaje"],
-                          to=[kwargs["mail_to"]])
-    email.send()
+    mail.send_mail([kwargs["mail_to"]], subject=kwargs["asunto"], html_message=kwargs["mensaje"])
 
 @shared_task()
 def creador_datos():
     users = models.User.objects.all()
+    '''
+    models.DatosHora(user = users[2],
+                voltaje_hora_red = random.randint(170, 240),
+                consumo_hora_red = random.randint(0, 4000),
+                consumo_hora_solar = random.randint(0, 340),
+                hora = 7,
+                dia = 10,
+                mes = 8,
+                año = 2023,
+                solar_ahora = True,
+                panel_potencia = random.randint(0, 340),
+                cargando = True,
+                voltaje_bateria = random.randint(10, 15),
+                errores = True,
+                product_id = 'nashe23').save()
+    models.DatosHora(user = users[2],
+                voltaje_hora_red = random.randint(170, 240),
+                consumo_hora_red = random.randint(0, 4000),
+                consumo_hora_solar = random.randint(0, 340),
+                hora = 6,
+                dia = 11,
+                mes = 8,
+                año = 2023,
+                solar_ahora = True,
+                panel_potencia = random.randint(0, 340),
+                cargando = True,
+                voltaje_bateria = random.randint(10, 15),
+                errores = True,
+                product_id = 'nashe23').save()
+    '''
     lista = [True,False]
     for user in users:
         # se sube un dato por hora
@@ -33,3 +71,9 @@ def creador_datos():
                                 voltaje_bateria = random.randint(10, 15),
                                 errores = random.choice(lista),
                                 product_id = 'nashe23').save()
+
+
+
+    
+
+

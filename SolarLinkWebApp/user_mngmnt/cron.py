@@ -16,6 +16,71 @@ def calculador_cantidad_true(lista:list):
     return index
 
 def ordenador():
+    # usuarios
+    users = models.User.objects.all()
+    
+    # para cada usuario
+    for user in users:
+        # datos del usuario
+        user_data = models.DatosHora.objects.filter(user=user)
+
+        # mientras existan datos
+        while user_data:
+            # variables temporales
+            voltaje_dia_red = []
+            consumo_dia_red = 0
+            consumo_dia_solar = 0
+            solar_por_hora = []
+            potencia_dia_panel = 0
+            horas_de_carga = []
+            voltajes_bateria = []
+            errores = []
+
+            # referencia para dia, mes
+            referencia = user_data[0]
+            #datos del dia buscado
+            dia_data = user_data.filter(dia=referencia.dia, mes=referencia.mes, año=referencia.año)
+
+            # para cada dato del dia
+            for data in dia_data:
+                # acumulo en valores sumario diario
+                voltaje_dia_red.append(data.voltaje_hora_red)
+                consumo_dia_solar += data.consumo_hora_solar
+                consumo_dia_red += data.consumo_hora_red
+
+                solar_por_hora.append(data.solar_ahora)
+                potencia_dia_panel += data.panel_potencia
+                horas_de_carga.append(data.cargando)
+                voltajes_bateria.append(data.voltaje_bateria)
+
+                errores.append(data.errores)
+                product_id = data.product_id
+
+                # borro el dato
+                data.delete()
+            
+            # creo dato dia
+            models.DatosDias(user = user,
+                            voltaje_maximo_dia_red = max(voltaje_dia_red),
+                            voltaje_minimo_dia_red = min(voltaje_dia_red),
+                            consumo_dia_solar = consumo_dia_solar,
+                            consumo_dia_red = consumo_dia_red,
+
+                            dia = referencia.dia,
+                            mes = referencia.mes,
+                            año = referencia.año,
+
+                            horas_potencia_panel = calculador_cantidad_true(solar_por_hora),
+                            potencia_dia_panel = potencia_dia_panel,
+                            horas_de_carga = calculador_cantidad_true(horas_de_carga),
+                            voltajes_bateria = json.dumps(voltajes_bateria),
+                            errores = calculador_cantidad_true(errores),
+                            product_id = data.product_id).save()
+            
+            # sobreescribo user_data, para quitar los datos que acabo de borrar
+            user_data = models.DatosHora.objects.filter(user=user)
+
+def ordenador_viejo():
     # lista de objetos de usuario
     users = models.User.objects.all()
 
@@ -35,7 +100,7 @@ def ordenador():
         errores = []
         
         # todos los datos de cierto usuario
-        user_data = models.Datos_hora.objects.filter(user=user)
+        user_data = models.DatosHora.objects.filter(user=user)
 
 
         # entre los datos del usuario

@@ -1,7 +1,7 @@
-
 *.pyc
 *.env
 virtual_enviroment/
+*.sqlite3
 
 
-SolarLinkWebApp/db.sqlite3
+
