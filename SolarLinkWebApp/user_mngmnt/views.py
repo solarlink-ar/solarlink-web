@@ -1,13 +1,15 @@
 from django.contrib.auth.decorators import login_required
+from .forms import SignupForm, PasswordSetForm, LoginForm
+from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
 from .tasks import no_reply_sender, creador_datos
-from .forms import SignupForm, PasswordSetForm, LoginForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import auth
-from django.template.loader import render_to_string
 from django.views import View
+from bs4 import BeautifulSoup
 from . import models
+import requests
 import secrets
 import random
 import json
@@ -314,7 +316,13 @@ class APILogin(View):
             response = {"login": False}
         
         return JsonResponse(response)
-        
+    
+class EdesurEdenor(View):
+
+    def get(self, request):
+        web = requests.get('https://www.enre.gov.ar/web/tarifasd.nsf/todoscuadros/7A2E515E48ECD5EB032589650044C8A6?opendocument')
+        soup = BeautifulSoup(web.content, 'html.parser')
+    
 ###############################################################################################################
 ################################################ TOOLS ########################################################
 ###############################################################################################################
