@@ -53,9 +53,29 @@ while 1:
     p_l1.off()
     p_l2.off()
     
-    
-    if consumo_l1 > 30:
+    trigger = 100
+
+    if consumo_l1 + consumo_l2 < trigger:
         p_l1.on()
+        p_l2.on()
+    else:
+        if consumo_l1 < trigger and consumo_l2 < trigger:
+            if consumo_l1 > consumo_l2:
+                p_l1.on()
+                p_l2.off()
+            else:
+                p_l1.off()
+                p_l2.on()
+        if consumo_l1 > trigger and consumo_l2 > trigger:
+            p_l1.off()
+            p_l2.off()
+        elif consumo_l1 > trigger and consumo_l2 < trigger:
+            p_l1.off()
+            p_l2.on()
+        elif consumo_l1 < trigger and consumo_l2 > trigger:
+            p_l1.on()
+            p_l2.off()
+
     
 #############
 #### WIP ####
