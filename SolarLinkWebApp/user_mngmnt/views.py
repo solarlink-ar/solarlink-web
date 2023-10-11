@@ -79,11 +79,9 @@ class Signup(View):
             user.is_active = False
             user.save()
 
+            context = {"first_name": user.first_name, "username": user.username, "mail": user.email, "url": f"{request.build_absolute_uri('/')}user/signup-verification/{token}", "base": request.build_absolute_uri('/')}
             # mando mail
-            no_reply_sender.delay(mail_to=user.email, asunto='Confirma tu registro!', mensaje=f'''
-Hola, {user.first_name}. Abre este link para confirmar el registro de {user.username}: 
-{request.build_absolute_uri('/')}user/signup-verification/{token}''')
-            #no_reply_sender.delay(mail_to=user.email, asunto='Confirma tu registro!', mensaje=render_to_string("user_mngmnt/auth/confirmacion.html"))
+            no_reply_sender.delay(email = user.email, subject='¡Confirmá tu registro!', html_message=render_to_string("user_mngmnt/auth/confirmacion_signup.html", context))
 
             # redirijo a pestaña a continuación
             return render(request, 'user_mngmnt/auth/signup_verification.html')
@@ -133,8 +131,8 @@ class SignupVerification(View):
             # borro el token
             models.UsersTokens.objects.filter(signup_token = token).delete()
             # aviso por mail que el usuario se ha verificado
-            no_reply_sender.delay(mail_to = user.email, asunto="Tu cuenta se ha verificado", mensaje=f"""
-Felicidades, {user.first_name}! El usuario de Solar Link {user.username} se ha verificado. Ya podés acceder a la plataforma!""")
+            no_reply_sender.delay(email=user.email, subject="¡Tu cuenta se ha verificado!", html_message=f"""
+¡Felicidades, {user.first_name}! El usuario de Solar Link {user.username} se ha verificado. ¡Ya podés acceder a la plataforma!""")
             # devuelvo que el usuario se registro adecuadamente
             return render(request, 'user_mngmnt/auth/signup_verification.html')
         # si no hay token o es invalido, devuelvo signup
@@ -163,10 +161,10 @@ class PasswordReset(View):
                 token = secrets.token_urlsafe(32)
                 # guardo token a usuario
                 models.UsersTokens(user=user, password_reset_token=token).save()
+
+                context = {"first_name": user.first_name, "username": user.username, "mail": user.email, "url": f"{request.build_absolute_uri('/')}user/password-set/{token}", "base": request.build_absolute_uri('/')}
                 # mando mail
-                no_reply_sender.delay(mail_to=user.email, asunto=f'Cambiá tu contraseña para {user.username}', mensaje=f'''
-Hola, {user.first_name}. Cambiá la contraseña para el usuario {user.username} con el siguiente link:
-{request.build_absolute_uri('/')}user/password-set/{token}''')
+                no_reply_sender.delay(email = user.email, subject='Cambio de contraseña', html_message=render_to_string("user_mngmnt/auth/confirmacion_password.html", context))
             # devuelvo vista con booleano para avisar que ya se envió mail
             return render(request, 'user_mngmnt/auth/password-reset.html', {'done': True})
     
@@ -182,7 +180,7 @@ class PasswordSet(View):
             # devuelvo form con el token en ctx para postear
             return render(request, 'user_mngmnt/auth/password-set.html', {"form":form, "token":token})
         else:
-            # si no, redirijo a login
+            # si no, redirijo a index
             return redirect('login')
 
     def post(self, request, token):
@@ -328,7 +326,12 @@ class EdesurEdenor(View):
 ###############################################################################################################
 
 def sender(request):
-    no_reply_sender.delay(mail_to='ivanchicago70@gmail.com', asunto='nashe', mensaje='nashe')
+    user = request.user
+    token = 'anachei'
+    context = {"first_name": user.first_name, "username": user.username, "mail": user.email, "url": f"{request.build_absolute_uri('/')}user/password-set/{token}", "base": request.build_absolute_uri('/')}
+    # mando mail
+    return render(request, "user_mngmnt/auth/confirmacion_password.html" , context)
+    #no_reply_sender.delay(email = user.email, subject='Cambio de contraseña', html_message=render_to_string("user_mngmnt/auth/confirmacion_password.html", context))
 
 def creador(request):
     creador_datos.delay()

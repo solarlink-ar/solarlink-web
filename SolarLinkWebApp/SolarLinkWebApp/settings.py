@@ -127,6 +127,7 @@ USE_TZ = True
 STATIC_ROOT = "static/"
 STATIC_URL = "static/"
 
+
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
 )

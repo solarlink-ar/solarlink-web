@@ -16,8 +16,10 @@ def calculador_cantidad_true(lista:list):
 
 
 @shared_task()
-def no_reply_sender(**kwargs):
-    mail.send_mail([kwargs["mail_to"]], subject=kwargs["asunto"], html_message=kwargs["mensaje"])
+def no_reply_sender(email, subject, html_message):
+    mail = EmailMessage(subject, html_message, to=[email])
+    mail.content_subtype = 'html' # this is required because there is no plain text email message
+    mail.send()
 
 @shared_task()
 def creador_datos():

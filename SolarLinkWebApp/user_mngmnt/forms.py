@@ -10,13 +10,13 @@ import string
 
 
 class SignupForm(forms.Form):
-    first_name = forms.CharField(label='Nombre:', max_length=32)
-    last_name = forms.CharField(label='Apellido:', max_length=32)
+    first_name = forms.CharField(label='Nombre:', max_length=32, widget=forms.TextInput(attrs={'placeholder': 'Nombres', 'class': 'controls'}))
+    last_name = forms.CharField(label='Apellido:', max_length=32, widget=forms.TextInput(attrs={'placeholder': 'Apellidos', 'class': 'controls'}))
 
-    email = forms.EmailField(label='Email')
-    username = forms.CharField(label='Username:', max_length=16)
-    password1 = forms.CharField(label='Contraseña:', max_length=32, min_length=8, widget=forms.PasswordInput())
-    password2 = forms.CharField(label='Confirmar contraseña:', max_length=32, min_length=8, widget=forms.PasswordInput())
+    email = forms.EmailField(label='Email', widget=forms.TextInput(attrs={'placeholder': 'Email', 'class': 'controls'}))
+    username = forms.CharField(label='Username:', max_length=16, widget=forms.TextInput(attrs={'placeholder': 'Username', 'class': 'controls'}))
+    password1 = forms.CharField(label='Contraseña:', max_length=32, min_length=8, widget=forms.PasswordInput(attrs={'placeholder':'Contraseña', 'class': 'controls'}))
+    password2 = forms.CharField(label='Confirmar contraseña:', max_length=32, min_length=8, widget=forms.PasswordInput(attrs={'placeholder':'Confirmar contraseña', 'class': 'controls'}))
 
     # metodo de filtrado
     def clean(self):
