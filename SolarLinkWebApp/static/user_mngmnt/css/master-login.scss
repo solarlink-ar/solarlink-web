@@ -1,12 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
 body {
-    margin: 0;
-    padding: 0;
-    background-image: linear-gradient(180deg, #0000008c 0%, #0000008c 100%), url(static("general/img/fondito.png"));
-    background-size: cover;
-    font-family: 'Lato', sans-serif;
-    height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-image: linear-gradient(180deg, #0000008c 0%, #0000008c 100%), url(static("general/img/fondito.png"));
+  background-size: cover;
+  font-family: 'Lato', sans-serif;
+  height: 100vh;
   }
   
   .login-box {
@@ -70,13 +70,14 @@ body {
   }
   
   .login-box a {
+    text-align: center;
     text-decoration: none;
     font-size: 12px;
     line-height: 20px;
     color: #696969;
   }
   
-  .login-box a:hover {
+  .login-box form:hover {
     color: #000;
   }
   .h2
