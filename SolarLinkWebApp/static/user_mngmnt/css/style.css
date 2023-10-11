@@ -1,9 +1,10 @@
 /********** Template CSS **********/
 :root {
-    --primary: #858383;
-    --secondary: #242424;
+    --primary:  #d8c835;
+    --secondary:  #222009;
     --light: #F0F6FF;
     --dark: #000000;
+    
 }
 
 
@@ -26,7 +27,7 @@
 h1,
 h2,
 .fw-bold {
-    font-weight: 700 !important;
+    font-weight: 1200 !important;
 }
 
 h3,
