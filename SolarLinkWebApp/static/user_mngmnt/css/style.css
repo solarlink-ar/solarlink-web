@@ -24,10 +24,15 @@
 
 
 /*** Heading ***/
+.fs-1 {
+    font-size: 14;
+}
+
 h1,
 h2,
 .fw-bold {
     font-weight: 1200 !important;
+
 }
 
 h3,

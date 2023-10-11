@@ -69,18 +69,10 @@
             <div class="container-xxl bg-primary hero-header">
                 <div class="container px-lg-5">
                     <div class="row g-3">
-                        <div class="col-lg-8 text-center text-lg-start">
-                            <h1 class="text-white mb-4 animated slideInDown">Bienvenido {{user.username}} !</h1>
-                            <p class="text-white pb-3 animated slideInDown">En esta pagina podra controlar y consultar aspectos de su unidad de Solar Link!</p>
-                        </div>
-                        <div class="col-lg-4 d-flex justify-content-center justify-content-lg-end wow fadeInUp" data-wow-delay="0.3s">
-                            <div class="owl-carousel screenshot-carousel">
-                                <img class="img-fluid" src="{% static 'home/img/ceniko.png' %}" alt="">
-                                <img class="img-fluid" src="{% static 'home/img/factura.png' %}" alt="">
-                                <img class="img-fluid" src="{% static 'home/img/gil_soria.png' %}" alt="">
-                                <img class="img-fluid" src="{% static 'home/img/IMG_1.png' %}" alt="">
-                                <img class="img-fluid" src="{% static 'home/img/casita.png' %}" alt="">
-                            </div>
+                        <div class=" text-center text-lg-start">
+                            <h1 style="font-size:6em;" class="text-white text-center mb-4 animated slideInDown">¡Bienvenido {{user.username}} !</h1>
+                            <p style="font-size:1.5em"class="text-white text-center  animated slideInDown pb-3">En esta pagina podra controlar y consultar aspectos de su unidad de Solar Link</p>
+                            <canvas style="width:100%; max-width:400px;">
                         </div>
                     </div>
                 </div>
@@ -322,7 +314,7 @@
                                 <div class="d-inline-flex align-items-center justify-content-center bg-secondary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow" style="width: 100px; height: 100px;">
                                     <i class="fa fa-address-card fa-3x text-white"></i>
                                 </div>
-                                <h5 class="mt-4 mb-3">Cambiar contrasenia</h5>
+                                <h5 class="mt-4 mb-3">Cambiar contraseña</h5>
                                 <p class="mb-0">Tempor erat elitr rebum clita dolor diam ipsum sit diam amet diam eos erat ipsum et lorem et sit sed stet</p>
                             </div>
                         </div>
@@ -398,19 +390,14 @@
                         <p><i class="fa fa-phone-alt me-3"></i>+53 9 11 3545-7031</p>
                         <p><i class="fa fa-envelope me-3"></i>info@solarlink.com</p>
                         <div class="d-flex pt-2">
-                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
                             <a class="btn btn-outline-light btn-social" target= "_blank" href="https://instagram.com/solarlink.ar/"><i class="fab fa-instagram"></i></a>
                             <a class="btn btn-outline-light btn-social" target= "_blank" href="https://linkedin.com/solarlink/"><i class="fab fa-linkedin-in"></i></a>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-4">
-                        <h4 class="text-white mb-4">Quick Link</h4>
+                        <h4 class="text-white mb-4">Links</h4>
                         <a class="btn btn-link" href="{% url 'index' %}">About Us</a>
-                        <a class="btn btn-link" href=""mailto:info@solarlink.ar"">Contact Us</a>
-                        <a class="btn btn-link" href="">Privacy Policy</a>
-                        <a class="btn btn-link" href="">Terms & Condition</a>
-                        <a class="btn btn-link" href="">Career</a>
+                        <a class="btn btn-link" href="mailto:info@solarlink.ar">Contact Us</a>
                     </div>
                 </div>
             </div>
