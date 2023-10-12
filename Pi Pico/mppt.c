@@ -116,7 +116,6 @@ void on_uart_rx() {
         if (uart_is_writable(UART_ID)) {
             real_prom = prom_hour / cont_hour;
             sprintf(json, "{\"prom_hour\":%f,\"volt_actual\":%f}", real_prom, battery_voltage);
-            // sprintf(json, real_prom);
             uart_putc(UART_ID, *json);
         }
     }
@@ -311,6 +310,8 @@ int main() {
     lcd_set_cursor(3, 0);
     lcd_string("Io:       PWM:   %");
 
+    add_alarm_in_ms(-1000, alarm_callback, NULL, false);
+
     while (true) {
         // Selecciono el canal de la tension y se lee y se convierte
         adc_select_input(ADC_CHANNEL_BATTERY);
@@ -330,16 +331,9 @@ int main() {
         sprintf(str, "%.2f", battery_in);
         lcd_set_cursor(1, 4);
         lcd_string(str);
-        add_alarm_in_ms(-1000, alarm_callback, NULL, false);
-    ///////////////   UART COMMUNICATION   ///////////////
-
-    /////////////// UART COMMUNICATION END ///////////////
 
     ///////////////   MDOE VERIFICATION   ///////////////    
         if (charging_mode == BULK_MODE){
-            if (battery_voltage < BATTERY_MIN_VOLTAGE && battery_in > SPIKE_BAT){
-                    charging_mode = SPIKE_MODE;
-            }
             if (battery_voltage > BULK_MAX_BATTERY_VOLTAGE) {
                     // Cambio modo de carga en caso de que corriente baje del umbral
                     charging_mode = ABSORTION_MODE;
@@ -350,9 +344,6 @@ int main() {
             }
         }
         if (charging_mode == ABSORTION_MODE){
-            if (battery_voltage < BATTERY_MIN_VOLTAGE && battery_in > SPIKE_BAT){
-                    charging_mode = SPIKE_MODE;
-            }
             if (battery_current < ABSORTION_MIN_PANEL_CURRENT) {
                     // Cambio modo de carga en caso de que corriente baje del umbral
                     charging_mode = FLOAT_MODE;
@@ -363,9 +354,6 @@ int main() {
             }
         }
         if (charging_mode == FLOAT_MODE){
-            if (battery_voltage < BATTERY_MIN_VOLTAGE && battery_in > SPIKE_BAT){
-                    charging_mode = SPIKE_MODE;
-            }
             if (battery_voltage < FLOAT_MIN_BATTERY_VOLTAGE) {
                     charging_mode = BULK_MODE;
                 }  
@@ -378,16 +366,6 @@ int main() {
                 lcd_string("  FLOAT  ");
             }
         }
-        // if (charging_mode == SPIKE_MODE){
-        //     if (spike_flag == 1){
-        //         charging_mode = BULK_MODE;
-        //         spike_flag = 0;
-        //     }
-        //     else{
-        //         lcd_set_cursor(1, 11);
-        //         lcd_string("  SPIKE  ");
-        //     }
-        // }
 
     ///////////////   END MDOE VERIFICATION   ///////////////   
     
@@ -447,22 +425,6 @@ int main() {
             
         }
     ///////////////  END FLOAT  ////////////////
-
-    ///////////////    SPIKE    ////////////////
-        if (charging_mode == SPIKE_MODE){
-            float error = (SPIKE_BAT - battery_voltage) * 6.66667;
-            if (battery_voltage > SPIKE_BAT){
-                pwm_level = pwm_level - (-1 * error * INTEGRAL_CONSTANT);
-            }
-            else {
-                pwm_level += 1 * error * INTEGRAL_CONSTANT;
-            }
-            // Verifico que no exceda los limites
-            pwm_level = saturador(PWM_WRAP, pwm_level);
-            // Ajusto PWM
-            pwm_set_gpio_level(pwm, pwm_level);
-        }
-    ///////////////  END SPIKE  ////////////////
         lcd_set_cursor(3, 14);
         sprintf(str, "%d", (int) (pwm_level * 0.0264061262));
         lcd_string(str);
