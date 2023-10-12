@@ -1,20 +1,44 @@
-{% csrf_token %}
-{% if user.is_active == False %}
-<div id="message">
-    ¡Gracias por registrarte! Andá a tu casilla de mail y confirmá el registro para continuar
-    Recordá que no podés iniciar sesión hasta que actives la cuenta
-</div>
+{% extends 'form.html' %}
+{% load static %}
+{% load compress static %}
 
-<a href={% url 'index'%}><button >Inicio</button> </a>
+<head>
+  {% block head %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Solar Link | Registro</title>
+    {% compress css %}
+    <link rel="stylesheet" type="text/x-scss" href="{% static "user_mngmnt/css/registro.scss" %}" />
+    {% endcompress %}
+  {% endblock %}
+</head>
 
-{% else %}
-<div id="message">
-    Cuenta habilitada! Redirigiendote a inicio...
-</div>
-<script>
-    setTimeout(function(){
-        window.location = "{% url 'index' %}";
-   },2000);
-</script>
+{% block body %}
+  <body>
+    <section class="form-register">
+      <div class="login-box">
+      <form method = "POST" action="{% url 'signup' %}">
+        {% csrf_token %}
+            {% if user.is_active == False %}
+            <div id="message">
+                <h4>¡Gracias por registrarte! Andá a tu casilla de mail y confirmá el registro para continuar.</h4>
+                <h4>Recordá que no podés iniciar sesión hasta que actives la cuenta.</h4>
+            </div>
 
-{% endif %}
+            <a href={% url 'index'%}><button class="botons">Inicio</button></a>
+
+            {% else %}
+            <div id="message">
+                <h4>Cuenta habilitada! Redirigiendote a inicio...</h4>
+            </div>
+            <script>
+                setTimeout(function(){
+                    window.location = "{% url 'index' %}";
+            },2000);
+            </script>
+
+            {% endif %}
+    </section>
+
+  </body>
+{% endblock %}

@@ -359,7 +359,8 @@ def sender(request):
     #no_reply_sender.delay(email = user.email, subject='Cambio de contraseña', html_message=render_to_string("user_mngmnt/auth/confirmacion_password.html", context))
 
 def creador(request):
-    creador_datos.delay()
+    return render(request, "user_mngmnt/auth/signup_verification.html")
+    #creador_datos.delay()
     #models.UsersTokens(user=request.user, signup_token = 'dajkalsd').save()
     #import time
     #time.sleep(1)
