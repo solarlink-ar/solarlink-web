@@ -165,8 +165,8 @@ class PasswordReset(View):
                 context = {"first_name": user.first_name, "username": user.username, "mail": user.email, "url": f"{request.build_absolute_uri('/')}user/password-set/{token}", "base": request.build_absolute_uri('/')}
                 # mando mail
                 no_reply_sender.delay(email = user.email, subject='Cambio de contraseña', html_message=render_to_string("user_mngmnt/auth/confirmacion_password.html", context))
-            # devuelvo vista con booleano para avisar que ya se envió mail
-            return render(request, 'user_mngmnt/auth/password-reset.html', {'done': True})
+        # devuelvo vista con booleano para avisar que ya se envió mail
+        return render(request, 'user_mngmnt/auth/password-reset.html', {'done': True})
     
 # password 
 class PasswordSet(View):
