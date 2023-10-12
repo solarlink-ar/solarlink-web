@@ -287,20 +287,45 @@ class UserCalc(View):
 ###############################################################################################################
 
 
-def load_data(request):
-    if request.method == "GET":
+class LoadData(View):
+    def post(self, request):
+        # data posteada
         data = request.GET.dict()
+        # autentico
         user = auth.authenticate(username=data["username"], password=data["password"])
+        # si existe el usuario
         if user:
+            # guardo datos
+            models.DatosHora(
+                user = user,
+                voltaje_hora_red = data["voltaje_hora_red"],
+                consumo_hora_solar = data["consumo_hora_solar"],
+                consumo_hora_red = data["consumo_hora_red"],
+                consumo_l1 = data["consumo_l1"],
+                consumo_l2 = data["consumo_l2"],
+                hora = data["hora"],
+                dia = data["dia"],
+                mes = data["mes"],
+                año = data["año"],
+                solar_ahora = data["solar_ahora"],
+                panel_potencia = data["panel_potencia"],
+                cargando = data["cargando"],
+                voltaje_bateria = data["voltaje_bateria"],
+                errores = data["errores"]
+            ).save()
+            # respondo
             response = {"result": True}
-            # cargar datos proximamente
+
+        # si no existe
         else:
+            # respondo que usuario incorrecto
             response = {"result": False}
+
         return JsonResponse(response)
     
 class APILogin(View):
     def post(self, request):
-        # datos de la ESP
+        # usuario posteado
         username = request.POST["username"]
         password = request.POST["password"]
 

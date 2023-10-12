@@ -38,7 +38,7 @@ urlpatterns = [
     path("password-reset/", views.PasswordReset.as_view(), name="password_reset"),
     # USER INFO #
     path("api-login/", csrf_exempt(views.APILogin.as_view()), name="api_login"),
-    path("load-data/", views.load_data, name="load_data"),
+    path("load-data/", csrf_exempt(views.LoadData.as_view()), name="load_data"),
     path("userpage/", login_required(views.UserPage.as_view()), name="userpage"),
     path("index/", views.index, name="index2"),
     # TESTS #
