@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -15,9 +17,16 @@ body {
   margin: auto;
   margin-top: 100px;
   border-radius: 4px;
-  font-family: 'calibri';
   color: white;
   box-shadow: 7px 13px 37px #000;
+}
+.login-box .avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  position: absolute;
+  top: -50px;
+  left: calc(50% - 50px);
 }
 
 .form-register h4 {
@@ -32,9 +41,8 @@ body {
   border-radius: 4px;
   margin-bottom: 16px;
   border: 1px solid #fce93c;
-  font-family: 'calibri';
   font-size: 18px;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .form-register p {

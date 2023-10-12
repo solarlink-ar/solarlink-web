@@ -19,6 +19,7 @@
 {% block body %}
   <body>
     <section class="form-register">
+      <div class="login-box">  
       <h4>Registrate!</h4>
       <form method = "POST" action="{% url 'signup' %}">
         {% csrf_token %}
@@ -36,6 +37,3 @@
 
   </body>
 {% endblock %}
-
-    
-

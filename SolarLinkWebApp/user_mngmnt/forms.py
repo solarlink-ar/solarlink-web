@@ -82,8 +82,8 @@ class PasswordSetForm(forms.Form):
         
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label='Username:', max_length=16, widget=forms.TextInput(attrs={'placeholder': 'Username'}))
-    password = forms.CharField(label='Contraseña:', max_length=32, min_length=8, widget=forms.PasswordInput(attrs={'placeholder':'Contraseña'}))
+    username = forms.CharField(label='Username:', max_length=16, widget=forms.TextInput(attrs={'placeholder': 'Username', "class": "controls"}))
+    password = forms.CharField(label='Contraseña:', max_length=32, min_length=8, widget=forms.PasswordInput(attrs={'placeholder':'Contraseña', "class": "controls"}))
 
     def clean(self):
         try:
