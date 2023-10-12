@@ -1,6 +1,8 @@
 amqp==5.1.1
 asgiref==3.7.2
+beautifulsoup4==4.12.2
 billiard==4.1.0
+bs4==0.0.1
 celery==5.3.4
 certifi==2023.7.22
 charset-normalizer==3.2.0
@@ -23,6 +25,7 @@ rcssmin==1.1.1
 requests==2.31.0
 rjsmin==1.2.1
 six==1.16.0
+soupsieve==2.5
 sqlparse==0.4.4
 tzdata==2023.3
 urllib3==2.0.4
