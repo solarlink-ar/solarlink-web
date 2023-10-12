@@ -38,13 +38,16 @@ body {
     padding: 0 0 20px;
     text-align: center;
     font-size: 22px;
-  }
+    color: #000000;
+  } 
   
   .login-box input {
     width: 100%;
     margin-bottom: 20px;
     border-radius: 4px;
     box-shadow: 7px 13px 37px #000;
+    background: #979494;
+    border: 1px solid #fce93c;
   }
   
   .login-box input[type="text"], .login-box input[type="password"] {
@@ -61,7 +64,7 @@ body {
     border: none;
     outline: none;
     height: 40px;
-    background:#fac331;
+    background:#fce93c;
     color: #000000;
     font-size: 18px;
     border-radius: 20px;
@@ -69,7 +72,7 @@ body {
   
   .login-box input[type="submit"]:hover {
     cursor: pointer;
-    background: #ffb726;
+    background: #fce93c;
     color: #000;
   }
   
