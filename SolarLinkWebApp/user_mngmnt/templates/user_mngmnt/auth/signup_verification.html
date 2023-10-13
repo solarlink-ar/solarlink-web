@@ -17,27 +17,24 @@
   <body>
     <section class="form-register">
       <div class="login-box">
-      <form method = "POST" action="{% url 'signup' %}">
-        {% csrf_token %}
-            {% if user.is_active == False %}
-            <div id="message">
-                <h4>¡Gracias por registrarte! Andá a tu casilla de mail y confirmá el registro para continuar.</h4>
-                <h4>Recordá que no podés iniciar sesión hasta que actives la cuenta.</h4>
-            </div>
+        {% if user.is_active == False %}
+        <div id="message">
+          <h4>¡Gracias por registrarte! Andá a tu casilla de mail y confirmá el registro para continuar.</h4>
+          <h4>Recordá que no podés iniciar sesión hasta que actives la cuenta.</h4>
+        </div>
+        <a href={% url 'index'%}><button class="botons">Inicio</button></a>
 
-            <a href={% url 'index'%}><button class="botons">Inicio</button></a>
+        {% else %}
+        <div id="message">
+            <h4>Cuenta habilitada! Redirigiendote a inicio...</h4>
+        </div>
+        <script>
+            setTimeout(function(){
+                window.location = "{% url 'index' %}";
+        },2000);
+        </script>
 
-            {% else %}
-            <div id="message">
-                <h4>Cuenta habilitada! Redirigiendote a inicio...</h4>
-            </div>
-            <script>
-                setTimeout(function(){
-                    window.location = "{% url 'index' %}";
-            },2000);
-            </script>
-
-            {% endif %}
+        {% endif %}
     </section>
 
   </body>

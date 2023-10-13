@@ -5,22 +5,21 @@
 
 {% block head %}
   <title>Solar Link | Login</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
   {% compress css %}
   <link rel="stylesheet" type="text/x-scss" href="{% static "user_mngmnt/css/master-login.scss" %}" />
-  <link href="{% static 'user_mngmnt/css/bootstrap.min.css' %}" rel="stylesheet">
   {% endcompress %}
+
 {% endblock %}
 
 {% block body %}
 
 <body>
 
-  <div class="login-box">  
+  <div class="login-box">
     <a href="{% url 'index' %}" class="imagen"><i class="fa fa-home fa-2x"></i></a>
     <img src="{% static 'user_mngmnt/img/logo-chico.png' %}" class="avatar" alt="Imagen logo">
     <h1>Iniciar sesión</h1>
-    <form method = "POST" action="{% url 'login' %}">
+    <form class=fomethod = "POST" action="{% url 'login' %}">
       {% csrf_token %}
       <!--USUARIO-->
       {{ form.username }}

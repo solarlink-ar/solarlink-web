@@ -351,6 +351,7 @@ class EdesurEdenor(View):
 ###############################################################################################################
 
 def sender(request):
+
     user = request.user
     token = 'anachei'
     context = {"first_name": user.first_name, "username": user.username, "mail": user.email, "url": f"{request.build_absolute_uri('/')}user/password-set/{token}", "base": request.build_absolute_uri('/')}
@@ -359,8 +360,7 @@ def sender(request):
     #no_reply_sender.delay(email = user.email, subject='Cambio de contraseña', html_message=render_to_string("user_mngmnt/auth/confirmacion_password.html", context))
 
 def creador(request):
-    return render(request, "user_mngmnt/auth/signup_verification.html")
-    #creador_datos.delay()
+    creador_datos.delay()
     #models.UsersTokens(user=request.user, signup_token = 'dajkalsd').save()
     #import time
     #time.sleep(1)
@@ -368,6 +368,7 @@ def creador(request):
     #for i in data:
     #    print(i.hora, i.dia, i.mes, i.año)
     #return render(request, "user_mngmnt/auth/confirmacion.html")
+    ...
 
 def confirmation(request):
     #ordenador.delay()
