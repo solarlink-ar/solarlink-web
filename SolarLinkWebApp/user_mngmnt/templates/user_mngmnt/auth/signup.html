@@ -6,12 +6,14 @@
   {% block head %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <title>Solar Link | Registro</title>
     {% comment %}
         Compresor para poder usar static directions en el registro.scss
     {% endcomment %}
     {% compress css %}
     <link rel="stylesheet" type="text/x-scss" href="{% static "user_mngmnt/css/registro.scss" %}" />
+    <link href="{% static 'user_mngmnt/css/bootstrap.min.css' %}" rel="stylesheet">
     {% endcompress %}
   {% endblock %}
 </head>
@@ -19,7 +21,8 @@
 {% block body %}
   <body>
     <section class="form-register">
-      <div class="login-box">  
+      <div class="login-box"> 
+        <a href="{% url 'index' %}" class="imagen"><i class="fa fa-home fa-2x"></i></a>
       <h4>Registrate!</h4>
       <form method = "POST" action="{% url 'signup' %}">
         {% csrf_token %}

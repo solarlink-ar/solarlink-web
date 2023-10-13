@@ -76,14 +76,30 @@ body {
     color: #000;
   }
   
-  .login-box a {
+  .imagen {
     text-align: center;
     text-decoration: none;
     font-size: 16px;
     line-height: 20px;
-    color: #000000;
+    color: #ffffff;
+    padding: 5px;
+    top: -16%;
+    position: relative;
+  }
+
+  .si {
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    line-height: 20px;
+    color: #ffffff;
+    padding: 5px;
   }
   
+  .si:hover {
+    color: white;
+    text-decoration: underline;
+  }
   .login-box form:hover {
     color: #000;
   }
@@ -104,8 +120,10 @@ body {
     height: 56%;
   }
   .login-box .avatar {
-    width: 42%;
-    height: 25%;
+    max-width: 42%;
+    max-height: 25%;
+    width: auto;
+    height: auto;
     top: -12%;
     left: 30%;
   }
@@ -114,7 +132,7 @@ body {
     font-size: 262%;
   }
   .login-box input {
-    margin-bottom: 21%;
+    margin-bottom: 17%;
   }
   .login-box input[type="text"], .login-box input[type="password"] {
     height: 90px;
@@ -126,5 +144,9 @@ body {
   }
   .login-box a {
     font-size: 249%;
+    padding: 17px;
 }
+  .imagen{
+    top: -1%;
+  }
 }
