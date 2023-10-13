@@ -95,11 +95,36 @@ body {
     color: #000000;
     margin-bottom: 10%;
   }
-@media (max-width: 800px){
+@media (max-width: 1040px){
   body {
     display: flex;
   }
   .login-box {
-    top: 25%;
+    width: 73%;
+    height: 56%;
   }
+  .login-box .avatar {
+    width: 42%;
+    height: 25%;
+    top: -12%;
+    left: 30%;
+  }
+  .login-box h1 {
+    margin: 8%;
+    font-size: 262%;
+  }
+  .login-box input {
+    margin-bottom: 21%;
+  }
+  .login-box input[type="text"], .login-box input[type="password"] {
+    height: 90px;
+    font-size: 234%;
+  }
+  .login-box input[type="submit"] {
+    height: 90px;
+    font-size: 246%;
+  }
+  .login-box a {
+    font-size: 249%;
+}
 }
