@@ -4,7 +4,7 @@
     --secondary:  #222009;
     --light: #F0F6FF;
     --dark: #000000;
-    
+    --pos: fixed;
 }
 
 
@@ -24,6 +24,9 @@
 
 
 /*** Heading ***/
+h1 {
+    font-size:6em;
+}
 
 h1,
 h2,
@@ -146,7 +149,6 @@ h6,
     background: linear-gradient(to bottom right, var(--primary), var(--secondary));
 }
 
-
 /*** Navbar ***/
 .navbar-light .navbar-nav .nav-link {
     position: relative;
@@ -197,6 +199,18 @@ h6,
 }
 
 @media (max-width: 991.98px) {
+    h1 {
+        font-size: relative;
+    }
+
+    p {
+        font-size: relative;
+    }
+
+    :root {
+        --pos: relative;
+    }
+
     .sticky-top.navbar-light {
         position: relative;
         background: #FFFFFF;

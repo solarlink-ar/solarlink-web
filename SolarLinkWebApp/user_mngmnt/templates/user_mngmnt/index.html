@@ -59,10 +59,13 @@
                         <a href="#home" class="nav-item nav-link active">Inicio</a>
                         <a href="#estado_actual" class="nav-item nav-link">Estado actual</a>
                         <a href="#datos_ahorro" class="nav-item nav-link">Ahorro</a>
-                        <a href="#configuracion" class="nav-item nav-link">Configuracion</a>
                         <a href="#contact" class="nav-item nav-link">Contacto</a>
+                        {% if request.user.is_authenticated %}
+                        <a href="" class="btn btn-primary-gradient py-sm-2 px-3 px-sm-4 rounded-pill mt-2">{{ request.user.first_name }}</a>
+                        {% else %}
+                        <a href="{% url 'login' %}" class="nav-link" style="position: var(--pos);margin-left: 45%;margin-right: 0px;">Iniciar sesión</a>
+                        {% endif %}
                     </div>
-                    <a href="" class="btn btn-primary-gradient py-sm-2 px-3 px-sm-4 rounded-pill mt-2">Usuario</a>
                 </div>
             </nav>
 
@@ -70,7 +73,7 @@
                 <div class="container px-lg-5">
                     <div class="row g-3">
                         <div class=" text-center text-lg-start">
-                            <h1 style="font-size:6em;" class="text-white text-center mb-4 animated slideInDown">¡Bienvenido {{user.username}} !</h1>
+                            <h1 class="text-white text-center mb-4 animated slideInDown">¡Bienvenido {{user.username}} !</h1>
                             <p style="font-size:1.5em"class="text-white text-center  animated slideInDown pb-3">En esta pagina podra controlar y consultar aspectos de su unidad de Solar Link</p>
                             <canvas style="width:100%; max-width:400px;">
                         </div>
@@ -283,54 +286,13 @@
                                 })
                             </script>
                         </div>
-                        <a href="" class="btn btn-primary-gradient py-sm-3 px-4 px-sm-5 rounded-pill mt-3">Read More</a>
                     </div>
                 </div>
             </div>
         </div>
         <!-- About End -->
 
-        <!-- Pricing Start -->
-        <div class="container-xxl py-5" id="configuracion">
-
-             <!-- Process Start -->
-            <div class="container-xxl py-5">
-                <div class="container py-5 px-lg-5">
-                    <div class="text-center pb-4 wow fadeInUp" data-wow-delay="0.1s">
-                        <h1 class="mb-5">Configuracion</h1>
-                    </div>
-                    <div class="row gy-5 gx-4 justify-content-center">
-                        <div class="col-lg-4 col-sm-6 text-center pt-4 wow fadeInUp" data-wow-delay="0.1s">
-                            <div class="position-relative bg-light rounded pt-5 pb-4 px-4">
-                                <div class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow" style="width: 100px; height: 100px;">
-                                    <i class="fa fa-cog fa-3x text-white"></i>
-                                </div>
-                                <h5 class="mt-4 mb-3">Cambiar nombre de usuario</h5>
-                                <p class="mb-0">Tempor erat elitr rebum clita dolor diam ipsum sit diam amet diam eos erat ipsum et lorem et sit sed stet</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-sm-6 text-center pt-4 wow fadeInUp" data-wow-delay="0.3s">
-                            <div class="position-relative bg-light rounded pt-5 pb-4 px-4">
-                                <div class="d-inline-flex align-items-center justify-content-center bg-secondary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow" style="width: 100px; height: 100px;">
-                                    <i class="fa fa-address-card fa-3x text-white"></i>
-                                </div>
-                                <h5 class="mt-4 mb-3">Cambiar contraseña</h5>
-                                <p class="mb-0">Tempor erat elitr rebum clita dolor diam ipsum sit diam amet diam eos erat ipsum et lorem et sit sed stet</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-sm-6 text-center pt-4 wow fadeInUp" data-wow-delay="0.5s">
-                            <div class="position-relative bg-light rounded pt-5 pb-4 px-4">
-                                <div class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow" style="width: 100px; height: 100px;">
-                                    <i class="fa fa-check fa-3x text-white"></i>
-                                </div>
-                                <h5 class="mt-4 mb-3">Enjoy The Features</h5>
-                                <p class="mb-0">Tempor erat elitr rebum clita dolor diam ipsum sit diam amet diam eos erat ipsum et lorem et sit sed stet</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
         <!-- Contact Start -->
         <div class="container-xxl py-5" id="contact">
             <div class="container py-5 px-lg-5">
