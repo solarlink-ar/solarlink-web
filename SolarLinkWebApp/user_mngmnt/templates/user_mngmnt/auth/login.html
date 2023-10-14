@@ -1,36 +1,30 @@
 {% extends 'form.html' %}
-
-{% load compress static %}
 {% load static %}
+{% load compress static %}
 
-{% block head %}
-  <title>Solar Link | Login</title>
-  {% compress css %}
-  <link rel="stylesheet" type="text/x-scss" href="{% static "user_mngmnt/css/master-login.scss" %}" />
-  {% endcompress %}
 
-{% endblock %}
+<head>
+  {% block head %}
+    <title>Solar Link | Inicio sesion</title>
+
+  {% endblock %}
+</head>
 
 {% block body %}
+  <body>
+    <section class="form-register">
+        <a href="{% url 'index' %}" class="imagen"><i class="fa fa-home fa-2x"></i></a>
+      <h4>Inicia sesion</h4>
+      <form method = "POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        {{form.username}}
+        {{form.password}}
+        {{error}}
+        <input class="botons" type="submit" value="Iniciar sesion">
+      <form method = "POST" action="{% url 'login' %}">
+      <p><a href="{% url 'signup' %}">Registrarse</a></p>
+      <p><a href="{% url 'password_reset' %}">Olvide mi contraseña</a></p>
+    </section>
 
-<body>
-
-  <div class="login-box">
-    <a href="{% url 'index' %}" class="imagen"><i class="fa fa-home fa-2x"></i></a>
-    <img src="{% static 'user_mngmnt/img/logo-chico.png' %}" class="avatar" alt="Imagen logo">
-    <h1>Iniciar sesión</h1>
-    <form class=fomethod = "POST" action="{% url 'login' %}">
-      {% csrf_token %}
-      <!--USUARIO-->
-      {{ form.username }}
-      <!-- CONTRASEÑA -->
-      {{ form.password }}
-      {{error}}
-      <input type="submit" value="Ingresar">
-      <a class="si" href="{% url 'signup' %}">Registrarse</a>
-      <a class="si" href="{% url 'password_reset' %}">Olvidé mi contraseña</a>
-    </form>
-  </div>
-</body>
-
+  </body>
 {% endblock %}

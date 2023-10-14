@@ -1,10 +1,11 @@
-/********** Template CSS **********/
 :root {
     --primary:  #d8c835;
     --secondary:  #222009;
     --light: #F0F6FF;
     --dark: #000000;
     --pos: fixed;
+    --ml: 45%;
+    --mr: 0px;
 }
 
 
@@ -24,10 +25,6 @@
 
 
 /*** Heading ***/
-h1 {
-    font-size:6em;
-}
-
 h1,
 h2,
 .fw-bold {
@@ -199,16 +196,10 @@ h6,
 }
 
 @media (max-width: 991.98px) {
-    h1 {
-        font-size: relative;
-    }
-
-    p {
-        font-size: relative;
-    }
-
     :root {
         --pos: relative;
+        --ml: 0%;
+        --mr: 10px;
     }
 
     .sticky-top.navbar-light {
