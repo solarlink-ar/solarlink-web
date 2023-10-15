@@ -60,11 +60,7 @@
                         <a href="#estado_actual" class="nav-item nav-link">Estado actual</a>
                         <a href="#datos_ahorro" class="nav-item nav-link">Ahorro</a>
                         <a href="#contact" class="nav-item nav-link">Contacto</a>
-                        {% if request.user.is_authenticated %}
-                        <a href="" class="btn btn-primary-gradient py-sm-2 px-3 px-sm-4 rounded-pill mt-2">{{ request.user.first_name }}</a>
-                        {% else %}
-                        <a href="{% url 'login' %}" class="nav-link" style="position: var(--pos);margin-left: var(--ml);margin-right: var(--mr);">Iniciar sesión</a>
-                        {% endif %}
+                        <a href="{% url 'login' %}" class="nav-link" style="position: var(--pos);margin-left: var(--ml);margin-right: var(--mr);">{{ request.user.first_name }} a</a>
                     </div>
                 </div>
             </nav>
@@ -358,8 +354,8 @@
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <h4 class="text-white mb-4">Links</h4>
-                        <a class="btn btn-link" href="{% url 'index' %}">About Us</a>
-                        <a class="btn btn-link" href="mailto:info@solarlink.ar">Contact Us</a>
+                        <a class="btn btn-link" href="{% url 'index' %}">Nosotros</a>
+                        <a class="btn btn-link" href="mailto:info@solarlink.ar">Contactenos</a>
                     </div>
                 </div>
             </div>

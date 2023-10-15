@@ -13,7 +13,10 @@
 {% block body %}
   <body>
     <section class="form-register">
-        <a href="{% url 'index' %}" class="imagen"><i class="fa fa-home fa-2x"></i></a>
+      {% if request.META.HTTP_REFERER == 'http://127.0.0.1:8000/user/index/' %}
+      {% else %}
+      <a href="{% url 'index' %}" class="imagen"><i class="fa fa-home fa-2x"></i></a>
+      {% endif %}
       <h4>Inicia sesion</h4>
       <form method = "POST" action="{% url 'login' %}">
         {% csrf_token %}
