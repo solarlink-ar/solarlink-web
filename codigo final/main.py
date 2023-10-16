@@ -5,6 +5,7 @@ from lcd_api import LcdApi
 from i2c_lcd import I2cLcd
 import urequests as requests
 import _thread
+import microdot
 
 p_l2 = Pin(18, Pin.OUT)
 p_l1 = Pin(19, Pin.OUT)
