@@ -5,6 +5,7 @@ from django.urls import path, include
 from django.shortcuts import render, redirect
 from . import views
 
+# no permite acceder a las pestañas estando logueado
 def unlogued_required(function, redirect_link):
     if function:
         def check(request):

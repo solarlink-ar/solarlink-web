@@ -28,7 +28,8 @@ SECRET_KEY = 'lku#p+_&8ucbkd(jlc-48mx@pgf2r42g8eqlvm0148)(5xlovr'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app', 'solarlink.ar', '127.0.0.1', '192.168.1.46']
+# páginas host permitidas
+ALLOWED_HOSTS = ['.vercel.app', 'solarlink.ar', '127.0.0.1', '192.168.126.140']
 
 # Application definition
 
@@ -39,10 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # apps
     'home',
     'user_mngmnt',
+    # modulo django-crontab
     "django_crontab",
-    "compressor"
+    # modulo django-compressor
+    "compressor",
+    # modulo django-user-agents
+    "django_user_agents",
 ]
 
 MIDDLEWARE = [
@@ -53,9 +59,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware'
-]
+    # middleware de white noise
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # middleware de django user agents
+    'django_user_agents.middleware.UserAgentMiddleware',
 
+]
+# ruta del archivo de urls
 ROOT_URLCONF = 'SolarLinkWebApp.urls'
 
 # Templates
@@ -74,7 +84,7 @@ TEMPLATES = [
         },
     },
 ]
-
+# ruta del WSGI
 WSGI_APPLICATION = 'SolarLinkWebApp.wsgi.application'
 
 
@@ -127,11 +137,11 @@ USE_TZ = True
 STATIC_ROOT = "static/"
 STATIC_URL = "static/"
 
-
+# django-compress configuracion
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
 )
-
+# buscadores de staticfiles
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',

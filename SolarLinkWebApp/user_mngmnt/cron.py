@@ -80,6 +80,27 @@ def ordenador():
             # sobreescribo user_data, para quitar los datos que acabo de borrar
             user_data = models.DatosHora.objects.filter(user=user)
 
+
+def token_clean():
+    # todos los tokens activos
+    data = models.UsersTokens.objects.all()
+    # hora en timezone
+    actual = timezone.now()
+    # para cada dato
+    for d in data:
+        # si el tiempo entre que el token fue creado y el actual es mayor a 2hs
+        if (actual - d.time) > datetime.timedelta(hours=2):
+            # borro el token
+            d.delete()
+
+
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+
+
 def ordenador_viejo():
     # lista de objetos de usuario
     users = models.User.objects.all()
@@ -198,15 +219,3 @@ def ordenador_viejo():
         # borro datos hora
         user_data.delete()
     requests.get("http://127.0.0.1:8000/")
-
-def token_clean():
-    # todos los tokens activos
-    data = models.UsersTokens.objects.all()
-    # hora en timezone
-    actual = timezone.now()
-    # para cada dato
-    for d in data:
-        # si el tiempo entre que el token fue creado y el actual es mayor a 2hs
-        if (actual - d.time) > datetime.timedelta(hours=2):
-            # borro el token
-            d.delete()

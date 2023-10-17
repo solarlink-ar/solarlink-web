@@ -234,7 +234,7 @@ class Login(View):
             # logueo
             auth.login(request, user)
             # redirijo a index
-            return redirect('index')
+            return redirect('index2')
         # si el form no es valido
         else:
             # codigo de error
@@ -290,7 +290,7 @@ class UserCalc(View):
 class LoadData(View):
     def post(self, request):
         # data posteada
-        data = request.GET.dict()
+        data = request.POST.dict()
         # autentico
         user = auth.authenticate(username=data["username"], password=data["password"])
         # si existe el usuario

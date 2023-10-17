@@ -15,12 +15,14 @@ django-appconf==1.0.5
 django-compressor==4.4
 django-crontab==0.7.1
 django-libsass==0.9
+django-user-agents==0.4.0
 idna==3.4
 kombu==5.3.2
 libsass==0.22.0
 prompt-toolkit==3.0.39
 python-dateutil==2.8.2
 pytz==2023.3.post1
+PyYAML==6.0.1
 rcssmin==1.1.1
 requests==2.31.0
 rjsmin==1.2.1
@@ -28,7 +30,9 @@ six==1.16.0
 soupsieve==2.5
 sqlparse==0.4.4
 tzdata==2023.3
+ua-parser==0.18.0
 urllib3==2.0.4
+user-agents==2.2.0
 vine==5.0.0
 wcwidth==0.2.6
 whitenoise==6.5.0

@@ -1,3 +1,6 @@
+{% comment %}
+    cargo los static y el compresor
+{% endcomment %}
 {% load static %}
 {% load compress static %}
 
@@ -34,6 +37,9 @@
             </div>
 
             <ul class="nav__link nav__link--menu">
+            {% comment %}
+                Si se está en otra pestaña que no sea inicio, se crea el boton inicio
+            {% endcomment %}
                 {% if not request.path == '/'%}
                 <li class="nav__items">
                     <a href="{% url 'index' %}" class="nav__links">Inicio</a>
@@ -42,13 +48,18 @@
                 <li class="nav__items">
                     <a href="{% url 'galeria' %}" class="nav__links">Galeria</a>
                 </li>
+                {% comment %}
+                Si el usuario está logueado
+                {% endcomment %}
                 {% if request.user.is_authenticated %}
                 <li class="nav__items">
                     <p class="nav__links"> ¡Hola, {{ request.user.first_name }}!</p>
                 </li>
                 <li class="nav__items">
-                    <a href="{% url 'logout' %}"class="nav__links">Cerrar sesión</a>
+                    <a href="{% url 'index2' %}"class="nav__links">Mis datos</a>
                 </li>
+                <li class="nav__items">
+                    <a href="{% url 'logout' %}"class="nav__links">Cerrar sesión</a>
                 {% else %}
                 <li class="nav__items">
                     <a href="{% url 'login' %}"class="nav__links">Iniciar sesión</a>

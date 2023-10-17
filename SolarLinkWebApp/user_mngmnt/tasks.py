@@ -18,7 +18,7 @@ def calculador_cantidad_true(lista:list):
 @shared_task()
 def no_reply_sender(email, subject, html_message):
     mail = EmailMessage(subject, html_message, to=[email])
-    mail.content_subtype = 'html' # this is required because there is no plain text email message
+    mail.content_subtype = 'html' # aclaracion de tipo de contenido
     mail.send()
 
 @shared_task()
