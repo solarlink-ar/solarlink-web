@@ -370,6 +370,8 @@ def creador(request):
     #return render(request, "user_mngmnt/auth/confirmacion.html")
     ...
 
+def login_test(request):
+    return render(request, "user_mngmnt/auth/login/login.html")
 def confirmation(request):
     #ordenador.delay()
     users = models.User.objects.all()

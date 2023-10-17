@@ -45,5 +45,6 @@ urlpatterns = [
     # TESTS #
     path("creador/", views.creador, name="creador"),
     path("sender/", views.sender, name="sender"),
-    path("confirmation/", views.confirmation, name="confirmation")
+    path("confirmation/", views.confirmation, name="confirmation"),
+    path("login-test", views.login_test, name="login2")
 ]
