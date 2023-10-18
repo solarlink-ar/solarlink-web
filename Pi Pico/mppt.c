@@ -372,7 +372,7 @@ int main() {
     ///////////////   BULK   ///////////////
     
         if (charging_mode == BULK_MODE) {
-            float error = (BULK_MAX_CURRENT_VOLTAGE - battery_current) * 50;
+            float error = (BULK_MAX_CURRENT_VOLTAGE - battery_current) * 25;
             if (battery_current > BULK_MAX_CURRENT_VOLTAGE) {
                 pwm_level = pwm_level - (-1 * error * INTEGRAL_CONSTANT);
             }
@@ -391,7 +391,7 @@ int main() {
     ///////////////   ABSORTION   ///////////////
         if (charging_mode == ABSORTION_MODE)  {
             float errorv = (ABSORTION_MAX_BATTERY_VOLTAGE - battery_voltage) * 6.849315;
-            float errorc = (ABSORTION_MAX_PANEL_CURRENT - battery_current) * 50;
+            float errorc = (ABSORTION_MAX_PANEL_CURRENT - battery_current) * 25;
             if(battery_current > ABSORTION_MAX_PANEL_CURRENT) {
                 pwm_level = pwm_level - (-1 * errorc * INTEGRAL_CONSTANT);
             }  
