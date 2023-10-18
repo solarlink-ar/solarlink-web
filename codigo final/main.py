@@ -54,11 +54,12 @@ while 1:
     p_l1.off()
     p_l2.off()
     
-    trigger = 100
+    trigger = solarlink.trigger
 
+
+    # logica de conmutacion
     if consumo_l1 + consumo_l2 < trigger:
-        p_l1.on()
-        p_l2.on()
+        solarlink.conmutador(l1 = True, l2 = True)
     else:
         if consumo_l1 < trigger and consumo_l2 < trigger:
             if consumo_l1 > consumo_l2:
