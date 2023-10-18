@@ -37,8 +37,9 @@ urlpatterns = [
     path("password-set/<token>", views.PasswordSet.as_view(), name="password_set"),
     path("password-set/", views.PasswordSet.as_view(), name="password_set"),
     path("password-reset/", views.PasswordReset.as_view(), name="password_reset"),
-    # USER INFO #
+    # API #
     path("api-login/", csrf_exempt(views.APILogin.as_view()), name="api_login"),
+    path("api-tarifas/", views.EdesurEdenor.as_view(), name="api_tarifas"),
     path("load-data/", csrf_exempt(views.LoadData.as_view()), name="load_data"),
     path("userpage/", login_required(views.UserPage.as_view()), name="userpage"),
     path("index/", views.index, name="index2"),

@@ -12,6 +12,7 @@ from . import models
 import requests
 import secrets
 import random
+import asyncio
 import json
 
 
@@ -345,7 +346,8 @@ class EdesurEdenor(View):
     def get(self, request):
         web = requests.get('https://www.enre.gov.ar/web/tarifasd.nsf/todoscuadros/7A2E515E48ECD5EB032589650044C8A6?opendocument')
         soup = BeautifulSoup(web.content, 'html.parser')
-    
+        
+
 ###############################################################################################################
 ################################################ TOOLS ########################################################
 ###############################################################################################################

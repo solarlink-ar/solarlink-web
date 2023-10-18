@@ -23,6 +23,5 @@ if __name__ == '__main__':
 
     subprocess.Popen(["celery", "-A", "SolarLinkWebApp", "worker"], start_new_session=True)
 
-    #subprocess.call(["celery", "-A", "SolarLinkWebApp", "worker"])
     main()
 

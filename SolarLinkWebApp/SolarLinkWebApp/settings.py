@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     "compressor",
     # modulo django-user-agents
     "django_user_agents",
+    # ASGI para async
+    "daphne"
 ]
 
 MIDDLEWARE = [
@@ -84,9 +86,12 @@ TEMPLATES = [
         },
     },
 ]
+
 # ruta del WSGI
 WSGI_APPLICATION = 'SolarLinkWebApp.wsgi.application'
 
+# ruta del ASGI
+ASGI_APPLICATION = "SolarLinkWebApp.asgi.application"
 
 
 # Database
