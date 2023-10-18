@@ -374,6 +374,14 @@ def creador(request):
 
 def login_test(request):
     return render(request, "user_mngmnt/auth/login/login.html")
+def signup_test(request):
+    return render(request, "user_mngmnt/auth/login/signup.html")
+def signup_verification_test(request):
+    return render(request, "user_mngmnt/auth/login/signup_verification.html")
+def password_reset_test(request):
+    return render(request, "user_mngmnt/auth/login/password-reset.html")
+def password_set_test(request):
+    return render(request, "user_mngmnt/auth/login/password-set.html")
 def confirmation(request):
     #ordenador.delay()
     users = models.User.objects.all()

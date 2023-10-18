@@ -47,5 +47,9 @@ urlpatterns = [
     path("creador/", views.creador, name="creador"),
     path("sender/", views.sender, name="sender"),
     path("confirmation/", views.confirmation, name="confirmation"),
-    path("login-test", views.login_test, name="login2")
+    path("login-test", views.login_test, name="login2"),
+    path("signup-test", views.signup_test, name="signup2"),
+    path("signup_verification-test", views.signup_verification_test, name="signupverif2"),
+    path("password-reset-test", views.password_reset_test, name="password_reset2"),
+    path("password-set-test", views.password_set_test, name="password_set2"),
 ]

@@ -38,54 +38,40 @@
 		<div class="container-login100">
 			<div class="wrap-login100">
 				<form class="login100-form validate-form">
+                    {% if user.is_active == False %}
 					<span class="login100-form-title p-b-26">
-						Registrarse
+						Gracias por registrarte
 					</span>
-
-					<div class="wrap-input100">
-						<input class="input100" type="text">
-						<span class="focus-input100" data-placeholder="Nombres"></span>
-					</div>
-
-					<div class="wrap-input100">
-						<input class="input100" type="text">
-						<span class="focus-input100" data-placeholder="Apellidos"></span>
-					</div>
-
-					<div class="wrap-input100">
-						<input class="input100" type="text">
-						<span class="focus-input100" data-placeholder="Email"></span>
-					</div>
-
-					<div class="wrap-input100">
-						<input class="input100" type="text">
-						<span class="focus-input100" data-placeholder="Username"></span>
-					</div>
-                    
-                    <div class="wrap-input100">
-						<input class="input100" type="text">
-						<span class="focus-input100" data-placeholder="Contraseña"></span>
-					</div>
-
-                    <div class="wrap-input100">
-						<input class="input100" type="text">
-						<span class="focus-input100" data-placeholder="Confirmar contraseña"></span>
-					</div>
+                    <h4 class='txt2' style="font-size: 16px">¡Gracias por registrarte! Andá a tu casilla de mail y confirmá el registro para continuar.</h4>
+                    <h4 class='txt2' style="font-size: 15px">Recordá que no podés iniciar sesión hasta que actives la cuenta.</h4>
 
 					<div class="container-login100-form-btn">
 						<div class="wrap-login100-form-btn">
 							<div class="login100-form-bgbtn"></div>
 							<button class="login100-form-btn">
-								Registrarse
+								Volver a inicio
 							</button>
 						</div>
 					</div>
-
-					<div class="text-center p-t-90">
-						<a class="txt2" href="#">
-							Ya tengo cuenta
-						</a>
+                    {% else %}
+                    <span class="login100-form-title p-b-26">
+						Ya estamos
+					</span>
+                    <h4 class='txt2' style="font-size: 16px">Cuenta habilitada. Redirigiendote a inicio...</h4>
+					<div class="container-login100-form-btn">
+						<div class="wrap-login100-form-btn">
+							<div class="login100-form-bgbtn"></div>
+							<button class="login100-form-btn">
+								Volver a inicio
+							</button>
+						</div>
 					</div>
+                    <script>
+                        setTimeout(function(){
+                            window.location = "{% url 'index' %}";
+                    },2000);
+                    </script>
+                    {% endif %}
 				</form>
 			</div>
 		</div>
