@@ -67,18 +67,18 @@ class Solarlink(object):
         self.medicion = None
 
         #################################### CONMUTACION ####################################################
-
+        
         self.pin_l1 = Pin(19, Pin.OUT)
         self.pin_l2 = Pin(18, Pin.OUT)
-        self.pin_cruce = Pin(13, Pin.IN)
+        self.pin_cruce = Pin(13, Pin.IN, pull=None)
         self.pin_cruce.irq(trigger=Pin.IRQ_RISING, handler=self.callback_conmutacion)
 
         self.trigger = 750
 
         self.pedido_conmutacion = False
 
-        self.l1 = False
-        self.l2 = False
+        self.l1 = True
+        self.l2 = True
         
 
     
@@ -95,7 +95,8 @@ class Solarlink(object):
     def callback_fin_mediciones(self, t):
         self.fin_mediciones = True
     
-    ##################################### CALLBACK TIMER0 ###############################################
+    ##################################### CALLBACK CONMUT ###############################################
+    
     def callback_conmutacion(self, pin):
         if self.pedido_conmutacion:
             # espero 10ms, tiempo de conmutacion del relé
@@ -103,7 +104,8 @@ class Solarlink(object):
             # switcheo pines al estado elegido
             self.pin_l1(self.l1)
             self.pin_l2(self.l2)
-
+            self.pedido_conmutacion = False
+    
     ############################### CORRIENTE ADC EN DIFERENCIAL ########################################
 
     # medicion de sensor de corriente en el instante 
@@ -186,11 +188,12 @@ class Solarlink(object):
                 return self.medicion
             
     ################################### CONMUTADOR DE LINEAS #########################################
-    def conmutador(self, l1 = None, l2 = None):
+    
+    def conmutador(self, l1, l2):
         self.pedido_conmutacion = True
         self.l1 = l1
         self.l2 = l2
-
+    
 
 '''
     def medicion_pi_pico(self):
