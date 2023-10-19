@@ -1,33 +1,50 @@
 {% extends 'form.html' %}
-{% load static %}
-{% load compress static %}
 
+{% block head %}
+    <title>Login | Solar Link</title>
+{% endblock %}
 
-<head>
-  {% block head %}
-    <title>Solar Link | Inicio sesion</title>
+{% block titulo %}
+    Iniciar sesión
+{% endblock %}
 
-  {% endblock %}
-</head>
+{% block post %}{% url 'login' %}{% endblock %}
 
-{% block body %}
-  <body>
-    <section class="form-register">
-      {% if request.user_agent.is_mobile %}
-      {% else %}
-      <a href="{% url 'index' %}" class="imagen"><i class="fa fa-home fa-2x"></i></a>
-      {% endif %}
-      <h4 style="margin-top:var(--mtt);">Iniciar sesión</h4>
-      <form method = "POST" action="{% url 'login' %}" style="margin-top:var(--mtb);">
-        {% csrf_token %}
+{% block campos %}
+    <div class="wrap-input100">
+        {% comment %} input {% endcomment %}
         {{form.username}}
-        {{form.password}}
-        {{error}}
-        <input class="botons rounded-pill" type="submit" value="Iniciar sesion">
-      <form method = "POST" action="{% url 'login' %}">
-      <p><a href="{% url 'signup' %}">Registrarse</a></p>
-      <p><a href="{% url 'password_reset' %}">Olvide mi contraseña</a></p>
-    </section>
+        <span class="focus-input100" data-placeholder="Username"></span>
+    </div>
 
-  </body>
+    <div class="wrap-input100">
+        <span class="btn-show-pass">
+            <i class="zmdi zmdi-eye"></i>
+        </span>
+        {% comment %} input {% endcomment %}
+        {{ form.password }}
+        <span class="focus-input100" data-placeholder="Contraseña"></span>
+    </div>
+
+    {% comment %} código de error {% endcomment %}
+    {{ error }}
+
+    <div class="container-login100-form-btn">
+        <div class="wrap-login100-form-btn">
+            <div class="login100-form-bgbtn"></div>
+            <button class="login100-form-btn" type="submit">
+                Iniciar sesión
+            </button>
+        </div>
+    </div>
+
+    <div class="text-center p-t-90">
+        <a class="txt2" href="{% url 'signup' %}">
+            Registrarse
+        </a>
+        <a class="txt2" href="{% url 'password_reset' %}">
+            Olvidé mi contraseña
+        </a>
+    </div>
+
 {% endblock %}

@@ -20,8 +20,6 @@ def main():
 
 
 if __name__ == '__main__':
-
-    subprocess.Popen(["celery", "-A", "SolarLinkWebApp", "worker"], start_new_session=True)
-
+    #subprocess.Popen(["celery", "-A", "SolarLinkWebApp", "worker", "-n", "worker2@%n"], start_new_session=True)
     main()
 

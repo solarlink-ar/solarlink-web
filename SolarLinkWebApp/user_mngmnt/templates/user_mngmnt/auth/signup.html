@@ -1,36 +1,60 @@
 {% extends 'form.html' %}
-{% load static %}
-{% load compress static %}
 
+{% block head %}
+    <title>Registro | Solar Link</title>
+{% endblock %}
 
-<head>
-  {% block head %}
-    <title>Solar Link | Registro</title>
+{% block titulo %}
+    Crear cuenta
+{% endblock %}
 
-  {% endblock %}
-</head>
+{% block post %}{% url 'signup' %}{% endblock %}
 
-{% block body %}
-  <body>
-    <section class="form-register">
-      {% if request.user_agent.is_mobile %}
-      {% else %}
-        <a href="{% url 'index' %}" class="imagen"><i class="fa fa-home fa-2x"></i></a>
-      {% endif %}
-      <h4>Registro</h4>
-      <form method = "POST" action="{% url 'signup' %}">
-        {% csrf_token %}
+{% block campos %}
+    <div class="wrap-input100">
         {{form.first_name}}
-        {{form.last_name}}
-        {{form.email}}
-        {{form.username}}
-        {{form.password1}}
-        {{form.password2}}
-        {{error}}
-        <input class="botons rounded-pill" type="submit" value="Registrarse">
-      <form method = "POST" action="{% url 'login' %}">
-      <p><a href="{% url 'login' %}">Ya tengo cuenta</a></p>
-    </section>
+        <span class="focus-input100" data-placeholder="Nombres"></span>
+    </div>
 
-  </body>
+    <div class="wrap-input100">
+        {{form.last_name}}
+        <span class="focus-input100" data-placeholder="Apellidos"></span>
+    </div>
+
+    <div class="wrap-input100">
+        {{form.email}}
+        <span class="focus-input100" data-placeholder="Email"></span>
+    </div>
+
+    <div class="wrap-input100">
+        {{form.username}}
+        <span class="focus-input100" data-placeholder="Username"></span>
+    </div>
+
+    <div class="wrap-input100">
+        {{form.password1}}
+        <span class="focus-input100" data-placeholder="Contraseña"></span>
+    </div>
+
+    <div class="wrap-input100">
+        {{form.password2}}
+        <span class="focus-input100" data-placeholder="Confirmar contraseña"></span>
+    </div>
+    {{ error }}
+
+    <div class="container-login100-form-btn">
+        <div class="wrap-login100-form-btn">
+            <div class="login100-form-bgbtn"></div>
+            <button class="login100-form-btn" type="submit">
+                Registrarse
+            </button>
+        </div>
+    </div>
+
+    <div class="text-center p-t-90">
+        <a class="txt2" href="{% url 'login' %}">
+            Ya tengo cuenta
+        </a>
+    </div>
+
 {% endblock %}

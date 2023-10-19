@@ -85,7 +85,7 @@ class Signup(View):
             no_reply_sender.delay(email = user.email, subject='¡Confirmá tu registro!', html_message=render_to_string("user_mngmnt/auth/confirmacion_signup.html", context))
 
             # redirijo a pestaña a continuación
-            return render(request, 'user_mngmnt/auth/signup_verification.html')
+            return render(request, 'user_mngmnt/auth/signup-verification.html')
     
             
         # si el form no es válido
@@ -135,7 +135,7 @@ class SignupVerification(View):
             no_reply_sender.delay(email=user.email, subject="¡Tu cuenta se ha verificado!", html_message=f"""
 ¡Felicidades, {user.first_name}! El usuario de Solar Link {user.username} se ha verificado. ¡Ya podés acceder a la plataforma!""")
             # devuelvo que el usuario se registro adecuadamente
-            return render(request, 'user_mngmnt/auth/signup_verification.html')
+            return render(request, 'user_mngmnt/auth/signup-verification.html')
         # si no hay token o es invalido, devuelvo signup
         else:
             return redirect('signup')
@@ -167,7 +167,7 @@ class PasswordReset(View):
                 # mando mail
                 no_reply_sender.delay(email = user.email, subject='Cambio de contraseña', html_message=render_to_string("user_mngmnt/auth/confirmacion_password.html", context))
         # devuelvo vista con booleano para avisar que ya se envió mail
-        return render(request, 'user_mngmnt/auth/password-reset.html', {'done': True})
+        return render(request, 'user_mngmnt/auth/password-reset-done.html')
     
 # password 
 class PasswordSet(View):
@@ -201,7 +201,7 @@ class PasswordSet(View):
             # borro token
             models.UsersTokens.objects.filter(password_reset_token = token).delete()
             # devuelvo vista con booleano para la vista de success
-            return render(request, 'user_mngmnt/auth/password-set.html', {"form":form, "done":True})
+            return render(request, 'user_mngmnt/auth/password-set-done.html')
         # si el form no es valido
         else:
             # devuelvo mensaje de error

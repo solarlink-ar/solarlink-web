@@ -82,6 +82,7 @@ def ordenador():
 
 
 def token_clean():
+    requests.get("http://127.0.0.1:8000/")
     # todos los tokens activos
     data = models.UsersTokens.objects.all()
     # hora en timezone
@@ -89,7 +90,7 @@ def token_clean():
     # para cada dato
     for d in data:
         # si el tiempo entre que el token fue creado y el actual es mayor a 2hs
-        if (actual - d.time) > datetime.timedelta(hours=2):
+        if (actual - d.time) > datetime.timedelta(hours=1):
             # borro el token
             d.delete()
 

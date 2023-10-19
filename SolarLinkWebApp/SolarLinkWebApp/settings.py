@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    # ASGI para async
+    "daphne",
     'django.contrib.staticfiles',
     # apps
     'home',
@@ -49,8 +51,6 @@ INSTALLED_APPS = [
     "compressor",
     # modulo django-user-agents
     "django_user_agents",
-    # ASGI para async
-    "daphne"
 ]
 
 MIDDLEWARE = [
@@ -168,7 +168,7 @@ CRONJOBS = [
     ('45 0 * * *', 'user_mngmnt.cron.ordenador'),
     #('10 * * * *', 'user_mngmnt.cron.token_clean')
     # cada 10 mins
-    ('*/10 * * * *', 'user_mngmnt.cron.token_clean')
+    ('*/1 * * * *', 'user_mngmnt.cron.token_clean')
 ]
 
 # EMAIL
