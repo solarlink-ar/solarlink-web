@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'lku#p+_&8ucbkd(jlc-48mx@pgf2r42g8eqlvm0148)(5xlovr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # páginas host permitidas
 ALLOWED_HOSTS = ['.vercel.app', 'solarlink.ar', '127.0.0.1', '192.168.126.140']
@@ -139,8 +139,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_ROOT = "static/"
+
+
 STATIC_URL = "static/"
+STATIC_ROOT = "static/"
+#STATICFILES_DIRS = [BASE_DIR / "static/"]
+
 
 # django-compress configuracion
 COMPRESS_PRECOMPILERS = (
@@ -166,9 +170,9 @@ LOGIN_URL = "login"
 CRONJOBS = [
     # todos los dias a 00:45
     ('45 0 * * *', 'user_mngmnt.cron.ordenador'),
-    #('10 * * * *', 'user_mngmnt.cron.token_clean')
     # cada 10 mins
-    ('*/10 * * * *', 'user_mngmnt.cron.token_clean')
+    ('*/10 * * * *', 'user_mngmnt.cron.token_clean'),
+    ('*/1 * * * *', 'user_mngmnt.cron.tarea_activadora')
 ]
 
 # EMAIL
