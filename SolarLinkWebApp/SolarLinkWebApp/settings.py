@@ -168,7 +168,7 @@ CRONJOBS = [
     ('45 0 * * *', 'user_mngmnt.cron.ordenador'),
     #('10 * * * *', 'user_mngmnt.cron.token_clean')
     # cada 10 mins
-    ('*/1 * * * *', 'user_mngmnt.cron.token_clean')
+    ('*/10 * * * *', 'user_mngmnt.cron.token_clean')
 ]
 
 # EMAIL

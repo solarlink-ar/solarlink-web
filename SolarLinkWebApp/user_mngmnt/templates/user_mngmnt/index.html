@@ -60,7 +60,7 @@
                         <a href="#estado_actual" class="nav-item nav-link">Estado actual</a>
                         <a href="#datos_ahorro" class="nav-item nav-link">Ahorro</a>
                         <a href="#contact" class="nav-item nav-link">Contacto</a>
-                        <a href="{% url 'login' %}" class="nav-link" style="position: var(--pos);margin-left: var(--ml);margin-right: var(--mr);">{{ request.user.first_name }} a</a>
+                        <a href="{% url 'login' %}" class="nav-link" style="position: var(--pos);margin-left: var(--ml);margin-right: var(--mr);">{{ request.user.username }}</a>
                     </div>
                 </div>
             </nav>
@@ -69,7 +69,7 @@
                 <div class="container px-lg-5">
                     <div class="row g-3">
                         <div class=" text-center text-lg-start">
-                            <h1 class="text-white text-center mb-4 animated slideInDown">¡Bienvenido {{user.username}} !</h1>
+                            <h1 class="text-white text-center mb-4 animated slideInDown">¡Bienvenido, {{user.first_name}}!</h1>
                             <p style="font-size:1.5em"class="text-white text-center  animated slideInDown pb-3">En esta pagina podra controlar y consultar aspectos de su unidad de Solar Link</p>
                             <canvas style="width:100%; max-width:400px;">
                         </div>
@@ -132,7 +132,7 @@
                                     <i class="fa fa-lightbulb fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
                                     <div class="ms-3">
                                         <h2 class="mb-0" data-toggle="counter-up">750</h2>
-                                        <p class="text-primary-gradient mb-0">KW/h consumido</p>
+                                        <p class="text-primary-gradient mb-0">kW/h del proveedor</p>
                                     </div>
                                 </div>
                             </div>
@@ -150,7 +150,7 @@
                                     <i class="fa fa-solar-panel fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
                                     <div class="ms-3">
                                         <h2 class="mb-0" data-toggle="counter-up">500</h2>
-                                        <p class="text-primary-gradient mb-0">KW/h generado</p>
+                                        <p class="text-primary-gradient mb-0">kW/h solares</p>
                                     </div>
                                 </div>
                             </div>
@@ -201,14 +201,14 @@
                                   data: {
                                     labels: xValues,
                                     datasets: [{
-                                      label: "KW/h consumo",
+                                      label: "kW/h proveedor",
                                       fill: false,
                                       pointRadius: 1,
                                       borderColor: "rgba(255,0,0,0.5)",
                                       data: yValuesc
                                     },
                                     {
-                                      label: "KW/h generado",
+                                      label: "kW/h solares",
                                       fill: false,
                                       pointRadius: 1,
                                       borderColor: "rgba(178,222,39,0.8)",
