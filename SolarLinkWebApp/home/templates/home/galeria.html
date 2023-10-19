@@ -1,58 +1,56 @@
-{% extends 'home.html' %}
-
 {% load static %}
 
-{% block main %}
-<main>
-    <div class="contenedor">
-        
-        <div class="contenedor-galeria">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Link-Galería</title>
+    <link rel="stylesheet" href="{% static 'home/css/galeria.css' %}" >
+</head>
 
-            <div class="responsive">
-                <div class="gallery">
-                    <a target="_blank" href="{% static 'home/img/IMG_8011.png' %}">
-                    <img src="{% static 'home/img/IMG_8011.png' %}" alt="8011" width="900" height="600">
-                    </a>
-                    <div class="desc"></div>
-                </div>
-            </div>
+<body>
+<h1>  Galería </h1>
 
-            <div class="responsive">
-                <div class="gallery">
-                    <a target="_blank" href="{% static 'home/img/IMG_8064.png' %}">
-                    <img src="{% static 'home/img/IMG_8064.png' %}" alt="8064" width="900" height="600">
-                    </a>
-                    <div class="desc"></div>
-                </div>
-            </div>
+<span class="linea"><span/>
+<section class="galeria">
+<a href="" src= "#imagen1">
+    <img src= "{% static 'home/img/IMG_8011.png' %}" alt="">
+</a>
+<a href="" src= "#imagen1">
+    <img src= "{% static 'home/img/galeria-2.png' %}" alt="">
+</a>
+<a href="" src= "#imagen1">
+    <img src= "{% static 'home/img/Galeria-4.png' %}" alt="">
+</a>
+<a href="" src= "#imagen1">
+    <img src= "{% static 'home/img/Galeria-6.png' %}" alt="">
+</a>
+<a href="" src= "#imagen1">
+    <img src= "{% static 'home/img/galeria-9.png' %}" alt="">
+</a>
+<a href="" src= "#imagen1">
+    <img src= "{% static 'home/img/galeria-10.png' %}" alt="">
+</a>
+<a href="" src= "#imagen1">
+    <img src= "{% static 'home/img/galeria-11.png' %}" alt="">
+</a>
+<a href="" src= "#imagen1">
+    <img src= "{% static 'home/img/galeria-12.png' %}" alt="">
+</a>
+<a href="" src= "#imagen1">
+    <img src= "{% static 'home/img/galeria-14.png' %}" alt="">
+</a>
+<a href="" src= "#imagen1">
+    <img src= "{% static 'home/img/IMG_7684.png' %}" alt="">
+</a>
+<a href="" src= "#imagen1">
+    <img src= "{% static 'home/img/IMG_8084.png' %}" alt="">
+</a>
+<a href="" src= "#imagen1">
+    <img src= "{% static 'home/img/fotoequipo.png' %}" alt="">
+</a>
 
-            <div class="responsive">
-                <div class="gallery">
-                    <a target="_blank" href="{% static 'home/img/IMG_8067.png' %}">
-                    <img src="{% static 'home/img/IMG_8067.png' %}" alt="8067" width="900" height="600">
-                    </a>
-                    <div class="desc"></div>
-                </div>
-            </div>
 
-            <div class="responsive">
-                <div class="gallery">
-                    <a target="_blank" href="{% static 'home/img/IMG_8084.png' %}">
-                    <img src="{% static 'home/img/IMG_8084.png' %}" alt="8084" width="900" height="600">
-                    </a>
-                    <div class="desc"></div>
-                </div>
-            </div>
+</section>
 
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="contenedor-contacto">
-            <div class="contenedor-texto">
-                <h3>Podés encontrar más fotos de nuestro proyecto en nuestro <a href="https://instagram.com/solarlink.ar">Instagram</a></h3>
-            </div>
-        </div>
-    </div>
-</main>
-{% endblock %}
+</body>

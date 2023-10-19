@@ -28,7 +28,8 @@ SECRET_KEY = 'lku#p+_&8ucbkd(jlc-48mx@pgf2r42g8eqlvm0148)(5xlovr'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['.vercel.app', 'solarlink.ar', '127.0.0.1']
+# páginas host permitidas
+ALLOWED_HOSTS = ['.vercel.app', 'solarlink.ar', '127.0.0.1', '192.168.126.140']
 
 # Application definition
 
@@ -38,10 +39,18 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    # ASGI para async
+    "daphne",
     'django.contrib.staticfiles',
+    # apps
     'home',
     'user_mngmnt',
-    "django_crontab"
+    # modulo django-crontab
+    "django_crontab",
+    # modulo django-compressor
+    "compressor",
+    # modulo django-user-agents
+    "django_user_agents",
 ]
 
 MIDDLEWARE = [
@@ -52,9 +61,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware'
-]
+    # middleware de white noise
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # middleware de django user agents
+    'django_user_agents.middleware.UserAgentMiddleware',
 
+]
+# ruta del archivo de urls
 ROOT_URLCONF = 'SolarLinkWebApp.urls'
 
 # Templates
@@ -74,7 +87,11 @@ TEMPLATES = [
     },
 ]
 
+# ruta del WSGI
 WSGI_APPLICATION = 'SolarLinkWebApp.wsgi.application'
+
+# ruta del ASGI
+ASGI_APPLICATION = "SolarLinkWebApp.asgi.application"
 
 
 # Database
@@ -112,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/Buenos_Aires'
+TIME_ZONE = 'America/Argentina/Buenos_Aires'
 
 USE_I18N = True
 
@@ -122,9 +139,24 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_ROOT = "static/"
-STATIC_URL = "static/"
 
+
+STATIC_URL = "static/"
+STATIC_ROOT = "static/"
+#STATICFILES_DIRS = [BASE_DIR / "static/"]
+
+
+# django-compress configuracion
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
+# buscadores de staticfiles
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # other finders..
+    'compressor.finders.CompressorFinder',
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -136,9 +168,17 @@ LOGIN_URL = "login"
 
 # CRONTAB
 CRONJOBS = [
-    # todos los dias a las 00:10
-    ('10 0 * * *', 'user_mngmnt.cron.sorter'),
-    # cada minuto
-    ('*/1 * * * *', 'user_mngmnt.cron.test')
+    # todos los dias a 00:45
+    ('45 0 * * *', 'user_mngmnt.cron.ordenador'),
+    # cada 10 mins
+    ('*/10 * * * *', 'user_mngmnt.cron.token_clean'),
+    ('*/1 * * * *', 'user_mngmnt.cron.tarea_activadora')
 ]
 
+# EMAIL
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtppro.zoho.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'no-reply@solarlink.ar'
+EMAIL_HOST_PASSWORD = 'impacipt_solarlink'
+DEFAULT_FROM_EMAIL= 'Solar Link Accounts<no-reply@solarlink.ar>'

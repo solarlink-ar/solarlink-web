@@ -5,17 +5,10 @@ import datetime
 from django.http import JsonResponse
 import json
 
-
-
+# vista de home
 def index(request):
     return render(request, "home/index.html")
-
-def que_somos(request):
-    return render(request, "home/que_somos.html")
-
-def contacto(request):
-    return render(request, "home/contacto.html")
-
+# vista de galeria
 def galeria(request):
     return render(request, "home/galeria.html")
     

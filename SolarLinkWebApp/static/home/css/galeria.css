@@ -1,0 +1,42 @@
+*{box-sizing: border-box ;
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    font-family: 'Poppins', sans-serif;
+    background-color: rgb(170, 170, 170);
+}
+
+h1
+{
+    font-weight: 400;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 40px;
+}
+.linea {
+    background-color: #e6d753;
+    height: 12px;
+    width: 100%;
+    display: block;
+
+}
+.galeria{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    width: 95%;
+    margin: auto;
+    grid-gap: 1cm;
+    padding:20px 0;
+    overflow: hidden;
+    padding-top: 30px;
+}
+.galeria img{
+    width: 100%;
+    vertical-align: top;
+    height: 300px;
+    object-fit: cover;
+    
+}
+

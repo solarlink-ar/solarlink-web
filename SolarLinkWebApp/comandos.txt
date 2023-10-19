@@ -1,0 +1,9 @@
+python3 manage.py runserver <IP:Puerto>
+
+celery -A SolarLinkWebApp worker -l INFO
+
+python3 manage.py crontab add
+python3 manage.py crontab show
+python3 manage.py crontab remove
+
+daphne SolarLinkWebApp.asgi:application

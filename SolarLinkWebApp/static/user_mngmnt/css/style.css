@@ -1,9 +1,11 @@
-/********** Template CSS **********/
 :root {
-    --primary: #d1df11;
-    --secondary: #29133d;
+    --primary:  #d8c835;
+    --secondary:  #222009;
     --light: #F0F6FF;
-    --dark: #262B47;
+    --dark: #000000;
+    --pos: fixed;
+    --ml: 45%;
+    --mr: 0px;
 }
 
 
@@ -26,7 +28,8 @@
 h1,
 h2,
 .fw-bold {
-    font-weight: 700 !important;
+    font-weight: 1200 !important;
+
 }
 
 h3,
@@ -69,8 +72,9 @@ h6,
     transition: .5s;
 }
 
-.btn.btn-primary-gradient,
+.btn.btn-primary,
 .btn.btn-secondary-gradient {
+    background-color:#fce93c; 
     position: relative;
     overflow: hidden;
     border: none;
@@ -142,7 +146,6 @@ h6,
     background: linear-gradient(to bottom right, var(--primary), var(--secondary));
 }
 
-
 /*** Navbar ***/
 .navbar-light .navbar-nav .nav-link {
     position: relative;
@@ -193,6 +196,12 @@ h6,
 }
 
 @media (max-width: 991.98px) {
+    :root {
+        --pos: relative;
+        --ml: 0%;
+        --mr: 10px;
+    }
+
     .sticky-top.navbar-light {
         position: relative;
         background: #FFFFFF;
@@ -378,48 +387,6 @@ h6,
 
 .screenshot-carousel .owl-dot.active {
     box-shadow: 0 0 10px var(--dark);
-}
-
-
-/*** Testimonial ***/
-.testimonial-carousel .owl-item .testimonial-item,
-.testimonial-carousel .owl-item .testimonial-item * {
-    transition: .5s;
-}
-
-.testimonial-carousel .owl-item.center .testimonial-item {
-    background: linear-gradient(to bottom right, var(--primary), var(--secondary));
-}
-
-.testimonial-carousel .owl-item.center .testimonial-item h5,
-.testimonial-carousel .owl-item.center .testimonial-item p {
-    color: #FFFFFF !important;
-}
-
-.testimonial-carousel .owl-nav {
-    margin-top: 30px;
-    display: flex;
-    justify-content: center;
-}
-
-.testimonial-carousel .owl-nav .owl-prev,
-.testimonial-carousel .owl-nav .owl-next {
-    margin: 0 12px;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #FFFFFF;
-    background: linear-gradient(to bottom right, var(--primary), var(--secondary));
-    border-radius: 60px;
-    font-size: 18px;
-    transition: .5s;
-}
-
-.testimonial-carousel .owl-nav .owl-prev:hover,
-.testimonial-carousel .owl-nav .owl-next:hover {
-    background: linear-gradient(to bottom right, var(--secondary), var(--primary));
 }
 
 

@@ -1,15 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.db import models
-
-# vinculo usuario-producto
-'''
-class User_data(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-'''
+import datetime
 
 # datos del micro por hora
-class Datos_hora(models.Model):
+class DatosHora(models.Model):
     # usuario
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     # promedio del voltaje en la hora proveniente de la red
@@ -18,13 +13,18 @@ class Datos_hora(models.Model):
     consumo_hora_solar = models.FloatField(default=None)
     # consumo total en la hora proveniente de la red
     consumo_hora_red = models.FloatField(default=None)
+    # consumo linea 1
+    consumo_l1 = models.FloatField(default=None)
+    # consumo linea 2
+    consumo_l2 = models.FloatField(default=None)
+
 
     hora = models.IntegerField(default=None)
     dia = models.IntegerField(default=None)
     mes = models.IntegerField(default=None)
     año = models.IntegerField(default=None)
 
-    # booleano que indica si la red esta alimentada ahora por el sistema solar
+    # booleano que indica si las lineas estan alimentadas ahora por el sistema solar
     solar_ahora = models.BooleanField(default=None)
     # potencia entregada por el panel en esa hora
     panel_potencia = models.IntegerField(default=None)
@@ -39,8 +39,11 @@ class Datos_hora(models.Model):
     # id de producto
     product_id = models.CharField(max_length=50)
 
+    class Meta:
+        ordering = ["user", "año", "mes", "dia", "hora"]
+
 # datos guardados por dia
-class Datos_dias(models.Model):
+class DatosDias(models.Model):
     # usuario
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     # voltaje maximo del dia en la red
@@ -71,7 +74,9 @@ class Datos_dias(models.Model):
     # product id
     product_id = models.CharField(max_length=50, default=None)
 
-    
+    class Meta:
+        ordering = ["user", "año", "mes", "dia"]
+
 
 # lista de productos activos
 class Productos(models.Model):
@@ -95,16 +100,32 @@ class Emergencia(models.Model):
 
     corriente = models.BooleanField()
 
-class Tiempo_real(models.Model):
+class TiempoReal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
     voltaje = models.FloatField(default=None)
-    consumo = models.FloatField(default=None)
 
+    # consumo linea 1
+    consumo_l1 = models.FloatField(default=None)
+    # consumo linea 2
+    consumo_l2 = models.FloatField(default=None)
+
+    # si se está usando energía solar en alguna linea
     solar = models.BooleanField(default=None)
+    # si la batería está cargando
     cargando = models.BooleanField(default=None)
-    voltaje_bateria = models.IntegerField(default=None) # porcentaje bateria
+    # voltaje de la batería == porcentaje de carga
+    voltaje_bateria = models.IntegerField(default=None)
 
     errores = models.BooleanField(default=None)
 
 
+class UsersTokens(models.Model):
+    # user
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    # token de confirmación de registro
+    signup_token = models.CharField(max_length= 300, default=None, null=True)
+    # token de reseteo de contraseña
+    password_reset_token = models.CharField(max_length=300, default=None, null = True)
+    # hora de pedido
+    time = models.DateTimeField(default=datetime.datetime.now, null = True)

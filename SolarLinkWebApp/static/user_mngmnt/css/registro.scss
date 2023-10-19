@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  height: 100vh;
+}
+body {
+  background-image: linear-gradient(180deg, #0000008c 0%, #0000008c 100%), url(static("general/img/fondito.png"));
+  height: 100vh;
+}
+
+.form-register {
+  width: 400px;
+  background: #414141;
+  padding: 30px;
+  margin: auto;
+  margin-bottom: 35px;
+  border-radius: 4px;
+  color: white;
+  box-shadow: 7px 13px 37px #000;
+}
+.login-box .avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  position: absolute;
+  top: -50px;
+  left: calc(50% - 50px);
+}
+
+.form-register h4 {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.controls {
+  width: 100%;
+  background: #979494;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  border: 1px solid #fce93c;
+  font-size: 18px;
+  color: rgb(0, 0, 0);
+}
+
+.form-register p {
+  height: 40px;
+  text-align: center;
+  font-size: 18px;
+  line-height: 40px;
+}
+
+.form-register a {
+  color: white;
+  text-decoration: none;
+}
+
+.form-register a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.form-register .botons {
+  width: 100%;
+  background: #fce93c;
+  border: none;
+  padding: 12px;
+  color: rgb(0, 0, 0);
+  margin: 16px 0;
+  font-size: 16px;
+}
+.imagen {
+  left: 89%;
+  position: relative;
+}
+
+@media (max-width: 997.98px){
+  :root {
+    --mtt: 15%;
+    --mtb: 25%;
+  }
+  .form-register {
+  width: 100%;
+  height: 100%;
+  }
+}
