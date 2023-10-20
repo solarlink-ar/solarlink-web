@@ -2,7 +2,6 @@
     cargo los static y el compresor
 {% endcomment %}
 {% load static %}
-{% load compress static %}
 
 <!DOCTYPE html>
 <html lang="es">
@@ -19,9 +18,9 @@
     {% comment %}
         Compresor para poder usar static directions en el master.scss
     {% endcomment %}
-    {% compress css %}
-    <link rel="stylesheet" type="text/x-scss" href="{% static "home/css/master.scss" %}" />
-    {% endcompress %}
+
+    <link rel="stylesheet" href="{% static "home/css/master.css" %}" />
+
 
     {% block head %}
     {% endblock %}
