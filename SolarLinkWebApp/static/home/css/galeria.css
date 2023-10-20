@@ -62,5 +62,10 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.light-box img{
+    width: 75vw;
+    max-height: 70vh;
     
 }
