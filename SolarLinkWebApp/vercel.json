@@ -3,6 +3,7 @@
       {
         "src": "SolarLinkWebApp/wsgi.py",
         "use": "@vercel/python"
+      
       }
     ],
     "routes": [

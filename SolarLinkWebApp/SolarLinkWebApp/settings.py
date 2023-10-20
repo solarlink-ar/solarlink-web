@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'lku#p+_&8ucbkd(jlc-48mx@pgf2r42g8eqlvm0148)(5xlovr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # páginas host permitidas
 ALLOWED_HOSTS = ['.vercel.app', 'solarlink.ar', '127.0.0.1', '192.168.126.140']
@@ -47,8 +47,6 @@ INSTALLED_APPS = [
     'user_mngmnt',
     # modulo django-crontab
     "django_crontab",
-    # modulo django-compressor
-    "compressor",
     # modulo django-user-agents
     "django_user_agents",
 ]
@@ -142,20 +140,14 @@ USE_TZ = True
 
 
 STATIC_URL = "static/"
-STATIC_ROOT = "static/"
+STATIC_ROOT = BASE_DIR / "static/"
 #STATICFILES_DIRS = [BASE_DIR / "static/"]
 
 
-# django-compress configuracion
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-)
 # buscadores de staticfiles
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # other finders..
-    'compressor.finders.CompressorFinder',
 )
 
 # Default primary key field type
