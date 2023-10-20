@@ -5,12 +5,11 @@ from lcd_api import LcdApi
 from i2c_lcd import I2cLcd
 import urequests as requests
 import _thread
-import microdot
 
-p_l2 = Pin(18, Pin.OUT)
-p_l1 = Pin(19, Pin.OUT)
-#
-#
+p2 = Pin(2, Pin.OUT)
+#pin_l1 = Pin(19, Pin.OUT)
+#pin_l2 = Pin(18, Pin.OUT)
+#pin_cruce = Pin(13, Pin.IN
 '''wlan = network.WLAN(network.STA_IF) #network init
 wlan.active(True)
 while not wlan.isconnected():
@@ -51,39 +50,43 @@ while 1:
     consumo_l1 = valores["consumo_l1"]
     consumo_l2 = valores["consumo_l2"]
 
-    p_l1.off()
-    p_l2.off()
+    #p_l1.off()
+    #p_l2.off()
     
     trigger = solarlink.trigger
-
-
+    
     # logica de conmutacion
     if consumo_l1 + consumo_l2 < trigger:
         solarlink.conmutador(l1 = True, l2 = True)
     else:
         if consumo_l1 < trigger and consumo_l2 < trigger:
             if consumo_l1 > consumo_l2:
-                p_l1.on()
-                p_l2.off()
+                solarlink.conmutador(l1 = True, l2 = False)
+                #p_l1.on()
+                #p_l2.off()
             else:
-                p_l1.off()
-                p_l2.on()
+                solarlink.conmutador(l1=False, l2=True)
+                #p_l1.off()
+                #p_l2.on()
         if consumo_l1 > trigger and consumo_l2 > trigger:
-            p_l1.off()
-            p_l2.off()
+            solarlink.conmutador(l1=False, l2=False)
+            #p_l1.off()
+            #p_l2.off()
         elif consumo_l1 > trigger and consumo_l2 < trigger:
-            p_l1.off()
-            p_l2.on()
+            solarlink.conmutador(l1=False, l2=True)
+            #p_l1.off()
+            #p_l2.on()
         elif consumo_l1 < trigger and consumo_l2 > trigger:
-            p_l1.on()
-            p_l2.off()
-
+            solarlink.conmutador(l1=True, l2=False)
+            #p_l1.on()
+            #p_l2.off()
     
+'''  
 #############
 #### WIP ####
 #############
 '''
-'''
+
 ##Permite bloquear la ejecución de otras partes del código mientras se está ejecutando el thread seleccionado.
 ##Funciona como un semáforo binario.
 '''
