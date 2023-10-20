@@ -358,8 +358,8 @@ def sender(request):
     token = 'anachei'
     context = {"first_name": user.first_name, "username": user.username, "mail": user.email, "url": f"{request.build_absolute_uri('/')}user/password-set/{token}", "base": request.build_absolute_uri('/')}
     # mando mail
-    return render(request, "user_mngmnt/auth/confirmacion_password.html" , context)
-    #no_reply_sender.delay(email = user.email, subject='Cambio de contraseña', html_message=render_to_string("user_mngmnt/auth/confirmacion_password.html", context))
+    #return render(request, "user_mngmnt/auth/confirmacion_password.html" , context)
+    no_reply_sender.delay(email = user.email, subject='Cambio de contraseña', html_message=render_to_string("user_mngmnt/auth/confirmacion_password.html", context))
 
 def creador(request):
     creador_datos.delay()
