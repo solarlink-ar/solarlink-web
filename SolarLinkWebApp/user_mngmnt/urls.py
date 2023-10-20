@@ -50,3 +50,5 @@ urlpatterns = [
     path("ordenador/", views.ordenador, name="ordenador"),
     path("token-clean/", views.token_clean, name="token_clean")
 ]
+
+# TEST #
