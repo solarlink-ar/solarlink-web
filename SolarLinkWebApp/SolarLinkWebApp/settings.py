@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'lku#p+_&8ucbkd(jlc-48mx@pgf2r42g8eqlvm0148)(5xlovr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # páginas host permitidas
 ALLOWED_HOSTS = ['.vercel.app', 'solarlink.ar', '127.0.0.1', '192.168.126.140']
@@ -156,7 +156,7 @@ USE_TZ = True
 
 
 STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / "static/"
+STATIC_ROOT = "static/"
 #STATICFILES_DIRS = [BASE_DIR / "static/"]
 
 
@@ -174,7 +174,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # default URL para redireccionar cuando no está logueado
 LOGIN_URL = "login"
 
-# CRONTAB
+# CRONTAB, DESHABILITADO PORQUE NO ES COMPATIBLE CON VERCEL
+'''
 CRONJOBS = [
     # todos los dias a 00:45
     ('45 0 * * *', 'user_mngmnt.cron.ordenador'),
@@ -182,7 +183,7 @@ CRONJOBS = [
     ('*/10 * * * *', 'user_mngmnt.cron.token_clean'),
     ('*/1 * * * *', 'user_mngmnt.cron.tarea_activadora')
 ]
-
+'''
 # EMAIL
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtppro.zoho.com'

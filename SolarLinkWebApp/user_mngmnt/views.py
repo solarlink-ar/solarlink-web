@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import SignupForm, PasswordSetForm, LoginForm
 from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
+
 # VERCEL NO SOPORTA CELERY, SOPORTE DESACTIVADO
 #from .tasks import no_reply_sender, creador_datos
 from django.shortcuts import render, redirect
@@ -330,7 +331,7 @@ class LoadData(View):
         return JsonResponse(response)
     
 class APILogin(View):
-    def post(self, request):
+    async def post(self, request):
         # usuario posteado
         username = request.POST["username"]
         password = request.POST["password"]
@@ -348,95 +349,10 @@ class APILogin(View):
     
 class EdesurEdenor(View):
 
-    def get(self, request):
+    async def get(self, request):
         web = requests.get('https://www.enre.gov.ar/web/tarifasd.nsf/todoscuadros/7A2E515E48ECD5EB032589650044C8A6?opendocument')
         soup = BeautifulSoup(web.content, 'html.parser')
         
-
-###############################################################################################################
-################################################ CRONS ########################################################
-###############################################################################################################
-
-# ADAPTACION DE CRON JOBS A VIEWS YA QUE VERCEL NO SOPORTA CELERY
-
-def ordenador(request):
-    # usuarios
-    users = models.User.objects.all()
-
-    # para cada usuario
-    for user in users:
-        # datos del usuario
-        user_data = models.DatosHora.objects.filter(user=user)
-
-        # mientras existan datos
-        while user_data:
-            # variables temporales
-            voltaje_dia_red = []
-            consumo_dia_red = 0
-            consumo_dia_solar = 0
-            solar_por_hora = []
-            potencia_dia_panel = 0
-            horas_de_carga = []
-            voltajes_bateria = []
-            errores = []
-
-            # referencia para dia, mes
-            referencia = user_data[0]
-            #datos del dia buscado
-            dia_data = user_data.filter(dia=referencia.dia, mes=referencia.mes, año=referencia.año)
-
-            # para cada dato del dia
-            for data in dia_data:
-                # acumulo en valores sumario diario
-                voltaje_dia_red.append(data.voltaje_hora_red)
-                consumo_dia_solar += data.consumo_hora_solar
-                consumo_dia_red += data.consumo_hora_red
-
-                solar_por_hora.append(data.solar_ahora)
-                potencia_dia_panel += data.panel_potencia
-                horas_de_carga.append(data.cargando)
-                voltajes_bateria.append(data.voltaje_bateria)
-
-                errores.append(data.errores)
-                product_id = data.product_id
-
-                # borro el dato
-                data.delete()
-            
-            # creo dato dia
-            models.DatosDias(user = user,
-                            voltaje_maximo_dia_red = max(voltaje_dia_red),
-                            voltaje_minimo_dia_red = min(voltaje_dia_red),
-                            consumo_dia_solar = consumo_dia_solar,
-                            consumo_dia_red = consumo_dia_red,
-
-                            dia = referencia.dia,
-                            mes = referencia.mes,
-                            año = referencia.año,
-
-                            horas_potencia_panel = calculador_cantidad_true(solar_por_hora),
-                            potencia_dia_panel = potencia_dia_panel,
-                            horas_de_carga = calculador_cantidad_true(horas_de_carga),
-                            voltajes_bateria = json.dumps(voltajes_bateria),
-                            errores = calculador_cantidad_true(errores),
-                            product_id = data.product_id).save()
-            
-            # sobreescribo user_data, para quitar los datos que acabo de borrar
-            user_data = models.DatosHora.objects.filter(user=user)
-
-
-def token_clean(request):
-    # todos los tokens activos
-    data = models.UsersTokens.objects.all()
-    # hora en timezone
-    actual = timezone.now()
-    # para cada dato
-    for d in data:
-        # si el tiempo entre que el token fue creado y el actual es mayor a 2hs
-        if (actual - d.time) > datetime.timedelta(hours=1):
-            # borro el token
-            d.delete()
-
 
 ###############################################################################################################
 ################################################ CRONS ########################################################
@@ -533,32 +449,6 @@ def sender(request):
     #mail.content_subtype = 'html' # aclaracion de tipo de contenido
     #mail.send()
 
-    no_reply_sender.delay('ivanchicago70@gmail.com', 'nashe', 'nashe')
-    #mail = EmailMessage('Hola', 'hola', to=['ivanchicago70@gmail.com'])
-    #mail.content_subtype = 'html' # aclaracion de tipo de contenido
-    #mail.send()
-
-def creador(request):
-    #creador_datos.delay()
-    #models.UsersTokens(user=request.user, signup_token = 'dajkalsd').save()
-    #import time
-    #time.sleep(1)
-    #data = models.DatosHora.objects.all()
-    #for i in data:
-    #    print(i.hora, i.dia, i.mes, i.año)
-    #return render(request, "user_mngmnt/auth/confirmacion.html")
-    ...
-
-def login_test(request):
-    return render(request, "user_mngmnt/auth/login/login.html")
-def signup_test(request):
-    return render(request, "user_mngmnt/auth/login/signup.html")
-def signup_verification_test(request):
-    return render(request, "user_mngmnt/auth/login/signup_verification.html")
-def password_reset_test(request):
-    return render(request, "user_mngmnt/auth/login/password-reset.html")
-def password_set_test(request):
-    return render(request, "user_mngmnt/auth/login/password-set.html")
 def confirmation(request):
     #ordenador.delay()
     users = models.User.objects.all()
