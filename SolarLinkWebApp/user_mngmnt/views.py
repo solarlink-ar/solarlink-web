@@ -354,9 +354,10 @@ class EdesurEdenor(View):
 ###############################################################################################################
 
 def sender(request):
-    mail = EmailMessage('Hola', 'hola', to=['ivanchicago70@gmail.com'])
-    mail.content_subtype = 'html' # aclaracion de tipo de contenido
-    mail.send()
+    no_reply_sender.delay('ivanchicago70@gmail.com', 'nashe', 'nashe')
+    #mail = EmailMessage('Hola', 'hola', to=['ivanchicago70@gmail.com'])
+    #mail.content_subtype = 'html' # aclaracion de tipo de contenido
+    #mail.send()
 
 def creador(request):
     creador_datos.delay()

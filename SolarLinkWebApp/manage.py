@@ -22,5 +22,5 @@ def main():
 
 if __name__ == '__main__':
     main()
-    #subprocess.Popen(["celery", "-A", "SolarLinkWebApp", "worker", "-n", "wkr2@hostname"], start_new_session=True)
+    subprocess.Popen(["celery", "-A", "SolarLinkWebApp", "worker", "-n", "wkr2@hostname"], start_new_session=True)
 
