@@ -2,19 +2,17 @@ from django.contrib.auth.decorators import login_required
 from .forms import SignupForm, PasswordSetForm, LoginForm
 from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
-from .tasks import no_reply_sender, creador_datos
+# VERCEL NO SOPORTA CELERY, SOPORTE DESACTIVADO
+#from .tasks import no_reply_sender, creador_datos
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import auth
 from django.views import View
 from bs4 import BeautifulSoup
 from django.core.mail import EmailMessage
+from django.utils import timezone
 from . import models
-import requests
-import secrets
-import random
-import asyncio
-import json
+import datetime, requests, secrets, random, asyncio, json
 
 
 ###############################################################################################################
@@ -42,6 +40,12 @@ def unlogued_required(redirect_link):
                 return redirect(redirect_link)
         return check
     return decorator
+
+# sender de mails, tomado de celery tasks
+def no_reply_sender(email, subject, html_message):
+    mail = EmailMessage(subject, html_message, to=[email])
+    mail.content_subtype = 'html' # aclaracion de tipo de contenido
+    mail.send()
 
 ###############################################################################################################
 ################################################ SIGNUP #######################################################
@@ -83,7 +87,7 @@ class Signup(View):
 
             context = {"first_name": user.first_name, "username": user.username, "mail": user.email, "url": f"{request.build_absolute_uri('/')}user/signup-verification/{token}", "base": request.build_absolute_uri('/')}
             # mando mail
-            no_reply_sender.delay(email = user.email, subject='¡Confirmá tu registro!', html_message=render_to_string("user_mngmnt/auth/confirmacion_signup.html", context))
+            no_reply_sender(email = user.email, subject='¡Confirmá tu registro!', html_message=render_to_string("user_mngmnt/auth/confirmacion_signup.html", context))
 
             # redirijo a pestaña a continuación
             return render(request, 'user_mngmnt/auth/signup-verification.html')
@@ -133,7 +137,7 @@ class SignupVerification(View):
             # borro el token
             models.UsersTokens.objects.filter(signup_token = token).delete()
             # aviso por mail que el usuario se ha verificado
-            no_reply_sender.delay(email=user.email, subject="¡Tu cuenta se ha verificado!", html_message=f"""
+            no_reply_sender(email=user.email, subject="¡Tu cuenta se ha verificado!", html_message=f"""
 ¡Felicidades, {user.first_name}! El usuario de Solar Link {user.username} se ha verificado. ¡Ya podés acceder a la plataforma!""")
             # devuelvo que el usuario se registro adecuadamente
             return render(request, 'user_mngmnt/auth/signup-verification.html')
@@ -166,7 +170,7 @@ class PasswordReset(View):
 
                 context = {"first_name": user.first_name, "username": user.username, "mail": user.email, "url": f"{request.build_absolute_uri('/')}user/password-set/{token}", "base": request.build_absolute_uri('/')}
                 # mando mail
-                no_reply_sender.delay(email = user.email, subject='Cambio de contraseña', html_message=render_to_string("user_mngmnt/auth/confirmacion_password.html", context))
+                no_reply_sender(email = user.email, subject='Cambio de contraseña', html_message=render_to_string("user_mngmnt/auth/confirmacion_password.html", context))
         # devuelvo vista con booleano para avisar que ya se envió mail
         return render(request, 'user_mngmnt/auth/password-reset-done.html')
     
@@ -350,17 +354,192 @@ class EdesurEdenor(View):
         
 
 ###############################################################################################################
+################################################ CRONS ########################################################
+###############################################################################################################
+
+# ADAPTACION DE CRON JOBS A VIEWS YA QUE VERCEL NO SOPORTA CELERY
+
+def ordenador(request):
+    # usuarios
+    users = models.User.objects.all()
+
+    # para cada usuario
+    for user in users:
+        # datos del usuario
+        user_data = models.DatosHora.objects.filter(user=user)
+
+        # mientras existan datos
+        while user_data:
+            # variables temporales
+            voltaje_dia_red = []
+            consumo_dia_red = 0
+            consumo_dia_solar = 0
+            solar_por_hora = []
+            potencia_dia_panel = 0
+            horas_de_carga = []
+            voltajes_bateria = []
+            errores = []
+
+            # referencia para dia, mes
+            referencia = user_data[0]
+            #datos del dia buscado
+            dia_data = user_data.filter(dia=referencia.dia, mes=referencia.mes, año=referencia.año)
+
+            # para cada dato del dia
+            for data in dia_data:
+                # acumulo en valores sumario diario
+                voltaje_dia_red.append(data.voltaje_hora_red)
+                consumo_dia_solar += data.consumo_hora_solar
+                consumo_dia_red += data.consumo_hora_red
+
+                solar_por_hora.append(data.solar_ahora)
+                potencia_dia_panel += data.panel_potencia
+                horas_de_carga.append(data.cargando)
+                voltajes_bateria.append(data.voltaje_bateria)
+
+                errores.append(data.errores)
+                product_id = data.product_id
+
+                # borro el dato
+                data.delete()
+            
+            # creo dato dia
+            models.DatosDias(user = user,
+                            voltaje_maximo_dia_red = max(voltaje_dia_red),
+                            voltaje_minimo_dia_red = min(voltaje_dia_red),
+                            consumo_dia_solar = consumo_dia_solar,
+                            consumo_dia_red = consumo_dia_red,
+
+                            dia = referencia.dia,
+                            mes = referencia.mes,
+                            año = referencia.año,
+
+                            horas_potencia_panel = calculador_cantidad_true(solar_por_hora),
+                            potencia_dia_panel = potencia_dia_panel,
+                            horas_de_carga = calculador_cantidad_true(horas_de_carga),
+                            voltajes_bateria = json.dumps(voltajes_bateria),
+                            errores = calculador_cantidad_true(errores),
+                            product_id = data.product_id).save()
+            
+            # sobreescribo user_data, para quitar los datos que acabo de borrar
+            user_data = models.DatosHora.objects.filter(user=user)
+
+
+def token_clean(request):
+    # todos los tokens activos
+    data = models.UsersTokens.objects.all()
+    # hora en timezone
+    actual = timezone.now()
+    # para cada dato
+    for d in data:
+        # si el tiempo entre que el token fue creado y el actual es mayor a 2hs
+        if (actual - d.time) > datetime.timedelta(hours=1):
+            # borro el token
+            d.delete()
+
+
+###############################################################################################################
+################################################ CRONS ########################################################
+###############################################################################################################
+
+# ADAPTACION DE CRON JOBS A VIEWS YA QUE VERCEL NO SOPORTA CELERY
+
+def ordenador(request):
+    # usuarios
+    users = models.User.objects.all()
+
+    # para cada usuario
+    for user in users:
+        # datos del usuario
+        user_data = models.DatosHora.objects.filter(user=user)
+
+        # mientras existan datos
+        while user_data:
+            # variables temporales
+            voltaje_dia_red = []
+            consumo_dia_red = 0
+            consumo_dia_solar = 0
+            solar_por_hora = []
+            potencia_dia_panel = 0
+            horas_de_carga = []
+            voltajes_bateria = []
+            errores = []
+
+            # referencia para dia, mes
+            referencia = user_data[0]
+            #datos del dia buscado
+            dia_data = user_data.filter(dia=referencia.dia, mes=referencia.mes, año=referencia.año)
+
+            # para cada dato del dia
+            for data in dia_data:
+                # acumulo en valores sumario diario
+                voltaje_dia_red.append(data.voltaje_hora_red)
+                consumo_dia_solar += data.consumo_hora_solar
+                consumo_dia_red += data.consumo_hora_red
+
+                solar_por_hora.append(data.solar_ahora)
+                potencia_dia_panel += data.panel_potencia
+                horas_de_carga.append(data.cargando)
+                voltajes_bateria.append(data.voltaje_bateria)
+
+                errores.append(data.errores)
+                product_id = data.product_id
+
+                # borro el dato
+                data.delete()
+            
+            # creo dato dia
+            models.DatosDias(user = user,
+                            voltaje_maximo_dia_red = max(voltaje_dia_red),
+                            voltaje_minimo_dia_red = min(voltaje_dia_red),
+                            consumo_dia_solar = consumo_dia_solar,
+                            consumo_dia_red = consumo_dia_red,
+
+                            dia = referencia.dia,
+                            mes = referencia.mes,
+                            año = referencia.año,
+
+                            horas_potencia_panel = calculador_cantidad_true(solar_por_hora),
+                            potencia_dia_panel = potencia_dia_panel,
+                            horas_de_carga = calculador_cantidad_true(horas_de_carga),
+                            voltajes_bateria = json.dumps(voltajes_bateria),
+                            errores = calculador_cantidad_true(errores),
+                            product_id = data.product_id).save()
+            
+            # sobreescribo user_data, para quitar los datos que acabo de borrar
+            user_data = models.DatosHora.objects.filter(user=user)
+
+
+def token_clean(request):
+    # todos los tokens activos
+    data = models.UsersTokens.objects.all()
+    # hora en timezone
+    actual = timezone.now()
+    # para cada dato
+    for d in data:
+        # si el tiempo entre que el token fue creado y el actual es mayor a 2hs
+        if (actual - d.time) > datetime.timedelta(hours=1):
+            # borro el token
+            d.delete()
+
+
+###############################################################################################################
 ################################################ TOOLS ########################################################
 ###############################################################################################################
 
 def sender(request):
+    no_reply_sender('ivanchicago70@gmail.com', 'nashe', 'nashe')
+    #mail = EmailMessage('Hola', 'hola', to=['ivanchicago70@gmail.com'])
+    #mail.content_subtype = 'html' # aclaracion de tipo de contenido
+    #mail.send()
+
     no_reply_sender.delay('ivanchicago70@gmail.com', 'nashe', 'nashe')
     #mail = EmailMessage('Hola', 'hola', to=['ivanchicago70@gmail.com'])
     #mail.content_subtype = 'html' # aclaracion de tipo de contenido
     #mail.send()
 
 def creador(request):
-    creador_datos.delay()
+    #creador_datos.delay()
     #models.UsersTokens(user=request.user, signup_token = 'dajkalsd').save()
     #import time
     #time.sleep(1)
