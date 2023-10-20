@@ -330,7 +330,7 @@ class LoadData(View):
         return JsonResponse(response)
     
 class APILogin(View):
-    def post(self, request):
+    async def post(self, request):
         # usuario posteado
         username = request.POST["username"]
         password = request.POST["password"]
@@ -348,7 +348,7 @@ class APILogin(View):
     
 class EdesurEdenor(View):
 
-    def get(self, request):
+    async def get(self, request):
         web = requests.get('https://www.enre.gov.ar/web/tarifasd.nsf/todoscuadros/7A2E515E48ECD5EB032589650044C8A6?opendocument')
         soup = BeautifulSoup(web.content, 'html.parser')
         

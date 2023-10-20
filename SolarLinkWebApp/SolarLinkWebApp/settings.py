@@ -174,7 +174,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # default URL para redireccionar cuando no está logueado
 LOGIN_URL = "login"
 
-# CRONTAB
+# CRONTAB, DESHABILITADO PORQUE NO ES COMPATIBLE CON VERCEL
+'''
 CRONJOBS = [
     # todos los dias a 00:45
     ('45 0 * * *', 'user_mngmnt.cron.ordenador'),
@@ -182,7 +183,7 @@ CRONJOBS = [
     ('*/10 * * * *', 'user_mngmnt.cron.token_clean'),
     ('*/1 * * * *', 'user_mngmnt.cron.tarea_activadora')
 ]
-
+'''
 # EMAIL
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtppro.zoho.com'

@@ -1,7 +1,7 @@
 {
     "builds": [
       {
-        "src": "SolarLinkWebApp/wsgi.py",
+        "src": "SolarLinkWebApp/asgi.py",
         "use": "@vercel/python"
       
       }
@@ -9,7 +9,17 @@
     "routes": [
       {
         "src": "/(.*)",
-        "dest": "SolarLinkWebApp/wsgi.py"
+        "dest": "SolarLinkWebApp/asgi.py"
       }
+    ],
+      "crons": [
+        {
+          "path": "/user/token-clean",
+          "schedule": "*/5 * * * *"
+        },
+        {
+          "path": "/user/ordenador",
+          "schedule": "45 0 * * *"
+        }
     ]
 }
