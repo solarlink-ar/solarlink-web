@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 from django.views import View
 from bs4 import BeautifulSoup
+from django.core.mail import EmailMessage
 from . import models
 import requests
 import secrets
@@ -353,13 +354,9 @@ class EdesurEdenor(View):
 ###############################################################################################################
 
 def sender(request):
-
-    #user = request.user
-    #token = 'anachei'
-    #context = {"first_name": user.first_name, "username": user.username, "mail": user.email, "url": f"{request.build_absolute_uri('/')}user/password-set/{token}", "base": request.build_absolute_uri('/')}
-    # mando mail
-    #return render(request, "user_mngmnt/auth/confirmacion_password.html" , context)
-    no_reply_sender.delay(email = 'ivanchicago70@gmail.com', subject='Cambio de contraseña', html_message=render_to_string("user_mngmnt/auth/confirmacion_password.html"))
+    mail = EmailMessage('Hola', 'hola', to=['ivanchicago70@gmail.com'])
+    mail.content_subtype = 'html' # aclaracion de tipo de contenido
+    mail.send()
 
 def creador(request):
     creador_datos.delay()
