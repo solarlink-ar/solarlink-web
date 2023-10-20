@@ -11,11 +11,5 @@
       "src": "/(.*)",
       "dest": "SolarLinkWebApp/asgi.py"
     }
-  ],
-  "cron":[
-    {
-      "path": "/user/token-clean",
-      "schedule": "40 17 * * *"
-    }
   ]
 }
