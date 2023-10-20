@@ -19,9 +19,7 @@ cryptography==41.0.4
 daphne==4.0.0
 Django==4.2.5
 django-appconf==1.0.5
-django-compressor==4.4
 django-crontab==0.7.1
-django-libsass==0.9
 django-user-agents==0.4.0
 hyperlink==21.0.0
 idna==3.4
