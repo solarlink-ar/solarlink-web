@@ -30,7 +30,7 @@ def connect_to(ssid, passwd):
 def get_connection():
     try:
         # Me conecto a internet
-        ip = connect_to(ssid, passwd)
+        ip = connect_to("<ssid>", "<password>")
         # Muestro la direccion de IP
         print("Microdot corriendo en IP/Puerto: " + ip + ":5000")
         # Inicio la aplicacion
@@ -43,4 +43,9 @@ def get_connection():
 @app.route('/')
 def index(request):
     return send_file("index.html")
+
+@app.route('/', methods=['POST'])
+def auth(request):
+    if request.method == 'POST':
+        print("hola")
     
