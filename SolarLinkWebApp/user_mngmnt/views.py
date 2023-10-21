@@ -5,6 +5,7 @@ from django.http import HttpResponse, JsonResponse
 # VERCEL NO SOPORTA CELERY, SOPORTE DESACTIVADO
 #from .tasks import no_reply_sender, creador_datos
 from django.shortcuts import render, redirect
+from asgiref.sync import sync_to_async
 from django.contrib.auth.models import User
 from django.contrib import auth
 from django.views import View
@@ -336,7 +337,8 @@ class APILogin(View):
         password = request.POST["password"]
 
         # autentico
-        user = auth.authenticate(username=username, password=password)
+        async_auth = sync_to_async(auth.authenticate, thread_sensitive=False)
+        user = await async_auth(username=username, password=password)
 
         # si existe el usuario, respondo aprobación
         if user:
