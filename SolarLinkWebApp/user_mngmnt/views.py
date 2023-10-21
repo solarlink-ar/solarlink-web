@@ -11,6 +11,7 @@ from django.contrib import auth
 from django.views import View
 from bs4 import BeautifulSoup
 from django.core.mail import EmailMessage
+from asgiref.sync import sync_to_async
 from django.utils import timezone
 from . import models
 import datetime, requests, secrets, random, asyncio, json
@@ -337,7 +338,8 @@ class APILogin(View):
         password = request.POST["password"]
 
         # autentico
-        user = auth.authenticate(username=username, password=password)
+        async_auth = sync_to_async(auth.authenticate, thread_sensitive=False)
+        user = await async_auth(username=username, password=password)
 
         # si existe el usuario, respondo aprobación
         if user:
