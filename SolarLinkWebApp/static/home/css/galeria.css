@@ -1,71 +1,114 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 *{
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;  
+}
+  
+
+
+body {
+  font-family: 'Poppins';
+  font-weight: 300;
 }
 
-body{
-    font-family: "Poppins";
+.basic-example {
+  display: flex;
 }
 
-h1 {
-    font-weight: 400;
-    text-align: center;
-    padding: 20px 0;
-    font-size: 40px;
+.text p:target { background: red; }
+
+
+.button {
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  background: limegreen;
+  padding: .5em 1.25em;
 }
 
-.linea{
-    background: #fce93c;
-    height: 6px;
-    width: 100%;
-    display: block;
+.portfolio {
+  display: grid;
+  grid: auto / repeat(auto-fit, minmax(15em, 1fr));
+  grid-gap: 1em;
+  background: #333;
+  padding: 7em 4em;
 }
 
-.galeria{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    width: 95%;
-    margin: auto;
-    grid-gap: 10px;
-    padding: 40px 0;
-    overflow: hidden;
+.portfolio__item {
+  position: relative;
+  flex-basis: 30%;
+  margin: 0;
+  padding: 0;
+  background: white;
 }
 
-.galeria > a{
-    display: block;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 0 6px rgba(0, 0, 0, .5);
-}
-.galeria img{
-    width: 100%;
-    vertical-align: top;
-    height: 300px;
-    transition: transform 0.5s;
+.portfolio__desc {
+  padding: 1.5em;
 }
 
-.galeria a:hover img {
-    filter: blur(1.4px);
-    transform: rotate(10deg) scale(1.3);
+.portfolio__title {
+  font-family: 'Roboto Condensed', sans-srif;
+  font-size: 1.5em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 0;
+}
+
+.portfolio__image,
+.portfolio-lightbox__image{
+  width: 100%;
+  display: block;
+}
+
+.portfolio-lightbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0,1); 
+  transition: transform 150ms ease-in-out;
+  transform-origin: right; 
+  padding: 2em;
+  position: fixed;
+  top: 0;
+  left: 0;
+  color: white;
+  background: rgba(0, 0, 0, .5);
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .25);
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+}
+
+.portfolio-lightbox:target {
+  transform: scale(1,1);
+  transform-origin: left; 
 
 }
 
-.light-box{
-    position: fixed;
-    top: lef;
-    left: 0;
-    background: rgba(0, 0, 0, .5);
-    width: 100%;
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.portfolio-lightbox__content {
+  width: 75%;
+  padding: 1em;
+  background: black;
+  position: relative;
 }
 
-.light-box img{
-    width: 75vw;
-    max-height: 70vh;
-    
+.portfolio__lightbox__image { margin-bottom: 1em; }
+
+.close {
+  position: absolute;
+  right: -1em;
+  top: -1em;
+  border: white 2px solid;
+  display: flex;
+  width: 2em;
+  height: 2em;
+  background: red;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.close::after {
+  content: 'x';
+  color: white;
 }
