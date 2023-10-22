@@ -6,59 +6,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solar Link-Galería</title>
     <link rel="stylesheet" href="{% static 'home/css/galeria.css' %}" >
-
 </head>
 
-    <h1>Galería</h1>
-  <div class="portfolio">
-    <div class="portfolio__item">
-      <img src="static/home/img/galeria-13.png" alt="" class="portfolio__image">
-      <div class="portfolio__desc">
-        <h3 class="portfolio__title">This is the title</h3>
-        <a href="#portfolio-item-1" class="button" role="button">More info</a>
-      </div>
-      
-  
-    </div>
-    <div class="portfolio__item" id="portfolio">
-      <img src="static/home/img/galeria-16.png" alt="" class="portfolio__image">
-      <div class="portfolio__desc">
-        <h3 class="portfolio__title">This is the title</h3>
-        <a href="#portfolio-item-2" class="button">More info</a>
-      </div>
-    </div>
-    <div class="portfolio__item">
-      <img src="static/home/img/fotoequipo.png" alt="" class="portfolio__image">
-      <div class="portfolio__desc">
-        <h3 class="portfolio__title">This is the title</h3>
-        <a href="#portfolio-item-3" class="button">More info</a>
-      </div>
-    </div>
-  </div>
-  
-  <div class="portfolio-lightbox" id="portfolio-item-1">
-    <div class="portfolio-lightbox__content">
-    <a href="#portfolio" class="close"></a> 
-    <img class="portfolio-lightbox__image" src="https://unsplash.it/900/400?image=1080" alt="">
-    <h3 class="portfolio__title">This is the title</h3>
-    <p class="portfolio__body">This would be a description of the portfolio item</p>
-    </div>
-  </div> 
-  
-  <div class="portfolio-lightbox" id="portfolio-item-2">
-    <div class="portfolio-lightbox__content">
-      <a href="#portfolio" class="close"></a>
-      <img class="portfolio-lightbox__image" src="https://unsplash.it/900/400?image=1070" alt="">
-      <h3 class="portfolio__title">This is the title</h3>
-      <p class="portfolio__body">This would be a description of the portfolio item</p>
-    </div>
-  </div> 
-  
-  <div class="portfolio-lightbox" id="portfolio-item-3">
-    <div class="portfolio-lightbox__content">
-    <a href="#portfolio" class="close"></a>
-    <img class="portfolio-lightbox__image" src="https://unsplash.it/900/400?image=1074" alt="">
-    <h3 class="portfolio__title">This is the title</h3>
-    <p class="portfolio__body">This would be a description of the portfolio item</p>
-    </div>
-  </div> 
+<body>
+    <h1>Galería</h1>    <span class="linea"></span>
+    <a href="index.html" class="atras"></a><i class="fa-solid fa-arrow-right"></i> </a>
+    <section class="galeria">
+         <!--fotos normalitas-->
+        <a href="" id="g1">
+            <img src="static/home/img/IMG_1.png" alt="">
+        </a>
+        <a href="g2" >
+            <img src="static/home/img/IMG_8067.png" alt="">
+        </a>
+        <a href="g3" >
+            <img src="static/home/img/galeria-13.png" alt="">
+        </a>
+        <a href="g7" >
+            <img src="static/home/img/galeria-16.png" alt="">
+        </a>
+        <a href="g4" >
+            <img src="static/home/img/fotoequipo.png" alt="">
+        </a>
+        <a href="g5" >
+            <img src="static/home/img/IMG_8084.png" alt="">
+        </a>
+        <a href="g6" >
+            <img src="static/home/img/galeria-14.png" alt="">
+        </a>
+        <a href="g8" >
+            <img src="static/home/img/galeria-15.png" alt="">
+        </a>
+        <a href="g9" >
+            <img src="static/home/img/galeria-7.png" alt="">
+        </a>
+    </section> 
+
+ <!--Parte de zoom-->
+<article class="zoom-foto" id="g1">
+    <a href="" class="next"></a>
+    <img src="static/home/img/IMG_1.png" alt="">
+    <a href="" class="next"></a>
+    <a href="g1"></a>
+</article>
+</body>
