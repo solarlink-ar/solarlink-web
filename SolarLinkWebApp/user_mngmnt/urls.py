@@ -41,10 +41,10 @@ urlpatterns = [
     path("api-login/", csrf_exempt(views.APILogin.as_view()), name="api_login"),
     path("api-tarifas/", views.EdesurEdenor.as_view(), name="api_tarifas"),
     path("load-data/", csrf_exempt(views.LoadData.as_view()), name="load_data"),
-    path("userpage/", login_required(views.UserPage.as_view()), name="userpage"),
+    path("datos/", login_required(views.UserPage.as_view()), name="userpage"),
     path("index/", views.index, name="index2"),
     # TESTS #
-    #path("creador/", views.creador, name="creador"),
+    path("creador/", views.creador, name="creador"),
     path("sender/", views.sender, name="sender"),
     # VISTAS ADAPTADAS DEL CRON PQ CELERY NO ANDA EN VERCEL #
     path("ordenador/", views.ordenador, name="ordenador"),

@@ -137,7 +137,7 @@
                                 <div class="d-flex">
                                     <i class="fa fa-lightbulb fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
                                     <div class="ms-3">
-                                        <h2 class="mb-0" data-toggle="counter-up">{{ahorro.nashe}}</h2>
+                                        <h2 class="mb-0" data-toggle="counter-up">{{total_semanaprov}}</h2>
                                         <p class="text-primary-gradient mb-0">kW/h del proveedor</p>
                                     </div>
                                 </div>
@@ -146,7 +146,7 @@
                                 <div class="d-flex">
                                     <i class="fa fa-percent fa-2x text-secondary-gradient flex-shrink-0 mt-1"></i>
                                     <div class="ms-3">
-                                        <h2 class="mb-0" data-toggle="counter-up">{{porcentaje.nashe}}</h2>
+                                        <h2 class="mb-0" data-toggle="counter-up">{{porcentaje_ahorro}}</h2>
                                         <p class="text-secondary-gradient mb-0">Ahorro en porcentaje</p>
                                     </div>
                                 </div>
@@ -155,12 +155,12 @@
                                 <div class="d-flex">
                                     <i class="fa fa-solar-panel fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
                                     <div class="ms-3">
-                                        <h2 class="mb-0" data-toggle="counter-up">{{ahorro.si.nashe}}</h2>
+                                        <h2 class="mb-0" data-toggle="counter-up">{{total_semanasolar}}</h2>
                                         <p class="text-primary-gradient mb-0">kW/h solares</p>
                                     </div>
                                 </div>
                             </div>
-                            {% if datos_ahorro_ok%}
+                            {% if datos_ahorro_ok %}
                             <canvas id="ahorro" style="width: 100%; max-width: 1000px;"></canvas>
                             {% else %}
                             <div>
@@ -213,10 +213,10 @@
                             {% endif %}
                             <script>
                                 const xValues = ['Dia 1', 'Dia 2', 'Dia 3', 'Dia 4', 'Dia 5', 'Dia 6', 'Dia 7'];
-                                const yValuesc = [10,25,15,10,21,14,30];
-                                const yValuesg = [5,10,20,15,18,15,20];
-                                const yAnualc = [800,760,860,670,500,600,780,700,500,600,580,670];
-                                const yAnualg = [400,420,460,350,300,250,300,280,320,350,360,390];
+                                const yValuesg = [{{semanasolar.6}},{{semanasolar.5}},{{semanasolar.4}},{{semanasolar.3}},{{semanasolar.2}},{{semanasolar.1}},{{semanasolar.0}}];
+                                const yValuesc = [{{semanaprov.6}},{{semanaprov.5}},{{semanaprov.4}},{{semanaprov.3}},{{semanaprov.2}},{{semanaprov.1}},{{semanaprov.0}}];
+                                const yAnualg = [{{consumo_ahorrado_meses.0}},{{consumo_ahorrado_meses.1}},{{consumo_ahorrado_meses.2}},{{consumo_ahorrado_meses.3}},{{consumo_ahorrado_meses.4}},{{consumo_ahorrado_meses.5}},{{consumo_ahorrado_meses.6}},{{consumo_ahorrado_meses.7}},{{consumo_ahorrado_meses.8}},{{consumo_ahorrado_meses.9}},{{consumo_ahorrado_meses.10}},{{consumo_ahorrado_meses.11}}];
+                                const yAnualc = [{{consumo_prov_meses.0}},{{consumo_prov_meses.1}},{{consumo_prov_meses.2}},{{consumo_prov_meses.3}},{{consumo_prov_meses.4}},{{consumo_prov_meses.5}},{{consumo_prov_meses.6}},{{consumo_prov_meses.7}},{{consumo_prov_meses.8}},{{consumo_prov_meses.9}},{{consumo_prov_meses.10}},{{consumo_prov_meses.11}}];
                                 const xBat = ["Consumo en porcentaje"];
                                 const xAnual = ["Enero", "Febrero", "Marzo", "Mayo", "Abril", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
                                 new Chart("ahorro", {

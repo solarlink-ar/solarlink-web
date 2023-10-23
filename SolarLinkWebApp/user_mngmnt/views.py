@@ -282,31 +282,45 @@ class UserPage(View):
 
 
         mes_data = models.DatosDias.objects.filter(user=user, mes=8).order_by("-dia")#timezone.now().month)
-        
-        if mes_data and len(mes_data) >= 7:
-            semanasolar = []
-            semanaprov = []
+
+        semanasolar = []
+        semanaprov = []
+        if mes_data:
             for i in range(7):
                 semanaprov.append(mes_data[i].consumo_dia_red)
                 semanasolar.append(mes_data[i].consumo_dia_solar)
-        else:
-            ...
         
         
         año_data = models.DatosDias.objects.filter(user=user, año = 2023)
-        consumo_total_meses = []
+
+        consumo_prov_meses = []
         consumo_ahorrado_meses = []
 
         for mes in range(1, 13):
             mes_data = año_data.filter(mes = mes)
+            consumo_prov_mes = 0
+            consumo_ahorro_mes = 0
+            for data in mes_data:
+                consumo_prov_mes += data.consumo_dia_red
+                consumo_ahorro_mes += data.consumo_dia_solar
+            consumo_ahorrado_meses.append(int(consumo_ahorro_mes))
+            consumo_prov_meses.append(int(consumo_prov_mes))
+
+        if semanasolar == [] and semanaprov == [] and \
+           sum(consumo_prov_meses) == 0 and sum(consumo_ahorrado_meses) == 0:
+            datos_ahorro_ok = False
+            context = {"datos_ahorro_ok": datos_ahorro_ok}
+        else:
+            datos_ahorro_ok = True
+            context = {"semanasolar": semanasolar, "semanaprov": semanaprov, 
+            "total_semanasolar":int(sum(semanasolar)),
+            "total_semanaprov": int(sum(semanaprov)),
+            "porcentaje_ahorro": round(sum(semanaprov)/sum(semanasolar), 2),
+            "consumo_ahorrado_meses":consumo_ahorrado_meses,
+            "consumo_prov_meses": consumo_prov_meses,
+            "datos_ahorro_ok": datos_ahorro_ok}
 
             
-
-
-        context = {"semanasolar": semanasolar, "semanaprov": semanaprov, 
-                   "total_semanasolar":int(sum(semanasolar)),
-                    "total_semanaprov": int(sum(semanaprov)),
-                    "porcentaje_ahorro": round(sum(semanaprov)/sum(semanasolar), 2)}
         
         return render(request, "user_mngmnt/index.html", context)
 
