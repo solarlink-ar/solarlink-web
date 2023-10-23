@@ -1,5 +1,6 @@
-from microdot_asyncio import Microdot, send_file
-import urequests as requests
+from microdot_asyncio import Microdot, send_file, redirect, Response
+#import urequests as requests
+import requests
 
 app = Microdot()
 
@@ -40,12 +41,36 @@ def get_connection():
         # Termina el programa con Ctrl + C
         print("Aplicación terminada")
 
+def get_content(path):
+    with open(path, encoding="utf-8") as f:
+        raw_lines = f.readlines()
+    content = ''.join(raw_lines)
+    return content
+
+INDEX = get_content('index.html')
+
+NULL = ''
+
+LOGIN_FAIL = '''
+<br><p>Error al iniciar sesión. Revise su nombre de usuario y/o contraseña.</p>'''
+
+Response.default_content_type = 'text/html'
+
 @app.route('/')
 def index(request):
-    return send_file("index.html")
+    return INDEX.format(content2=NULL)
 
 @app.route('/', methods=['POST'])
 def auth(request):
     if request.method == 'POST':
-        print("hola")
-    
+        username = request.form["user"]
+        password = request.form["psswd"]
+        payload = {"username": username, "password": password}
+        repost = requests.post("https://solarlink.ar/user/api-login/", data = payload)
+        login_status = repost.json()['login']
+        if login_status == True:
+            return send_file("login-success.html")
+        else:
+            return INDEX.format(content2=LOGIN_FAIL)
+
+app.run()
