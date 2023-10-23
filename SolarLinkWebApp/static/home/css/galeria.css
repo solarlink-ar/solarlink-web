@@ -67,12 +67,6 @@ h1 {
     transform: scale(0);
 }
 
-.lightbox img{
-    width: 75vw;
-    max-height: 70vh;
-
-}
-
 .lightbox:target{
     transform: scale(1);
 
