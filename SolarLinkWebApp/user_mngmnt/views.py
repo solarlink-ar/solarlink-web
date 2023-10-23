@@ -281,6 +281,37 @@ class UserPage(View):
         user = request.user
 
 
+        mes_data = models.DatosDias.objects.filter(user=user, mes=8).order_by("-dia")#timezone.now().month)
+        
+        if mes_data and len(mes_data) >= 7:
+            semanasolar = []
+            semanaprov = []
+            for i in range(7):
+                semanaprov.append(mes_data[i].consumo_dia_red)
+                semanasolar.append(mes_data[i].consumo_dia_solar)
+        else:
+            ...
+        
+        
+        año_data = models.DatosDias.objects.filter(user=user, año = 2023)
+        consumo_total_meses = []
+        consumo_ahorrado_meses = []
+
+        for mes in range(1, 13):
+            mes_data = año_data.filter(mes = mes)
+
+            
+
+
+        context = {"semanasolar": semanasolar, "semanaprov": semanaprov, 
+                   "total_semanasolar":int(sum(semanasolar)),
+                    "total_semanaprov": int(sum(semanaprov)),
+                    "porcentaje_ahorro": round(sum(semanaprov)/sum(semanasolar), 2)}
+        
+        return render(request, "user_mngmnt/index.html", context)
+
+
+
 
     #username = request.user.username
     #return render(request, "user_mngmnt/userpage.html", {"username": username})
@@ -332,9 +363,14 @@ class LoadData(View):
     
 class APILogin(View):
     async def post(self, request):
-        # usuario posteado
-        username = request.POST["username"]
-        password = request.POST["password"]
+        if request.POST:
+            # usuario posteado
+            username = request.POST["username"]
+            password = request.POST["password"]
+        if request.body and not request.POST:
+            async_json_dumps = sync_to_async(json.loads, thread_sensitive=False)
+            username = (await async_json_dumps(request.body))["username"]
+            password = (await async_json_dumps(request.body))["password"]
 
         # autentico
         async_auth = sync_to_async(auth.authenticate, thread_sensitive=False)
@@ -444,6 +480,29 @@ def token_clean(request):
 ################################################ TOOLS ########################################################
 ###############################################################################################################
 
+def creador(request):
+    user = request.user
+    lista = [True,False]
+    # se sube un dato por hora
+    for d in range(1, 31):
+        for h in range(0, 24):
+            models.DatosHora(user = user,
+                            voltaje_hora_red = random.randint(170, 240),
+                            consumo_hora_red = random.randint(0, 4000),
+                            consumo_hora_solar = random.randint(0, 340),
+                            consumo_l1 = random.randint(0, 4000),
+                            consumo_l2 = random.randint(0,4000),
+                            hora = h,
+                            dia = d,
+                            mes = 8,
+                            año = 2023,
+                            solar_ahora = random.choice(lista),
+                            panel_potencia = random.randint(0, 340),
+                            cargando = random.choice(lista),
+                            voltaje_bateria = random.randint(10, 15),
+                            errores = random.choice(lista),
+                            product_id = 'nashe23').save()
+                
 def sender(request):
     no_reply_sender('ivanchicago70@gmail.com', 'nashe', 'nashe')
     #mail = EmailMessage('Hola', 'hola', to=['ivanchicago70@gmail.com'])
