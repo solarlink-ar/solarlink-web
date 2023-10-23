@@ -2,6 +2,10 @@ from microdot_asyncio import Microdot, send_file, redirect, Response
 #import urequests as requests
 import requests
 
+solarlink = SolarLink()
+
+##################
+
 app = Microdot()
 
 def connect_to(ssid, passwd):
@@ -69,6 +73,8 @@ def auth(request):
         repost = requests.post("https://solarlink.ar/user/api-login/", data = payload)
         login_status = repost.json()['login']
         if login_status == True:
+            solarlink.username = username
+            solarlink.password = password
             return send_file("login-success.html")
         else:
             return INDEX.format(content2=LOGIN_FAIL)
