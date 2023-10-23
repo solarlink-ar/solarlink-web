@@ -73,7 +73,7 @@ class Solarlink(object):
         self.pin_cruce = Pin(13, Pin.IN, pull=None)
         self.pin_cruce.irq(trigger=Pin.IRQ_RISING, handler=self.callback_conmutacion)
 
-        self.trigger = 750
+        self.trigger = 400
 
         self.pedido_conmutacion = False
 
@@ -84,7 +84,13 @@ class Solarlink(object):
 
         self.username = False
         self.password = False
-
+        #################################### POSTEO #########################################################
+        self.acumulacion_consumo_red = 0
+        self.acumulacion_consumo_solar = 0
+        self.acumulacion_voltaje_red = 0
+        self.acumulacion_l1 = 0
+        self.acumulacion_l2 = 0
+        self.indice_mediciones = 0
 
 
     #####################################################################################################
@@ -135,7 +141,7 @@ class Solarlink(object):
     def medicion_default_segundo(self):
 
         # timer 0 init, timer de fin de mediciones
-        self.timer0 = Timer(0).init(period=1000, mode=Timer.ONE_SHOT, callback=self.callback_fin_mediciones)
+        self.timer0 = Timer(0).init(period=100, mode=Timer.ONE_SHOT, callback=self.callback_fin_mediciones)
 
         # pico de corriente en ambas lineas (l1, l2) en el tiempo de medicion
         pico_corriente_l1 = 0
@@ -197,6 +203,7 @@ class Solarlink(object):
         self.pedido_conmutacion = True
         self.l1 = l1
         self.l2 = l2
+    
     
 
 '''

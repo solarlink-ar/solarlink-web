@@ -10,6 +10,7 @@ p2 = Pin(2, Pin.OUT)
 #pin_l1 = Pin(19, Pin.OUT)
 #pin_l2 = Pin(18, Pin.OUT)
 #pin_cruce = Pin(13, Pin.IN
+
 '''wlan = network.WLAN(network.STA_IF) #network init
 wlan.active(True)
 while not wlan.isconnected():
@@ -23,11 +24,36 @@ while not wlan.isconnected():
 solarlink = Solarlink()
 #
 #
-
+sol = bytearray([0x00,0x00,0x15,0x0E,0x1B,0x0E,0x15,0x00])
+solarlink.lcd.custom_char(0, sol)
 
 while 1:
     valores = solarlink.medicion_default_segundo()
-
+    solarlink.lcd.hal_write_command(LcdApi.LCD_HOME)
+    
+    
+    if solarlink.l1:
+        sol = bytearray([0x00,0x00,0x15,0x0E,0x1B,0x0E,0x15,0x00])
+        solarlink.lcd.custom_char(0, sol)
+        sol_l1 = chr(0)
+    else:
+        sol_l1 = ' '
+    if solarlink.l2:
+        sol = bytearray([0x00,0x00,0x15,0x0E,0x1B,0x0E,0x15,0x00])
+        solarlink.lcd.custom_char(0, sol)
+        sol_l2 = chr(0)
+    else:
+        sol_l2 = ' '
+    solarlink.lcd.move_to(0,0)
+    solarlink.lcd.putstr(f"{sol_l1}" + "    " + f"Vin:{valores['voltaje']} V" + "     " + f"{sol_l2}")
+    solarlink.lcd.move_to(0,1)
+    solarlink.lcd.putstr(f"LINEA1        LINEA2")
+    solarlink.lcd.move_to(0,2)
+    solarlink.lcd.putstr(f"%.2f A"% (valores["corriente_l1"]) + "        " + "%.2f A" % (valores["corriente_l2"]))
+    solarlink.lcd.move_to(0,3)
+    solarlink.lcd.putstr('{:0>4d} W'.format(valores["consumo_l1"]) + "        " + '{:0>4d} W'.format(valores["consumo_l2"]))
+    
+    '''
     solarlink.lcd.move_to(5, 0)
     solarlink.lcd.putstr(f'Vin:{valores["voltaje"]} V')
     solarlink.lcd.move_to(0,1)
@@ -42,19 +68,33 @@ while 1:
     solarlink.lcd.putstr('%.2f A' % (valores["corriente_l2"]))
     solarlink.lcd.move_to(14, 3)
     solarlink.lcd.putstr('{:0>4d} W'.format(valores["consumo_l2"]))
-    
+    '''
     
     voltaje = valores["voltaje"]
     corriente_l1 = valores["corriente_l1"]
     corriente_l2 = valores["corriente_l2"]
     consumo_l1 = valores["consumo_l1"]
     consumo_l2 = valores["consumo_l2"]
-
-    #p_l1.off()
-    #p_l2.off()
     
+    '''
+    if solarlink.l1:
+        solarlink.lcd.move_to(0,0)
+        solarlink.lcd.putstr(chr(0))
+    else:
+        solarlink.lcd.move_to(0,0)
+        solarlink.lcd.putstr(' ')
+        
+    if solarlink.l2:
+        solarlink.lcd.move_to(19,0)
+        solarlink.lcd.putstr(chr(0))
+    else:
+        solarlink.lcd.move_to(19,0)
+        solarlink.lcd.putstr(' ')
+    '''
+    #solarlink.lcd.hal_write_command(LcdApi.LCD_HOME)
+        
     trigger = solarlink.trigger
-    
+
     # logica de conmutacion
     if consumo_l1 + consumo_l2 < trigger:
         solarlink.conmutador(l1 = True, l2 = True)
@@ -62,25 +102,16 @@ while 1:
         if consumo_l1 < trigger and consumo_l2 < trigger:
             if consumo_l1 > consumo_l2:
                 solarlink.conmutador(l1 = True, l2 = False)
-                #p_l1.on()
-                #p_l2.off()
             else:
                 solarlink.conmutador(l1=False, l2=True)
-                #p_l1.off()
-                #p_l2.on()
+
         if consumo_l1 > trigger and consumo_l2 > trigger:
             solarlink.conmutador(l1=False, l2=False)
-            #p_l1.off()
-            #p_l2.off()
         elif consumo_l1 > trigger and consumo_l2 < trigger:
             solarlink.conmutador(l1=False, l2=True)
-            #p_l1.off()
-            #p_l2.on()
         elif consumo_l1 < trigger and consumo_l2 > trigger:
             solarlink.conmutador(l1=True, l2=False)
-            #p_l1.on()
-            #p_l2.off()
-    
+
 '''  
 #############
 #### WIP ####
