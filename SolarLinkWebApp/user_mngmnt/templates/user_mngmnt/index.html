@@ -86,6 +86,7 @@
                 <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
                     <h1 class="mb-5">Estado Actual</h1>
                 </div>
+                {% if datos_ahorro_ok %}
                 <div class="row g-4">
                     <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                         <div class="feature-item bg-light rounded p-4">
@@ -115,6 +116,11 @@
                         </div>
                     </div>
                 </div>
+                {% else %}
+                <div>
+                    <h2 class='mb-5' style='text-align:center;vertical-align:middle;'>Aun no hay datos</h2>
+                </div>
+                {% endif %}
             </div>
         </div>
         <!-- Features End -->
@@ -131,7 +137,7 @@
                                 <div class="d-flex">
                                     <i class="fa fa-lightbulb fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
                                     <div class="ms-3">
-                                        <h2 class="mb-0" data-toggle="counter-up">750</h2>
+                                        <h2 class="mb-0" data-toggle="counter-up">{{ahorro.nashe}}</h2>
                                         <p class="text-primary-gradient mb-0">kW/h del proveedor</p>
                                     </div>
                                 </div>
@@ -140,7 +146,7 @@
                                 <div class="d-flex">
                                     <i class="fa fa-percent fa-2x text-secondary-gradient flex-shrink-0 mt-1"></i>
                                     <div class="ms-3">
-                                        <h2 class="mb-0" data-toggle="counter-up">67</h2>
+                                        <h2 class="mb-0" data-toggle="counter-up">{{porcentaje.nashe}}</h2>
                                         <p class="text-secondary-gradient mb-0">Ahorro en porcentaje</p>
                                     </div>
                                 </div>
@@ -149,21 +155,33 @@
                                 <div class="d-flex">
                                     <i class="fa fa-solar-panel fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
                                     <div class="ms-3">
-                                        <h2 class="mb-0" data-toggle="counter-up">500</h2>
+                                        <h2 class="mb-0" data-toggle="counter-up">{{ahorro.si.nashe}}</h2>
                                         <p class="text-primary-gradient mb-0">kW/h solares</p>
                                     </div>
                                 </div>
                             </div>
+                            {% if datos_ahorro_ok%}
                             <canvas id="ahorro" style="width: 100%; max-width: 1000px;"></canvas>
+                            {% else %}
+                            <div>
+                                <h2 class='mb-5' style='text-align:center;vertical-align:middle;'>Aun no hay datos</h2>
+                            </div>
+                            {% endif %}
                             <h1 class="mb-4 text-center">Ahorro anual</h1>
+                            {% if datos_ahorro_ok %}
                             <canvas id ="anual" style="width: 100%; max-width: 1000px;"></canvas>
-                            <h5 class="text-primary-gradient fw-medium">Bateria</h5>
+                            {% else %}
+                            <div>
+                                <h2 class='mb-5' style='text-align:center;vertical-align:middle;'>Aun no hay datos</h2>
+                            </div>
+                            {% endif %}
+                            <h5 class="text-primary-gradient text-center fw-medium">Bateria</h5>
                             <h1 class="mb-4 text-center">Uso de bateria ultima semana</h1>
                             <div class="col-sm-6 wow fadeIn" data-wow-delay="0.5s">
                                 <div class="d-flex">
                                     <i class="fa fa-sun fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
                                     <div class="ms-3">
-                                        <h2 class="mb-0" data-toggle="counter-up">15</h2>
+                                        <h2 class="mb-0" data-toggle="counter-up">{{porcentaje.generado}}</h2>
                                         <p class="text-primary-gradient mb-0">porcentaje generado</p>
                                     </div>
                                 </div>
@@ -172,7 +190,7 @@
                                 <div class="d-flex">
                                     <i class="fa fa-chart-line fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
                                     <div class="ms-3">
-                                        <h2 class="mb-0" data-toggle="counter-up">-2.8</h2>
+                                        <h2 class="mb-0" data-toggle="counter-up">{{porcentaje.adquirido}}</h2>
                                         <p class="text-primary-gradient mb-0">porcentaje adquirido</p>
                                     </div>
                                 </div>
@@ -181,13 +199,18 @@
                                 <div class="d-flex">
                                     <i class="fa fa-fire fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
                                     <div class="ms-3">
-                                        <h2 class="mb-0" data-toggle="counter-up">17.8</h2>
+                                        <h2 class="mb-0" data-toggle="counter-up">{{porcentaje.utilizado}}</h2>
                                         <p class="text-primary-gradient mb-0">porcentaje utilizado</p>
                                     </div>
                                 </div>
                             </div>
+                            {% if datos_ahorro_ok %}
                             <canvas id="bateria" style="width: 100%; max-width: 1000px;"></canvas>
-
+                            {% else %}
+                            <div>
+                                <h2 class='mb-5' style='text-align:center;vertical-align:middle;'>Aun no hay datos</h2>
+                            </div>
+                            {% endif %}
                             <script>
                                 const xValues = ['Dia 1', 'Dia 2', 'Dia 3', 'Dia 4', 'Dia 5', 'Dia 6', 'Dia 7'];
                                 const yValuesc = [10,25,15,10,21,14,30];
