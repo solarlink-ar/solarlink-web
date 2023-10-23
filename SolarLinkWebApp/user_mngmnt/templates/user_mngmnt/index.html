@@ -160,8 +160,9 @@
                                     </div>
                                 </div>
                             </div>
+            
                             {% if datos_ahorro_ok %}
-                            <canvas id="ahorro" style="width: 100%; max-width: 1000px;"></canvas>
+                            <canvas id="ahorro" style="width: 100%; max-width: 1000px;"></canvas> -->
                             {% else %}
                             <div>
                                 <h2 class='mb-5' style='text-align:center;vertical-align:middle;'>Aun no hay datos</h2>
@@ -175,6 +176,7 @@
                                 <h2 class='mb-5' style='text-align:center;vertical-align:middle;'>Aun no hay datos</h2>
                             </div>
                             {% endif %}
+                            <!--
                             <h5 class="text-primary-gradient text-center fw-medium">Bateria</h5>
                             <h1 class="mb-4 text-center">Uso de bateria ultima semana</h1>
                             <div class="col-sm-6 wow fadeIn" data-wow-delay="0.5s">
@@ -204,6 +206,7 @@
                                     </div>
                                 </div>
                             </div>
+            
                             {% if datos_ahorro_ok %}
                             <canvas id="bateria" style="width: 100%; max-width: 1000px;"></canvas>
                             {% else %}
@@ -211,6 +214,7 @@
                                 <h2 class='mb-5' style='text-align:center;vertical-align:middle;'>Aun no hay datos</h2>
                             </div>
                             {% endif %}
+                        -->
                             <script>
                                 const xValues = ['Dia 1', 'Dia 2', 'Dia 3', 'Dia 4', 'Dia 5', 'Dia 6', 'Dia 7'];
                                 const yValuesg = [{{semanasolar.6}},{{semanasolar.5}},{{semanasolar.4}},{{semanasolar.3}},{{semanasolar.2}},{{semanasolar.1}},{{semanasolar.0}}];

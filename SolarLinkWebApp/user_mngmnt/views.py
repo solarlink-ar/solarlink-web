@@ -241,7 +241,7 @@ class Login(View):
             # logueo
             auth.login(request, user)
             # redirijo a index
-            return redirect('index2')
+            return redirect('userpage')
         # si el form no es valido
         else:
             # codigo de error
@@ -320,8 +320,6 @@ class UserPage(View):
             "consumo_prov_meses": consumo_prov_meses,
             "datos_ahorro_ok": datos_ahorro_ok}
 
-            
-        
         return render(request, "user_mngmnt/index.html", context)
 
 

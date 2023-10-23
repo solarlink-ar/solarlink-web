@@ -7,3 +7,14 @@ python3 manage.py crontab show
 python3 manage.py crontab remove
 
 daphne SolarLinkWebApp.asgi:application
+
+
+JUEVES
+Prototipos III 14-18hs
+SysApp 14-16hs
+Desarrollo sistemas 11-13:30hs
+Resolución problemas 14-15:30hs
+
+VIERNES
+Proambiente 11:30-13:30hs
+Prototipos III 9-13:30hs
