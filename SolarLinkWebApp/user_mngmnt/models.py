@@ -13,15 +13,17 @@ class DatosHora(models.Model):
     # usuario
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     # promedio del voltaje en la hora proveniente de la red
-    voltaje_hora_red = models.FloatField(default=None)
+    voltaje_hora_red = models.IntegerField(default=None)
     # consumo total en la hora de origen solar
-    consumo_hora_solar = models.FloatField(default=None)
+    consumo_hora_solar = models.IntegerField(default=None)
     # consumo total en la hora proveniente de la red
-    consumo_hora_red = models.FloatField(default=None)
+    consumo_hora_red = models.IntegerField(default=None)
     # consumo linea 1
-    consumo_l1 = models.FloatField(default=None)
+    consumo_l1_solar = models.IntegerField(default=None)
+    consumo_l1_proveedor = models.IntegerField(default=None)
     # consumo linea 2
-    consumo_l2 = models.FloatField(default=None)
+    consumo_l2_solar = models.IntegerField(default=None)
+    consumo_l2_proveedor = models.IntegerField(default=None)
 
 
     hora = models.IntegerField(default=None)
@@ -30,19 +32,19 @@ class DatosHora(models.Model):
     año = models.IntegerField(default=None)
 
     # booleano que indica si las lineas estan alimentadas ahora por el sistema solar
-    solar_ahora = models.BooleanField(default=None)
+    solar_ahora = models.BooleanField(default=None, null=True)
     # potencia entregada por el panel en esa hora
-    panel_potencia = models.IntegerField(default=None)
+    panel_potencia = models.IntegerField(default=None, null=True)
     # booleano que indica si la bateria esta cargando ahora
-    cargando = models.BooleanField(default=None)
+    cargando = models.BooleanField(default=None, null=True)
     # voltaje de la bateria actual, con esto se puede sacar el porcentaje de la bateria
-    voltaje_bateria = models.IntegerField(default=None)
+    voltaje_bateria = models.IntegerField(default=None, null=True)
 
     # booleano que indica que en esta hora hubo errores
-    errores = models.BooleanField(default=None)
+    errores = models.BooleanField(default=None, null=True)
 
     # id de producto
-    product_id = models.CharField(max_length=50)
+    product_id = models.CharField(max_length=50, null = True)
 
     class Meta:
         ordering = ["user", "año", "mes", "dia", "hora"]
@@ -52,14 +54,14 @@ class DatosDias(models.Model):
     # usuario
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     # voltaje maximo del dia en la red
-    voltaje_maximo_dia_red = models.FloatField(default=None)
+    voltaje_maximo_dia_red = models.IntegerField(default=None)
     # voltaje minimo del dia en la red
-    voltaje_minimo_dia_red = models.FloatField(default=None)
+    voltaje_minimo_dia_red = models.IntegerField(default=None)
 
     # consumo total del dia de la red
-    consumo_dia_red = models.FloatField(default=None)
+    consumo_dia_red = models.IntegerField(default=None)
     # consumo total del dia de origen solar
-    consumo_dia_solar = models.FloatField(default=None)
+    consumo_dia_solar = models.IntegerField(default=None)
 
     dia = models.IntegerField(default=None)
     mes = models.IntegerField(default=None)
@@ -92,8 +94,8 @@ class Productos(models.Model):
 class Emergencia(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
-    voltaje = models.FloatField(default=None)
-    consumo = models.FloatField(default=None)
+    voltaje = models.IntegerField(default=None)
+    consumo = models.IntegerField(default=None)
 
     dia = models.IntegerField(default=None)
     mes = models.IntegerField(default=None)
@@ -108,12 +110,15 @@ class Emergencia(models.Model):
 class TiempoReal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
-    voltaje = models.FloatField(default=None)
+    voltaje = models.IntegerField(default=None)
 
     # consumo linea 1
-    consumo_l1 = models.FloatField(default=None)
+    consumo_l1 = models.IntegerField(default=None)
+    solar_l1 = models.BooleanField(default=None)
+
     # consumo linea 2
-    consumo_l2 = models.FloatField(default=None)
+    consumo_l2 = models.IntegerField(default=None)
+    solar_l2 = models.BooleanField(default=None)
 
     # si se está usando energía solar en alguna linea
     solar = models.BooleanField(default=None)

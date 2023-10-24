@@ -282,6 +282,8 @@ class UserPage(View):
     def get(self, request):
         # usuario
         user = request.user
+
+        ############### DATOS SEMANA ###############
         # mes actual
         mes_actual = timezone.now().month
         # mes anterior
@@ -289,7 +291,7 @@ class UserPage(View):
 
         # datos del mes actual, filtrados de la ultima semana, ordenados desde hoy
         mes_data = models.DatosDias.objects.filter(user=user, mes__range=(prev.month, mes_actual)).order_by("-año", "-mes","-dia")
-
+        dias = []
         semanasolar = []
         semanaprov = []
         # si hay datos
@@ -301,12 +303,14 @@ class UserPage(View):
                     # apendo dato de cada dia
                     semanaprov.append(mes_data[i].consumo_dia_red)
                     semanasolar.append(mes_data[i].consumo_dia_solar)
+                    dias.append(f"{mes_data[i].dia}/{mes_data[i].mes}")
                 # relleno con ceros
                 except:
                     semanaprov.append(0)
                     semanasolar.append(0)
-        
-        # datos año
+                    dias.append("")
+
+        ############### DATOS AÑO ###############
         año_data = models.DatosDias.objects.filter(user=user, año = 2023)
 
         consumo_prov_meses = []
@@ -327,6 +331,30 @@ class UserPage(View):
             consumo_ahorrado_meses.append(int(consumo_ahorro_mes))
             consumo_prov_meses.append(int(consumo_prov_mes))
 
+        ############### DATOS HOY ###############
+        consumo_l1_solar = []
+        consumo_l1_proveedor = []
+        consumo_l2_solar = []
+        consumo_l2_proveedor = []
+        horas = []
+        hoy = timezone.now()
+        print(hoy)
+        hoy_data = models.DatosHora.objects.filter(año = hoy.year, mes = hoy.month, dia = hoy.day)
+
+        for i in range(0,24):
+            data = hoy_data.filter(hora = i)
+            if data:
+                data = data[0]
+                consumo_l1_solar.append(data.consumo_l1_solar)
+                consumo_l1_proveedor.append(data.consumo_l1_proveedor)
+                consumo_l2_solar.append(data.consumo_l2_solar)
+                consumo_l2_proveedor.append(data.consumo_l2_proveedor)
+            else:
+                consumo_l1_solar.append(0)
+                consumo_l1_proveedor.append(0)
+                consumo_l2_solar.append(0)
+                consumo_l2_proveedor.append(0)
+        
 
         # si faltan todos los datos
         if semanasolar == [] and semanaprov == [] and \
@@ -336,13 +364,20 @@ class UserPage(View):
         # muestro
         else:
             datos_ahorro_ok = True
-            context = {"semanasolar": semanasolar, "semanaprov": semanaprov, 
+            context = {"semanasolar": semanasolar, "semanaprov": semanaprov, "dias": dias,
             "total_semanasolar":int(sum(semanasolar)),
             "total_semanaprov": int(sum(semanaprov)),
-            "porcentaje_ahorro": round(sum(semanaprov)/sum(semanasolar), 2),
+            ########
+            "porcentaje_ahorro": round(sum(semanasolar)/sum(semanaprov) * 100, 2),
             "consumo_ahorrado_meses":consumo_ahorrado_meses,
             "consumo_prov_meses": consumo_prov_meses,
-            "datos_ahorro_ok": datos_ahorro_ok}
+            ########
+            "datos_ahorro_ok": datos_ahorro_ok,
+            ########
+            "consumo_l1_solar": consumo_l1_solar,
+            "consumo_l2_solar": consumo_l2_solar,
+            "consumo_l1_prov": consumo_l1_proveedor,
+            "consumo_l2_prov": consumo_l2_proveedor}
 
         return render(request, "user_mngmnt/index.html", context)
 
@@ -364,7 +399,7 @@ class OnlineUsersUpdate(View):
     def post(self, request):
         # usuario
         user = request.user
-        # borro
+
         user.isonline.is_online = False
 
         user.isonline.save()
@@ -385,16 +420,18 @@ class OnlineUsersUpdate(View):
         return JsonResponse({"response":True})
 
 class shouldPost(View):
-    def post(self, request):
+    def get(self, request):
         # si el contenido esta en post
-        if request.POST:
+        if request.GET:
             # usuario posteado
-            username = request.POST["username"]
-            password = request.POST["password"]
+            data = request.GET
         # si el contenido esta en body
-        if request.body and not request.POST:
-            username = (json.loads(request.body))["username"]
-            password = (json.loads(request.body))["password"]
+        if request.body and not request.GET:
+            data = json.loads(request.body)
+
+        username = data["username"]
+        password = data["password"]
+
         # autentico
         user = auth.authenticate(username=username, password=password)
 
@@ -404,14 +441,48 @@ class shouldPost(View):
         else:
             return JsonResponse({"response": False})
         
+    def post(self, request):
+        # si el contenido esta en post
+        if request.POST:
+            # usuario posteado
+            data = request.POST
+        # si el contenido esta en body
+        if request.body and not request.POST:
+            data = json.loads(request.body)
+
+        username = data["username"]
+        password = data["password"]
+
+        user = auth.authenticate(username=username, password = password)
+
+        models.TiempoReal(user = user, 
+                          voltaje = data["voltaje"],
+                          consumo_l1 = data["consumo_l1"],
+                          solar_l1 = data["solar_l1"],
+                          consumo_l2 = data["solar_l2"],
+                          solar_l2 = data["solar_l2"],
+                          solar = ["solar"]).save()
+        
+        return JsonResponse({"response": True})
+        
 
     
 class LoadData(View):
     def post(self, request):
-        # data posteada
-        data = request.POST.dict()
+        # si el contenido esta en post
+        if request.POST:
+            # usuario posteado
+            data = request.POST
+            
+        # si el contenido esta en body
+        if request.body and not request.POST:
+            data = json.loads(request.body)
+
+        username = data["username"]
+        password = data["password"]
+
         # autentico
-        user = auth.authenticate(username=data["username"], password=data["password"])
+        user = auth.authenticate(username=username, password=password)
         # si existe el usuario
         if user:
             # guardo datos
@@ -420,17 +491,19 @@ class LoadData(View):
                 voltaje_hora_red = data["voltaje_hora_red"],
                 consumo_hora_solar = data["consumo_hora_solar"],
                 consumo_hora_red = data["consumo_hora_red"],
+                consumo_l1_solar = data["consumo_l1_solar"],
+                consumo_l2_solar = data["consumo_l2_solar"],
+                consumo_l1_proveedor = data["consumo_l1_proveedor"],
+                consumo_l2_proveedor = data["consumo_l2_proveedor"],
                 consumo_l1 = data["consumo_l1"],
                 consumo_l2 = data["consumo_l2"],
                 hora = data["hora"],
                 dia = data["dia"],
                 mes = data["mes"],
                 año = data["año"],
-                solar_ahora = data["solar_ahora"],
-                panel_potencia = data["panel_potencia"],
-                cargando = data["cargando"],
-                voltaje_bateria = data["voltaje_bateria"],
-                errores = data["errores"]).save()
+                solar_ahora = data["solar_ahora"]).save()
+            
+            return JsonResponse({"response": True})
             
 
 
