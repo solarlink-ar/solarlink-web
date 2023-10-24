@@ -1,4 +1,4 @@
-import machine, time, json, math, ads1115, network
+import machine, time, json, math, ads1115, network, RTC
 from machine import Pin, ADC, I2C, Timer, UART
 from lcd_api import LcdApi
 from i2c_lcd import I2cLcd
@@ -84,13 +84,26 @@ class Solarlink(object):
 
         self.username = False
         self.password = False
-        #################################### POSTEO #########################################################
+
+        #################################### RTC ######################################################
+
+        self.rtc = RTC()
+
+        #################################### POSTEO ######################################################
+
+        self.acumulacion_voltaje_red = 0
         self.acumulacion_consumo_red = 0
         self.acumulacion_consumo_solar = 0
-        self.acumulacion_voltaje_red = 0
-        self.acumulacion_l1 = 0
-        self.acumulacion_l2 = 0
+
+        self.acumulacion_consumo_l1_solar = 0
+        self.acumulacion_consumo_l1_proveedor = 0
+
+        self.acumulacion_consumo_l2_solar = 0
+        self.acumulacion_consumo_l2_proveedor = 0
+
         self.indice_mediciones = 0
+
+        self.hora_inicial = self.rtc.datetime()[4]
 
 
     #####################################################################################################
@@ -192,6 +205,30 @@ class Solarlink(object):
                 suma_voltaje = 0
                 index = 0
                 
+                # acumulo voltaje
+                self.acumulacion_voltaje_red += voltaje
+
+                # acumulo l1
+                if self.l1:
+                    self.acumulacion_consumo_l1_solar += consumo_l1
+                    self.acumulacion_consumo_solar += consumo_l1
+                else:
+                    self.acumulacion_consumo_l1_proveedor += consumo_l1
+                    self.acumulacion_consumo_red += consumo_l1
+                # acumulo l2
+                if self.l2:
+                    self.acumulacion_consumo_l2_solar += consumo_l2
+                    self.acumulacion_consumo_solar += consumo_l2
+
+                else:
+                    self.acumulacion_consumo_l2_proveedor += consumo_l2
+                    self.acumulacion_consumo_red += consumo_l2
+                
+
+                self.indice_mediciones += 1
+
+
+
                 # reinicio la variable de callback
                 self.fin_mediciones = False
                 # rompo el bucle y retorno
