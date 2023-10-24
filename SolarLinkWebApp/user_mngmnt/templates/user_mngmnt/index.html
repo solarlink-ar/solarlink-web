@@ -223,11 +223,13 @@
                         -->
                             <script>
                                 window.onload = fetch('/user/user-set-online/');
-                                const yValueshc = [];
-                                const yValueshg = [];
+                                const yValueshc1 = [];
+                                const yValueshc2 = [];
+                                const yValueshg1 = [];
+                                const yValueshg2 = [];
                                 const xValues = ['Dia 1', 'Dia 2', 'Dia 3', 'Dia 4', 'Dia 5', 'Dia 6', 'Dia 7'];
-                                const yValuesg = [{{semanasolar.6}},{{semanasolar.5}},{{semanasolar.4}},{{semanasolar.3}},{{semanasolar.2}},{{semanasolar.1}},{{semanasolar.0}}];
-                                const yValuesc = [{{semanaprov.6}},{{semanaprov.5}},{{semanaprov.4}},{{semanaprov.3}},{{semanaprov.2}},{{semanaprov.1}},{{semanaprov.0}}];
+                                const yValuesg1 = [{{semanasolar.6}},{{semanasolar.5}},{{semanasolar.4}},{{semanasolar.3}},{{semanasolar.2}},{{semanasolar.1}},{{semanasolar.0}}];
+                                const yValuesc1 = [{{semanaprov.6}},{{semanaprov.5}},{{semanaprov.4}},{{semanaprov.3}},{{semanaprov.2}},{{semanaprov.1}},{{semanaprov.0}}];
                                 const yAnualg = [{{consumo_ahorrado_meses.0}},{{consumo_ahorrado_meses.1}},{{consumo_ahorrado_meses.2}},{{consumo_ahorrado_meses.3}},{{consumo_ahorrado_meses.4}},{{consumo_ahorrado_meses.5}},{{consumo_ahorrado_meses.6}},{{consumo_ahorrado_meses.7}},{{consumo_ahorrado_meses.8}},{{consumo_ahorrado_meses.9}},{{consumo_ahorrado_meses.10}},{{consumo_ahorrado_meses.11}}];
                                 const yAnualc = [{{consumo_prov_meses.0}},{{consumo_prov_meses.1}},{{consumo_prov_meses.2}},{{consumo_prov_meses.3}},{{consumo_prov_meses.4}},{{consumo_prov_meses.5}},{{consumo_prov_meses.6}},{{consumo_prov_meses.7}},{{consumo_prov_meses.8}},{{consumo_prov_meses.9}},{{consumo_prov_meses.10}},{{consumo_prov_meses.11}}];
                                 const xBat = ["Consumo en porcentaje"];
@@ -268,18 +270,32 @@
                                     data: {
                                       labels: xHoras,
                                       datasets: [{
-                                        label: "kW/h proveedor",
+                                        label: "kW/h proveedor linea 1",
                                         fill: false,
                                         pointRadius: 1,
                                         borderColor: "rgba(255,0,0,0.5)",
-                                        data: yValueshc
+                                        data: yValueshc1
                                       },
                                       {
-                                        label: "kW/h solares",
+                                        label: "kW/h proveedor linea 2",
+                                        fill: false,
+                                        pointRadius: 1,
+                                        borderColor: "rgba(255,100,0,0.5)",
+                                        data: yValueshc2
+                                      },
+                                      {
+                                        label: "kW/h solares linea 1",
                                         fill: false,
                                         pointRadius: 1,
                                         borderColor: "rgba(178,222,39,0.8)",
-                                        data: yValueshg
+                                        data: yValueshg1
+                                      }, 
+                                      {
+                                        label: "kW/h solares linea 2",
+                                        fill: false,
+                                        pointRadius: 1,
+                                        borderColor: "rgba(178,222,90,0.8)",
+                                        data: yValueshg2
                                       }]
                                     },    
                                     options: {
