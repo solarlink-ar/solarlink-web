@@ -167,6 +167,14 @@
                                 <h2 class='mb-5' style='text-align:center;vertical-align:middle;'>Aun no hay datos</h2>
                             </div>
                             {% endif %}
+                            <h1 class='mb-4 text-center'>Ahorro ultimas 24hs</h1>
+                            {% if datos_ahorro_ok %}
+                            <canvas id ="horas" style="width: 100%; max-width: 1000px;"></canvas>
+                            {% else %}
+                            <div>
+                                <h2 class='mb-5' style='text-align:center;vertical-align:middle;'>Aun no hay datos</h2>
+                            </div>
+                            {% endif %}
                             <h1 class="mb-4 text-center">Ahorro anual</h1>
                             {% if datos_ahorro_ok %}
                             <canvas id ="anual" style="width: 100%; max-width: 1000px;"></canvas>
@@ -215,8 +223,8 @@
                         -->
                             <script>
                                 window.onload = fetch('/user/user-set-online/');
-
-
+                                const yValueshc = [];
+                                const yValueshg = [];
                                 const xValues = ['Dia 1', 'Dia 2', 'Dia 3', 'Dia 4', 'Dia 5', 'Dia 6', 'Dia 7'];
                                 const yValuesg = [{{semanasolar.6}},{{semanasolar.5}},{{semanasolar.4}},{{semanasolar.3}},{{semanasolar.2}},{{semanasolar.1}},{{semanasolar.0}}];
                                 const yValuesc = [{{semanaprov.6}},{{semanaprov.5}},{{semanaprov.4}},{{semanaprov.3}},{{semanaprov.2}},{{semanaprov.1}},{{semanaprov.0}}];
@@ -224,6 +232,7 @@
                                 const yAnualc = [{{consumo_prov_meses.0}},{{consumo_prov_meses.1}},{{consumo_prov_meses.2}},{{consumo_prov_meses.3}},{{consumo_prov_meses.4}},{{consumo_prov_meses.5}},{{consumo_prov_meses.6}},{{consumo_prov_meses.7}},{{consumo_prov_meses.8}},{{consumo_prov_meses.9}},{{consumo_prov_meses.10}},{{consumo_prov_meses.11}}];
                                 const xBat = ["Consumo en porcentaje"];
                                 const xAnual = ["Enero", "Febrero", "Marzo", "Mayo", "Abril", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                                const xHoras = ['0 AM', '1 AM', '2 AM', '3 AM', '4 AM', '5 AM', '6 AM', '7 AM', '8 AM', '9 AM', '10 AM', '11 AM', '12 AM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM', '8 PM', '9 PM', '10 PM', '11 PM'];
                                 new Chart("ahorro", {
                                   type: "line",
                                   data: {
@@ -254,6 +263,36 @@
                                     }
                                   }
                                 });
+                                new Chart("horas", {
+                                    type: "line",
+                                    data: {
+                                      labels: xHoras,
+                                      datasets: [{
+                                        label: "kW/h proveedor",
+                                        fill: false,
+                                        pointRadius: 1,
+                                        borderColor: "rgba(255,0,0,0.5)",
+                                        data: yValueshc
+                                      },
+                                      {
+                                        label: "kW/h solares",
+                                        fill: false,
+                                        pointRadius: 1,
+                                        borderColor: "rgba(178,222,39,0.8)",
+                                        data: yValueshg
+                                      }]
+                                    },    
+                                    options: {
+                                      legend: {
+                                        display: true, 
+                                      },
+                                      title: {
+                                        display: true,
+                                        text: "Ahorro",
+                                        fontSize: 16
+                                      }
+                                    }
+                                  });
                                 new Chart("bateria", {
                                   type: "bar",
                                   data: {
