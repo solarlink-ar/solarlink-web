@@ -3,6 +3,11 @@ from django.contrib.auth.models import User
 from django.db import models
 import datetime
 
+
+class isOnline(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_online = models.BooleanField(default=None)
+
 # datos del micro por hora
 class DatosHora(models.Model):
     # usuario
@@ -61,18 +66,18 @@ class DatosDias(models.Model):
     año = models.IntegerField(default=None)
 
     # horas que el panel estuvo entregando potencia
-    horas_potencia_panel = models.IntegerField(default=None)
+    horas_potencia_panel = models.IntegerField(default=None, null = True)
     # potencia entregada en el dia por el panel
-    potencia_dia_panel = models.IntegerField(default=None)
+    potencia_dia_panel = models.IntegerField(default=None, null = True)
     # horas que estuvo la bateria cargando
-    horas_de_carga = models.IntegerField(default=None)
+    horas_de_carga = models.IntegerField(default=None, null = True)
     # voltajes de la bateria en formato json-strings
-    voltajes_bateria = models.CharField(max_length=400, default=None)    
+    voltajes_bateria = models.CharField(max_length=400, default=None, null = True)    
 
     # si hubo errores en el dia
-    errores = models.IntegerField(default=None)
+    errores = models.IntegerField(default=None, null = True)
     # product id
-    product_id = models.CharField(max_length=50, default=None)
+    product_id = models.CharField(max_length=50, default=None, null=True)
 
     class Meta:
         ordering = ["user", "año", "mes", "dia"]
@@ -113,11 +118,11 @@ class TiempoReal(models.Model):
     # si se está usando energía solar en alguna linea
     solar = models.BooleanField(default=None)
     # si la batería está cargando
-    cargando = models.BooleanField(default=None)
+    cargando = models.BooleanField(default=None, null = True)
     # voltaje de la batería == porcentaje de carga
-    voltaje_bateria = models.IntegerField(default=None)
+    voltaje_bateria = models.IntegerField(default=None, null=True)
 
-    errores = models.BooleanField(default=None)
+    errores = models.BooleanField(default=None, null = True)
 
 
 class UsersTokens(models.Model):

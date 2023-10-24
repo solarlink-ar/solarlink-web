@@ -82,7 +82,9 @@ class Signup(View):
             token = secrets.token_urlsafe(32)
             # lo guardo en la base de datos
             models.UsersTokens(user=user, signup_token=token).save()
+            # genero offline user y
             # deshabilito al usuario hasta que verifique por mail
+            user.isonline.is_online = False
             user.is_active = False
             user.save()
 
@@ -278,38 +280,60 @@ def logout(request):
 class UserPage(View):
     
     def get(self, request):
+        # usuario
         user = request.user
+        # mes actual
+        mes_actual = timezone.now().month
+        # mes anterior
+        prev = timezone.now().replace(day=1) - timezone.timedelta(days=1)
 
-
-        mes_data = models.DatosDias.objects.filter(user=user, mes=8).order_by("-dia")#timezone.now().month)
+        # datos del mes actual, filtrados de la ultima semana, ordenados desde hoy
+        mes_data = models.DatosDias.objects.filter(user=user, mes__range=(prev.month, mes_actual)).order_by("-año", "-mes","-dia")
 
         semanasolar = []
         semanaprov = []
+        # si hay datos
         if mes_data:
+            # para los ultimos 7 dias
             for i in range(7):
-                semanaprov.append(mes_data[i].consumo_dia_red)
-                semanasolar.append(mes_data[i].consumo_dia_solar)
+                # si hay index
+                try:
+                    # apendo dato de cada dia
+                    semanaprov.append(mes_data[i].consumo_dia_red)
+                    semanasolar.append(mes_data[i].consumo_dia_solar)
+                # relleno con ceros
+                except:
+                    semanaprov.append(0)
+                    semanasolar.append(0)
         
-        
+        # datos año
         año_data = models.DatosDias.objects.filter(user=user, año = 2023)
 
         consumo_prov_meses = []
         consumo_ahorrado_meses = []
-
+        # para cada mes del año
         for mes in range(1, 13):
+            # filtro datos de ese mes
             mes_data = año_data.filter(mes = mes)
+            # acumuladores
             consumo_prov_mes = 0
             consumo_ahorro_mes = 0
+            # para cada dato de ese mes
             for data in mes_data:
+                # acumulo
                 consumo_prov_mes += data.consumo_dia_red
                 consumo_ahorro_mes += data.consumo_dia_solar
+            # apendo
             consumo_ahorrado_meses.append(int(consumo_ahorro_mes))
             consumo_prov_meses.append(int(consumo_prov_mes))
 
+
+        # si faltan todos los datos
         if semanasolar == [] and semanaprov == [] and \
            sum(consumo_prov_meses) == 0 and sum(consumo_ahorrado_meses) == 0:
             datos_ahorro_ok = False
             context = {"datos_ahorro_ok": datos_ahorro_ok}
+        # muestro
         else:
             datos_ahorro_ok = True
             context = {"semanasolar": semanasolar, "semanaprov": semanaprov, 
@@ -336,7 +360,52 @@ class UserCalc(View):
 ################################################# API #########################################################
 ###############################################################################################################
 
+class OnlineUsersUpdate(View):
+    def post(self, request):
+        # usuario
+        user = request.user
+        # borro
+        user.isonline.is_online = False
 
+        user.isonline.save()
+
+
+        return JsonResponse({"response":True})
+
+
+    def get(self, request):
+        # usuario
+        user = request.user
+
+        user.isonline.is_online = True
+
+        user.isonline.save()
+
+
+        return JsonResponse({"response":True})
+
+class shouldPost(View):
+    def post(self, request):
+        # si el contenido esta en post
+        if request.POST:
+            # usuario posteado
+            username = request.POST["username"]
+            password = request.POST["password"]
+        # si el contenido esta en body
+        if request.body and not request.POST:
+            username = (json.loads(request.body))["username"]
+            password = (json.loads(request.body))["password"]
+        # autentico
+        user = auth.authenticate(username=username, password=password)
+
+        # si el usuario esta logueado, mando True
+        if user.isonline.is_online:
+            return JsonResponse({"response": True})
+        else:
+            return JsonResponse({"response": False})
+        
+
+    
 class LoadData(View):
     def post(self, request):
         # data posteada
@@ -361,28 +430,49 @@ class LoadData(View):
                 panel_potencia = data["panel_potencia"],
                 cargando = data["cargando"],
                 voltaje_bateria = data["voltaje_bateria"],
-                errores = data["errores"]
-            ).save()
-            # respondo
-            response = {"result": True}
+                errores = data["errores"]).save()
+            
 
-        # si no existe
-        else:
-            # respondo que usuario incorrecto
-            response = {"result": False}
 
-        return JsonResponse(response)
-    
+class loadDataNow(View):
+    def post(self, request):
+        # si el contenido esta en post
+        if request.POST:
+            # usuario posteado
+            data = request.POST
+            
+        # si el contenido esta en body
+        if request.body and not request.POST:
+            data = json.loads(request.body)
+
+        username = data["username"]
+        password = data["password"]
+        voltaje = data["voltaje"]
+        consumo_l1 = data["consumo_l1"]
+        consumo_l2 = data["consumo_l2"]
+        solar = data["solar"]
+        
+        user = auth.authenticate(username = username, password=password)
+
+        models.TiempoReal(user=user,
+                          voltaje=voltaje,
+                          consumo_l1 = consumo_l1,
+                          consumo_l2 = consumo_l2,
+                          solar = solar).save()
+        
+
 class APILogin(View):
     async def post(self, request):
+        # si el contenido esta en post
         if request.POST:
             # usuario posteado
             username = request.POST["username"]
             password = request.POST["password"]
+        # si el contenido esta en body
         if request.body and not request.POST:
-            async_json_dumps = sync_to_async(json.loads, thread_sensitive=False)
-            username = (await async_json_dumps(request.body))["username"]
-            password = (await async_json_dumps(request.body))["password"]
+            async_json_loads = sync_to_async(json.loads, thread_sensitive=False)
+            username = (await async_json_loads(request.body))["username"]
+            password = (await async_json_loads(request.body))["password"]
 
         # autentico
         async_auth = sync_to_async(auth.authenticate, thread_sensitive=False)
@@ -506,7 +596,7 @@ def creador(request):
                             consumo_l2 = random.randint(0,4000),
                             hora = h,
                             dia = d,
-                            mes = 8,
+                            mes = 10,
                             año = 2023,
                             solar_ahora = random.choice(lista),
                             panel_potencia = random.randint(0, 340),
