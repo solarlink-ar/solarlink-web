@@ -1,9 +1,11 @@
+from solarlink import Solarlink
 from microdot_asyncio import Microdot, send_file, redirect, Response
-#import urequests as requests
-import requests
-#import solarlink
+import urequests as requests
+import ujson
+#import requests
+
 #
-#solarlink = SolarLink()
+solarlink = Solarlink()
 
 ##################
 
@@ -36,7 +38,7 @@ def connect_to(ssid, passwd):
 def get_connection():
     try:
         # Me conecto a internet
-        ip = connect_to("<ssid>", "<password>")
+        ip = connect_to("Red Alumnos", "")
         # Muestro la direccion de IP
         print("Microdot corriendo en IP/Puerto: " + ip + ":5000")
         # Inicio la aplicacion
@@ -92,15 +94,17 @@ def auth(request):
         username = request.form["user"]
         password = request.form["psswd"]
         payload = {"username": username, "password": password}
-        repost = requests.post("https://solarlink.ar/user/api-login/", data = payload)
-        repost.close()
+        payload_encoded = ujson.dumps(payload)
+        print(payload_encoded)
+        repost = requests.post("https://solarlink.ar/user/api-login/", data = payload_encoded)
+        #repost.close()
         login_status = repost.json()['login']
         if login_status == True:
-            #solarlink.username = username
-            #solarlink.password = password
+            solarlink.username = username
+            solarlink.password = password
             return LOGIN_GOOD
         else:
             return INDEX.format(content2=LOGIN_FAIL)
 
-app.run()
-#get_connection()
+#app.run()
+get_connection()
