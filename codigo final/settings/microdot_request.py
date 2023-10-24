@@ -1,8 +1,9 @@
 from microdot_asyncio import Microdot, send_file, redirect, Response
 #import urequests as requests
 import requests
-
-solarlink = SolarLink()
+#import solarlink
+#
+#solarlink = SolarLink()
 
 ##################
 
@@ -45,18 +46,39 @@ def get_connection():
         # Termina el programa con Ctrl + C
         print("Aplicación terminada")
 
-def get_content(path):
-    with open(path, encoding="utf-8") as f:
-        raw_lines = f.readlines()
-    content = ''.join(raw_lines)
-    return content
+INDEX = '''<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+</head>
+<form method="POST">
+    <center>
+        <label for="user">Usuario: </label><br>
+        <input type="text" id="user" name="user"><br><br>
+        <label for="psswd">Contraseña: </label><br>
+        <input type="password" id="psswd" name="psswd"><br><br>
+        <input type="submit" value="Continuar">
+    </center>
+</form>
 
-INDEX = get_content('index.html')
+<center>
+    <br><p>Si tenés problemas para iniciar sesión, intentá reestablecer tu contraseña en <a href="https://solarlink.ar/">https://solarlink.ar/</a></p>
+    <p id="p1">{content2}</p>
+</center>
+
+</html>'''
 
 NULL = ''
 
 LOGIN_FAIL = '''
 <br><p>Error al iniciar sesión. Revise su nombre de usuario y/o contraseña.</p>'''
+
+LOGIN_GOOD = '''<!DOCTYPE html>
+<html lang="en">
+
+<p>LOGIN SUCCESSFUL. INDIA > PAKISTAN</p>
+
+</html>'''
 
 Response.default_content_type = 'text/html'
 
@@ -71,12 +93,14 @@ def auth(request):
         password = request.form["psswd"]
         payload = {"username": username, "password": password}
         repost = requests.post("https://solarlink.ar/user/api-login/", data = payload)
+        repost.close()
         login_status = repost.json()['login']
         if login_status == True:
-            solarlink.username = username
-            solarlink.password = password
-            return send_file("login-success.html")
+            #solarlink.username = username
+            #solarlink.password = password
+            return LOGIN_GOOD
         else:
             return INDEX.format(content2=LOGIN_FAIL)
 
 app.run()
+#get_connection()
