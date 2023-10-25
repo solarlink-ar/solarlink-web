@@ -1,5 +1,5 @@
-import machine, time, json, math, ads1115, network, RTC
-from machine import Pin, ADC, I2C, Timer, UART
+import machine, time, json, math, ads1115, network
+from machine import Pin, ADC, I2C, Timer, UART, RTC
 from lcd_api import LcdApi
 from i2c_lcd import I2cLcd
 import urequests as requests
@@ -38,6 +38,7 @@ class Solarlink(object):
         self.atten = ADC.ATTN_2_5DB
         # referencia sensor voltaje
         self.ref = 221 / 0.5150402
+        
 
         ######################################### INITS ##################################################
 
@@ -72,6 +73,9 @@ class Solarlink(object):
         self.pin_l2 = Pin(18, Pin.OUT)
         self.pin_cruce = Pin(13, Pin.IN, pull=None)
         self.pin_cruce.irq(trigger=Pin.IRQ_RISING, handler=self.callback_conmutacion)
+        
+        #self.pin_bonito = Pin(3, Pin.OUT)
+        #self.pin_bonito.on()
 
         self.trigger = 400
 
@@ -82,8 +86,8 @@ class Solarlink(object):
         
         #################################### USUARIO Y CONTRASEÑA #######################################
 
-        self.username = False
-        self.password = False
+        self.username = "helyivan"
+        self.password = "12345678"
 
         #################################### RTC ######################################################
 
@@ -104,6 +108,10 @@ class Solarlink(object):
         self.indice_mediciones = 0
 
         self.hora_inicial = self.rtc.datetime()[4]
+        
+        self.timer1 = Timer(1).init(period=10000, mode=Timer.PERIODIC, callback=self.callback_posteo)
+        
+        self.tiempo_real = False
 
 
     #####################################################################################################
@@ -128,7 +136,11 @@ class Solarlink(object):
             self.pin_l1(self.l1)
             self.pin_l2(self.l2)
             self.pedido_conmutacion = False
-    
+            
+    ##################################### CALLBACK TIMER1 ###############################################
+    def callback_posteo(self, t):
+        self.tiempo_real = True
+
     ############################### CORRIENTE ADC EN DIFERENCIAL ########################################
 
     # medicion de sensor de corriente en el instante 
