@@ -373,20 +373,19 @@
                                     }
                                   }
                                 })
-                                while (true){
-                                    setTimeout(() => {
-                                    const resp = await fetch('/user/tiempo-real/');
-                                    const respj = resp.json();
-                                    document.getElementById('voltaje').innerHTML = respj['voltaje'];
-                                    document.getElementById('consumo_actual_l1').innerHTML = respj['consumo_l1'];
-                                    document.getElementById('consumo_actual_l2').innerHTML = respj['consumo_l2'];
-                                    if (respj['solar'] == true){
-                                        document.getElementById('sistema_solar').innerHTML = 'Activado';
-                                    }
-                                    else {
-                                        document.getElementById('sistema_solar').innerHTML = 'Desactivado';
-                                    }
-                                    }, 2000);
+                                var a = setInterval(actual, 2000);
+                                function actual(){
+                                const resp = await fetch('/user/tiempo-real/');
+                                const respj = await resp.json()
+                                document.getElementById('voltaje').innerHTML = respj['voltaje'];
+                                document.getElementById('consumo_actual_l1').innerHTML = respj['consumo_l1'];
+                                document.getElementById('consumo_actual_l2').innerHTML = respj['consumo_l2'];
+                                if (respj['solar'] == true){
+                                    document.getElementById('sistema_solar').innerHTML = 'Activado';
+                                }
+                                else {
+                                    document.getElementById('sistema_solar').innerHTML = 'Desactivado';
+                                }
                                 }
                             </script>
                         </div>
