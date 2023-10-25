@@ -93,8 +93,8 @@
                             <div class="d-inline-flex align-items-center justify-content-center bg-secondary-gradient rounded-circle mb-4" style="width: 60px; height: 60px;">
                                 <i class="fa fa-bolt text-white fs-4"></i>
                             </div>
-                            <h5 class="mb-3">Porcentaje actual bateria</h5>
-                            <h3 class="m-0">78%</h3>
+                            <h5 class="mb-3">Voltaje de linea</h5>
+                            <h3 class="m-0" id='voltaje'></h3>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
@@ -102,8 +102,17 @@
                             <div class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle mb-4" style="width: 60px; height: 60px;">
                                 <i class="fa fa-plug text-white fs-4"></i>
                             </div>
-                            <h5 class="mb-3">Consumo actual</h5>
-                            <h3 class="m-0">600 KW/h</h3>
+                            <h5 class="mb-3">Consumo linea 1</h5>
+                            <h3 class="m-0" id='consumo_actual_l1'></h3>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                        <div class="feature-item bg-light rounded p-4">
+                            <div class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle mb-4" style="width: 60px; height: 60px;">
+                                <i class="fa fa-plug text-white fs-4"></i>
+                            </div>
+                            <h5 class="mb-3">Consumo linea 2</h5>
+                            <h3 class="m-0" id='consumo_actual_l2'></h3>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
@@ -112,7 +121,7 @@
                                 <i class="fa fa-sun text-white fs-4"></i>
                             </div>
                             <h5 class="mb-3">Sistema</h5>
-                            <h3 class="m-0">Activado</h3>
+                            <h3 class="m-0" id='sistema_solar'></h3>
                         </div>
                     </div>
                 </div>
@@ -223,6 +232,7 @@
                         -->
                             <script>
                                 window.onload = fetch('/user/user-set-online/');
+
                                 const yValueshc1 = [{{consumo_l1_solar.0}}, {{consumo_l1_solar.1}},{{consumo_l1_solar.2}}, {{consumo_l1_solar.3}}, {{consumo_l1_solar.4}}, {{consumo_l1_solar.5}}, {{consumo_l1_solar.6}}, {{consumo_l1_solar.7}}, {{consumo_l1_solar.8}}, {{consumo_l1_solar.9}}, {{consumo_l1_solar.10}}, {{consumo_l1_solar.11}}, {{consumo_l1_solar.12}}, {{consumo_l1_solar.13}}, {{consumo_l1_solar.14}}, {{consumo_l1_solar.15}}, {{consumo_l1_solar.16}}, {{consumo_l1_solar.17}}, {{consumo_l1_solar.18}}, {{consumo_l1_solar.19}}, {{consumo_l1_solar.20}}, {{consumo_l1_solar.21}}, {{consumo_l1_solar.22}}, {{consumo_l1_solar.23}}];
                                 const yValueshc2 = [{{consumo_l2_solar.0}}, {{consumo_l2_solar.1}},{{consumo_l2_solar.2}}, {{consumo_l2_solar.3}}, {{consumo_l2_solar.4}}, {{consumo_l2_solar.5}}, {{consumo_l2_solar.6}}, {{consumo_l2_solar.7}}, {{consumo_l2_solar.8}}, {{consumo_l2_solar.9}}, {{consumo_l2_solar.10}}, {{consumo_l2_solar.11}}, {{consumo_l2_solar.12}}, {{consumo_l2_solar.13}}, {{consumo_l2_solar.14}}, {{consumo_l2_solar.15}}, {{consumo_l2_solar.16}}, {{consumo_l2_solar.17}}, {{consumo_l2_solar.18}}, {{consumo_l2_solar.19}}, {{consumo_l2_solar.20}}, {{consumo_l2_solar.21}}, {{consumo_l2_solar.22}}, {{consumo_l2_solar.23}}];
                                 const yValueshg1 = [{{consumo_l1_prov.0}}, {{consumo_l1_prov.1}},{{consumo_l1_prov.2}}, {{consumo_l1_prov.3}}, {{consumo_l1_prov.4}}, {{consumo_l1_prov.5}}, {{consumo_l1_prov.6}}, {{consumo_l1_prov.7}}, {{consumo_l1_prov.8}}, {{consumo_l1_prov.9}}, {{consumo_l1_prov.10}}, {{consumo_l1_prov.11}}, {{consumo_l1_prov.12}}, {{consumo_l1_prov.13}}, {{consumo_l1_prov.14}}, {{consumo_l1_prov.15}}, {{consumo_l1_prov.16}}, {{consumo_l1_prov.17}}, {{consumo_l1_prov.18}}, {{consumo_l1_prov.19}}, {{consumo_l1_prov.20}}, {{consumo_l1_prov.21}}, {{consumo_l1_prov.22}}, {{consumo_l1_prov.23}}];
@@ -363,6 +373,21 @@
                                     }
                                   }
                                 })
+                                while (true){
+                                    setTimeout(() => {
+                                    const resp = await fetch('/user/tiempo-real/');
+                                    const respj = resp.json();
+                                    document.getElementById('voltaje').innerHTML = respj['voltaje'];
+                                    document.getElementById('consumo_actual_l1').innerHTML = respj['consumo_l1'];
+                                    document.getElementById('consumo_actual_l2').innerHTML = respj['consumo_l2'];
+                                    if (respj['solar'] == true){
+                                        document.getElementById('sistema_solar').innerHTML = 'Activado';
+                                    }
+                                    else {
+                                        document.getElementById('sistema_solar').innerHTML = 'Desactivado';
+                                    }
+                                    }, 2000);
+                                }
                             </script>
                         </div>
                     </div>
