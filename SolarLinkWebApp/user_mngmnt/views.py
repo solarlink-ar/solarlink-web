@@ -404,6 +404,8 @@ class OnlineUsersUpdate(View):
 
         user.isonline.save()
 
+        models.TiempoReal.objects.filter(user=user).delete()
+
 
         return JsonResponse({"response":True})
 
