@@ -84,7 +84,7 @@ class Signup(View):
             models.UsersTokens(user=user, signup_token=token).save()
             # genero offline user y
             # deshabilito al usuario hasta que verifique por mail
-            user.isonline.is_online = False
+            models.isOnline(user=user, is_online = False).save()
             user.is_active = False
             user.save()
 
@@ -477,7 +477,7 @@ class LoadData(View):
         # si el contenido esta en body
         if request.body and not request.POST:
             data = json.loads(request.body)
-
+        
         username = data["username"]
         password = data["password"]
 
@@ -495,12 +495,10 @@ class LoadData(View):
                 consumo_l2_solar = data["consumo_l2_solar"],
                 consumo_l1_proveedor = data["consumo_l1_proveedor"],
                 consumo_l2_proveedor = data["consumo_l2_proveedor"],
-                consumo_l1 = data["consumo_l1"],
-                consumo_l2 = data["consumo_l2"],
                 hora = data["hora"],
                 dia = data["dia"],
                 mes = data["mes"],
-                año = data["año"],
+                año = data["agno"],
                 solar_ahora = data["solar_ahora"]).save()
             
             return JsonResponse({"response": True})
@@ -508,6 +506,19 @@ class LoadData(View):
 
 
 class loadDataNow(View):
+    def get(self, request):
+        user = request.user
+        data = models.TiempoReal.objects.filter(user=user)
+
+        for d in data:
+            now = d
+        response = {"voltaje": now.voltaje,
+                    "consumo_l1": now.consumo_l1,
+                    "consumo_l2": now.consumo_l2,
+                    "solar": (now.solar_l1 or now.solar_l2)}
+        print(response)
+        return JsonResponse(response)
+
     def post(self, request):
         # si el contenido esta en post
         if request.POST:
@@ -523,7 +534,8 @@ class loadDataNow(View):
         voltaje = data["voltaje"]
         consumo_l1 = data["consumo_l1"]
         consumo_l2 = data["consumo_l2"]
-        solar = data["solar"]
+        solar_l1 = data["solar_l1"]
+        solar_l2 = data["solar_l2"]
         
         user = auth.authenticate(username = username, password=password)
 
@@ -531,7 +543,9 @@ class loadDataNow(View):
                           voltaje=voltaje,
                           consumo_l1 = consumo_l1,
                           consumo_l2 = consumo_l2,
-                          solar = solar).save()
+                          solar_l1 = solar_l1,
+                          solar_l2 = solar_l2).save()
+        return JsonResponse({"response": True})
         
 
 class APILogin(View):

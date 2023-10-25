@@ -86,7 +86,6 @@
                 <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
                     <h1 class="mb-5">Estado Actual</h1>
                 </div>
-                {% if datos_ahorro_ok %}
                 <div class="row g-4">
                     <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                         <div class="feature-item bg-light rounded p-4">
@@ -125,11 +124,7 @@
                         </div>
                     </div>
                 </div>
-                {% else %}
-                <div>
-                    <h2 class='mb-5' style='text-align:center;vertical-align:middle;'>Aun no hay datos</h2>
-                </div>
-                {% endif %}
+
             </div>
         </div>
         <!-- Features End -->
@@ -232,7 +227,8 @@
                         -->
                             <script>
                                 window.onload = fetch('/user/user-set-online/');
-
+                                window.onload = setInterval(actual, 5000);
+                                let a;
                                 const yValueshc1 = [{{consumo_l1_solar.0}}, {{consumo_l1_solar.1}},{{consumo_l1_solar.2}}, {{consumo_l1_solar.3}}, {{consumo_l1_solar.4}}, {{consumo_l1_solar.5}}, {{consumo_l1_solar.6}}, {{consumo_l1_solar.7}}, {{consumo_l1_solar.8}}, {{consumo_l1_solar.9}}, {{consumo_l1_solar.10}}, {{consumo_l1_solar.11}}, {{consumo_l1_solar.12}}, {{consumo_l1_solar.13}}, {{consumo_l1_solar.14}}, {{consumo_l1_solar.15}}, {{consumo_l1_solar.16}}, {{consumo_l1_solar.17}}, {{consumo_l1_solar.18}}, {{consumo_l1_solar.19}}, {{consumo_l1_solar.20}}, {{consumo_l1_solar.21}}, {{consumo_l1_solar.22}}, {{consumo_l1_solar.23}}];
                                 const yValueshc2 = [{{consumo_l2_solar.0}}, {{consumo_l2_solar.1}},{{consumo_l2_solar.2}}, {{consumo_l2_solar.3}}, {{consumo_l2_solar.4}}, {{consumo_l2_solar.5}}, {{consumo_l2_solar.6}}, {{consumo_l2_solar.7}}, {{consumo_l2_solar.8}}, {{consumo_l2_solar.9}}, {{consumo_l2_solar.10}}, {{consumo_l2_solar.11}}, {{consumo_l2_solar.12}}, {{consumo_l2_solar.13}}, {{consumo_l2_solar.14}}, {{consumo_l2_solar.15}}, {{consumo_l2_solar.16}}, {{consumo_l2_solar.17}}, {{consumo_l2_solar.18}}, {{consumo_l2_solar.19}}, {{consumo_l2_solar.20}}, {{consumo_l2_solar.21}}, {{consumo_l2_solar.22}}, {{consumo_l2_solar.23}}];
                                 const yValueshg1 = [{{consumo_l1_prov.0}}, {{consumo_l1_prov.1}},{{consumo_l1_prov.2}}, {{consumo_l1_prov.3}}, {{consumo_l1_prov.4}}, {{consumo_l1_prov.5}}, {{consumo_l1_prov.6}}, {{consumo_l1_prov.7}}, {{consumo_l1_prov.8}}, {{consumo_l1_prov.9}}, {{consumo_l1_prov.10}}, {{consumo_l1_prov.11}}, {{consumo_l1_prov.12}}, {{consumo_l1_prov.13}}, {{consumo_l1_prov.14}}, {{consumo_l1_prov.15}}, {{consumo_l1_prov.16}}, {{consumo_l1_prov.17}}, {{consumo_l1_prov.18}}, {{consumo_l1_prov.19}}, {{consumo_l1_prov.20}}, {{consumo_l1_prov.21}}, {{consumo_l1_prov.22}}, {{consumo_l1_prov.23}}];
@@ -373,19 +369,19 @@
                                     }
                                   }
                                 })
-                                var a = setInterval(actual, 2000);
                                 function actual(){
-                                const resp = await fetch('/user/tiempo-real/');
-                                const respj = await resp.json()
-                                document.getElementById('voltaje').innerHTML = respj['voltaje'];
-                                document.getElementById('consumo_actual_l1').innerHTML = respj['consumo_l1'];
-                                document.getElementById('consumo_actual_l2').innerHTML = respj['consumo_l2'];
-                                if (respj['solar'] == true){
-                                    document.getElementById('sistema_solar').innerHTML = 'Activado';
-                                }
-                                else {
-                                    document.getElementById('sistema_solar').innerHTML = 'Desactivado';
-                                }
+                                fetch('/user/tiempo-real/').then(
+                                (resp) => resp.json()).then(function(data) {
+                                    document.getElementById('voltaje').innerHTML = data['voltaje'];
+                                    document.getElementById('consumo_actual_l1').innerHTML = data['consumo_l1'];
+                                    document.getElementById('consumo_actual_l2').innerHTML = data['consumo_l2'];
+                                    if (data['solar'] == true){
+                                        document.getElementById('sistema_solar').innerHTML = 'Activado';
+                                    }
+                                    else {
+                                        document.getElementById('sistema_solar').innerHTML = 'Desactivado';
+                                    };
+                                })
                                 }
                             </script>
                         </div>

@@ -30,7 +30,7 @@ DEBUG = True
 DEBUG = True
 
 # páginas host permitidas
-ALLOWED_HOSTS = ['.vercel.app', 'solarlink.ar', '127.0.0.1', '192.168.126.140']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 

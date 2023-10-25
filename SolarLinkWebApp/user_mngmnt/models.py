@@ -120,8 +120,6 @@ class TiempoReal(models.Model):
     consumo_l2 = models.IntegerField(default=None)
     solar_l2 = models.BooleanField(default=None)
 
-    # si se está usando energía solar en alguna linea
-    solar = models.BooleanField(default=None)
     # si la batería está cargando
     cargando = models.BooleanField(default=None, null = True)
     # voltaje de la batería == porcentaje de carga
