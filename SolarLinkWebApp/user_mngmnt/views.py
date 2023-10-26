@@ -511,15 +511,17 @@ class loadDataNow(View):
     def get(self, request):
         user = request.user
         data = models.TiempoReal.objects.filter(user=user)
-
-        for d in data:
-            now = d
-        response = {"voltaje": now.voltaje,
-                    "consumo_l1": now.consumo_l1,
-                    "consumo_l2": now.consumo_l2,
-                    "solar": (now.solar_l1 or now.solar_l2)}
-        print(response)
-        return JsonResponse(response)
+        if data:
+            for d in data:
+                now = d
+            response = {"voltaje": now.voltaje,
+                        "consumo_l1": now.consumo_l1,
+                        "consumo_l2": now.consumo_l2,
+                        "solar": (now.solar_l1 or now.solar_l2)}
+            
+            return JsonResponse(response)
+        else:
+            return JsonResponse({"response": False})
 
     def post(self, request):
         # si el contenido esta en post
