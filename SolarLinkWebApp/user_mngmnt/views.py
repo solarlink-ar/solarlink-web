@@ -338,6 +338,7 @@ class UserPage(View):
         consumo_l2_proveedor = []
         horas = []
         hoy = timezone.now()
+    
         print(hoy)
         hoy_data = models.DatosHora.objects.filter(año = hoy.year, mes = hoy.month, dia = hoy.day)
 
@@ -355,12 +356,37 @@ class UserPage(View):
                 consumo_l2_solar.append(0)
                 consumo_l2_proveedor.append(0)
         
-
+        context = {}
         # si faltan todos los datos
-        if semanasolar == [] and semanaprov == [] and \
-           sum(consumo_prov_meses) == 0 and sum(consumo_ahorrado_meses) == 0:
-            datos_ahorro_ok = False
-            context = {"datos_ahorro_ok": datos_ahorro_ok}
+
+        if año_data:
+            context["datos_anual"] = True
+            context["consumo_ahorrado_meses"] = consumo_ahorrado_meses
+            context["consumo_prov_meses"] = consumo_prov_meses
+        else:
+            context["datos_anual"] = False
+
+        #if mes_data:
+        context["datos_7dias"] = True
+        context["semanasolar"] = semanasolar
+        context["semanaprov"] = semanaprov
+        context["porcentaje_ahorro"] = round(sum(semanasolar)/sum(semanaprov) * 100, 2)
+        context["dias"] = dias
+        context["total_semanasolar"] = int(sum(semanasolar))
+        context["total_semanaprov"] = int(sum(semanaprov))
+        #else:
+        #    context["datos_7dias"] = False
+
+        if hoy_data:
+            context["datos_hoy"] = True
+            context["consumo_l1_solar"] = consumo_l1_solar
+            context["consumo_l2_solar"] = consumo_l2_solar
+            context["consumo_l1_prov"] = consumo_l1_proveedor
+            context["consumo_l2_prov"] = consumo_l2_proveedor
+
+        else:
+            context["datos_hoy"] = False
+        """
         # muestro
         else:
             datos_ahorro_ok = True
@@ -378,7 +404,7 @@ class UserPage(View):
             "consumo_l2_solar": consumo_l2_solar,
             "consumo_l1_prov": consumo_l1_proveedor,
             "consumo_l2_prov": consumo_l2_proveedor}
-
+        """
         return render(request, "user_mngmnt/index.html", context)
 
 
