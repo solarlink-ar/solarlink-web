@@ -4,7 +4,7 @@ from machine import Pin, ADC, I2C, Timer, UART
 from lcd_api import LcdApi
 from i2c_lcd import I2cLcd
 import urequests as requests
-i
+
 p2 = Pin(2, Pin.OUT)
 #pin_l1 = Pin(19, Pin.OUT)
 #pin_l2 = Pin(18, Pin.OUT)
@@ -29,7 +29,8 @@ solarlink.lcd.custom_char(0, sol)
 while 1:
     valores = solarlink.medicion_default_segundo()
     solarlink.lcd.hal_write_command(LcdApi.LCD_HOME)
-    
+    solarlink.lcd.hide_cursor()
+
     sol = bytearray([0x00,0x00,0x15,0x0E,0x1B,0x0E,0x15,0x00])
     solarlink.lcd.custom_char(0, sol)
     if solarlink.l1:

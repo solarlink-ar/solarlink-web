@@ -1,8 +1,9 @@
 import machine, time, json, math, ads1115, network
-from machine import Pin, ADC, I2C, Timer, UART, RTC
+from machine import Pin, ADC, I2C, Timer, UART, RTC,
 from lcd_api import LcdApi
 from i2c_lcd import I2cLcd
 import urequests as requests
+import ntptime
 import _thread
 
 class Solarlink(object):
@@ -44,6 +45,7 @@ class Solarlink(object):
 
         # i2c init
         self.i2c = I2C(1, scl=Pin(self.scl), sda=Pin(self.sda), freq=self.freq)
+        self.i2c1 = I2C(0, scl=Pin(27), sda=Pin(14), freq = self.freq)
         # ADC externo init
         self.ads1115 = ads1115.ADS1115(self.i2c, self.i2c_corriente_dir, self.gain)
         # ADC en el pin init
@@ -51,7 +53,7 @@ class Solarlink(object):
         # atenuacion ADC
         self.adc.atten(self.atten)
         # display init
-        self.lcd = I2cLcd(self.i2c, 0x27, 4, 20)
+        self.lcd = I2cLcd(self.i2c1, 0x27, 4, 20)
 
 
         ################################# TIMER Y CALLBACK ATTR ##########################################
@@ -74,8 +76,6 @@ class Solarlink(object):
         self.pin_cruce = Pin(13, Pin.IN, pull=None)
         self.pin_cruce.irq(trigger=Pin.IRQ_RISING, handler=self.callback_conmutacion)
         
-        #self.pin_bonito = Pin(3, Pin.OUT)
-        #self.pin_bonito.on()
 
         self.trigger = 400
 
@@ -90,8 +90,17 @@ class Solarlink(object):
         self.password = "12345678"
 
         #################################### RTC ######################################################
-
+        #ntptime.settime()
+        '''
         self.rtc = RTC()
+        ntptime.settime()
+        tm = time.localtime(time.mktime(time.localtime()) -3*3600)
+        tm = tm[0:3] + (0,) + tm[3:6] + (0,)
+        self.rtc.datetime(tm)
+        #self.rtc.datetime((2023, 10, 26, 3, 7, 59, 0, 0))
+        print(self.rtc.datetime())
+
+        '''
 
         #################################### POSTEO ######################################################
 
@@ -107,9 +116,9 @@ class Solarlink(object):
 
         self.indice_mediciones = 0
 
-        self.hora_inicial = self.rtc.datetime()[4]
+        #self.hora_inicial = self.rtc.datetime()[4]
         
-        self.timer1 = Timer(1).init(period=10000, mode=Timer.PERIODIC, callback=self.callback_posteo)
+        self.timer1 = Timer(1).init(period=20000, mode=Timer.PERIODIC, callback=self.callback_posteo)
         
         self.tiempo_real = False
 
@@ -166,7 +175,7 @@ class Solarlink(object):
     def medicion_default_segundo(self):
 
         # timer 0 init, timer de fin de mediciones
-        self.timer0 = Timer(0).init(period=100, mode=Timer.ONE_SHOT, callback=self.callback_fin_mediciones)
+        self.timer0 = Timer(0).init(period=1000, mode=Timer.ONE_SHOT, callback=self.callback_fin_mediciones)
 
         # pico de corriente en ambas lineas (l1, l2) en el tiempo de medicion
         pico_corriente_l1 = 0

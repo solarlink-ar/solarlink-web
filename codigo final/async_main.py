@@ -87,9 +87,10 @@ async def post():
         solarlink.acumulacion_consumo_red = 0
         solarlink.acumulacion_consumo_solar = 0
         solarlink.acumulacion_voltaje_red = 0
+        solarlink.indice_mediciones = 0
         solarlink.hora_inicial = time[4]
 
-        r = requests.post("http://192.168.0.12:8080/user/load-data/", data=payload)
+        r = requests.post("http://10.0.2.104:8080/user/load-data/", data=payload)
         print(r.text)
 
 
@@ -97,7 +98,7 @@ async def tiempo_real():
     global solarlink
     if solarlink.tiempo_real:
         payload = json.dumps({"username": solarlink.username, "password": solarlink.password})
-        r = requests.get("http://192.168.0.12:8080/user/user-is-online/", data=payload)
+        r = requests.get("http://10.0.2.104:8080/user/user-is-online/", data=payload)
 
         response = json.loads(r.text)
         
@@ -108,7 +109,7 @@ async def tiempo_real():
                                   "consumo_l2": solarlink.medicion["consumo_l2"],
                                   "solar_l1": solarlink.l1,
                                   "solar_l2": solarlink.l2})
-            requests.post("http://192.168.0.12:8080/user/tiempo-real/", data = payload)
+            requests.post("http://10.0.2.104:8080/user/tiempo-real/", data = payload)
             
         solarlink.tiempo_real = False
 
