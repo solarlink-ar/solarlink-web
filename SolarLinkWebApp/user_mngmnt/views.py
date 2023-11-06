@@ -30,7 +30,20 @@ def calculador_cantidad_true(lista:list):
 def index(request):
     return render(request, "user_mngmnt/index.html")
 
+def convert_from_utc(time, from_utc):
+    timezone_offset = timezone.timedelta(hours=abs(from_utc))
+    if from_utc > 0:
+        return time + timezone_offset
+    elif from_utc < 0:
+        return time - timezone_offset
 
+def timezone_for_filter(time, from_utc):
+    timezone_offset = timezone.timedelta(hours=abs(from_utc))
+    if from_utc > 0:
+        return time - timezone_offset
+    elif from_utc < 0:
+        return time + timezone_offset
+    
 # decorador para pestañas que solo se pueden acceder sin estar logueado (regisro, login, etc)
 def unlogued_required(redirect_link):
     def decorator(func):
@@ -276,6 +289,31 @@ def logout(request):
 ################################################ DATOS ########################################################
 ###############################################################################################################
 
+class UserPage(View):
+    def get(self, request):
+        # usuario
+        user = request.user
+        # ahora en UTC
+        now = timezone.now()
+        # tiempo actual, pero adaptado a timezone para filtrar en la database
+        now_for_filter = timezone_for_filter(now, -3)
+        # hoy a las 00 en UTC
+        today_start = datetime.datetime(now_for_filter.year, now_for_filter.month, now_for_filter.day, 0, 0, 0)
+        today_end = today_start + timezone.timedelta(days=1)
+
+
+        today_data = models.DatosHora.objects.filter(time__range = [today_start, today_end])
+
+
+        # tiempo de hace una semana, pero adaptado a timezone para filtrar en la database
+        a_week_ago_for_filter = now - timezone.timedelta(days=7)
+ 
+        week_data = models.DatosHora.objects.filter(time__range=[a_week_ago_for_filter, now_for_filter])
+
+        
+
+
+'''
 #Userpage
 class UserPage(View):
     
@@ -386,25 +424,7 @@ class UserPage(View):
 
         else:
             context["datos_hoy"] = False
-        """
-        # muestro
-        else:
-            datos_ahorro_ok = True
-            context = {"semanasolar": semanasolar, "semanaprov": semanaprov, "dias": dias,
-            "total_semanasolar":int(sum(semanasolar)),
-            "total_semanaprov": int(sum(semanaprov)),
-            ########
-            "porcentaje_ahorro": round(sum(semanasolar)/sum(semanaprov) * 100, 2),
-            "consumo_ahorrado_meses":consumo_ahorrado_meses,
-            "consumo_prov_meses": consumo_prov_meses,
-            ########
-            "datos_ahorro_ok": datos_ahorro_ok,
-            ########
-            "consumo_l1_solar": consumo_l1_solar,
-            "consumo_l2_solar": consumo_l2_solar,
-            "consumo_l1_prov": consumo_l1_proveedor,
-            "consumo_l2_prov": consumo_l2_proveedor}
-        """
+
         return render(request, "user_mngmnt/index.html", context)
 
 
@@ -413,37 +433,33 @@ class UserPage(View):
     #username = request.user.username
     #return render(request, "user_mngmnt/userpage.html", {"username": username})
 
-class UserCalc(View):
-
-    def get(self, request):
-        ...
+'''
 ###############################################################################################################
 ################################################# API #########################################################
 ###############################################################################################################
 
 class OnlineUsersUpdate(View):
+    # pone usuario offline
     def post(self, request):
         # usuario
         user = request.user
-
+        # offline
         user.isonline.is_online = False
-
+        # guardo
         user.isonline.save()
-
+        # borro los datos recibidos desde el solar link en tiempo real
         models.TiempoReal.objects.filter(user=user).delete()
-
 
         return JsonResponse({"response":True})
 
-
+    # pone usuario online
     def get(self, request):
         # usuario
         user = request.user
-
+        # seteo online
         user.isonline.is_online = True
-
+        # guardo
         user.isonline.save()
-
 
         return JsonResponse({"response":True})
 
@@ -701,6 +717,29 @@ def token_clean(request):
 
 def creador(request):
     user = request.user
+    '''
+    models.DatosHora(user = user,
+                     voltaje_hora_red = 200,
+                     consumo_hora_solar = 400,
+                     consumo_hora_red = 500,
+                     consumo_l1_solar = 300,
+                     consumo_l1_proveedor = 300,
+                     consumo_l2_solar = 400,
+                     consumo_l2_proveedor = 500,
+                     time = timezone.now()).save()
+    '''
+    models.DatosHora(user = user,
+                     voltaje_hora_red = 200,
+                     consumo_hora_solar = 400,
+                     consumo_hora_red = 500,
+                     consumo_l1_solar = 300,
+                     consumo_l1_proveedor = 300,
+                     consumo_l2_solar = 400,
+                     consumo_l2_proveedor = 500,
+                     time = timezone.now() - timezone.timedelta(hours=13)).save()
+    
+    '''
+    user = request.user
     lista = [True,False]
     # se sube un dato por hora
     for d in range(1, 31):
@@ -721,6 +760,7 @@ def creador(request):
                             voltaje_bateria = random.randint(10, 15),
                             errores = random.choice(lista),
                             product_id = 'nashe23').save()
+    '''
                 
 def sender(request):
     no_reply_sender('ivanchicago70@gmail.com', 'nashe', 'nashe')

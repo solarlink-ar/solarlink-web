@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.db import models
 import datetime
-
+from django.utils import timezone
 
 class isOnline(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -26,10 +26,7 @@ class DatosHora(models.Model):
     consumo_l2_proveedor = models.IntegerField(default=None)
 
 
-    hora = models.IntegerField(default=None)
-    dia = models.IntegerField(default=None)
-    mes = models.IntegerField(default=None)
-    año = models.IntegerField(default=None)
+    time = models. DateTimeField(default=timezone.now, null = True)
 
     # booleano que indica si las lineas estan alimentadas ahora por el sistema solar
     solar_ahora = models.BooleanField(default=None, null=True)
@@ -47,8 +44,9 @@ class DatosHora(models.Model):
     product_id = models.CharField(max_length=50, null = True)
 
     class Meta:
-        ordering = ["user", "año", "mes", "dia", "hora"]
+        ordering = ["user", "time"]
 
+'''
 # datos guardados por dia
 class DatosDias(models.Model):
     # usuario
@@ -63,9 +61,7 @@ class DatosDias(models.Model):
     # consumo total del dia de origen solar
     consumo_dia_solar = models.IntegerField(default=None)
 
-    dia = models.IntegerField(default=None)
-    mes = models.IntegerField(default=None)
-    año = models.IntegerField(default=None)
+    time = models.DateTimeField(default=timezone.now, null = True)
 
     # horas que el panel estuvo entregando potencia
     horas_potencia_panel = models.IntegerField(default=None, null = True)
@@ -83,7 +79,7 @@ class DatosDias(models.Model):
 
     class Meta:
         ordering = ["user", "año", "mes", "dia"]
-
+'''
 
 # lista de productos activos
 class Productos(models.Model):
@@ -136,4 +132,4 @@ class UsersTokens(models.Model):
     # token de reseteo de contraseña
     password_reset_token = models.CharField(max_length=300, default=None, null = True)
     # hora de pedido
-    time = models.DateTimeField(default=datetime.datetime.now, null = True)
+    time = models.DateTimeField(default=timezone.now, null = True)
