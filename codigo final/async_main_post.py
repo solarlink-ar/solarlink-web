@@ -8,6 +8,7 @@ import asyncio
 import ujson as json
 
 solarlink = Solarlink()
+uart2 = UART(2, baudrate=9600, tx=Pin(17), rx=Pin(16))
 
 async def mediciones():
     global solarlink
@@ -45,81 +46,110 @@ async def conmutacion():
     consumo_l1 = solarlink.medicion["consumo_l1"]
     consumo_l2 = solarlink.medicion["consumo_l2"]
 
-    # logica de conmutacion
+    #lógica de conmutación
     if consumo_l1 + consumo_l2 < trigger:
-        solarlink.conmutador(l1 = True, l2 = True)
+        solarlink.l1 = True
+        solarlink.l2 = True
+        solarlink.conmutador()
     else:
         if consumo_l1 < trigger and consumo_l2 < trigger:
             if consumo_l1 > consumo_l2:
-                solarlink.conmutador(l1 = True, l2 = False)
+                solarlink.l1 = True
+                solarlink.l2 = False
+                solarlink.conmutador()
             else:
-                solarlink.conmutador(l1=False, l2=True)
+                solarlink.l1 = False
+                solarlink.l2 = True
+                solarlink.conmutador()
 
         if consumo_l1 > trigger and consumo_l2 > trigger:
-            solarlink.conmutador(l1=False, l2=False)
+            solarlink.l1 = False
+            solarlink.l2 = False
+            solarlink.conmutador()
         elif consumo_l1 > trigger and consumo_l2 < trigger:
-            solarlink.conmutador(l1=False, l2=True)
+            solarlink.l1 = False
+            solarlink.l2 = True
+            solarlink.conmutador()
         elif consumo_l1 < trigger and consumo_l2 > trigger:
-            solarlink.conmutador(l1=True, l2=False)
+            solarlink.l1 = True
+            solarlink.l2 = False
+            solarlink.conmutador()
 
-async def post():
+    
+
+
+async def timed_post():
     global solarlink
-    if solarlink.hora_inicial != solarlink.rtc.datetime()[4]:
-        time = solarlink.rtc.datetime()
-        payload = json.dumps({"username": solarlink.username, "password": solarlink.password,
-                "voltaje_hora_red": solarlink.acumulacion_voltaje_red / solarlink.indice_mediciones,
-                "consumo_hora_solar": solarlink.acumulacion_consumo_solar / solarlink.indice_mediciones,
-                "consumo_hora_red": solarlink.acumulacion_consumo_red / solarlink.indice_mediciones,
-                "consumo_l1_solar": solarlink.acumulacion_consumo_l1_solar / solarlink.indice_mediciones,
-                "consumo_l1_proveedor": solarlink.acumulacion_consumo_l1_proveedor / solarlink.indice_mediciones,
-                "consumo_l2_solar": solarlink.acumulacion_consumo_l2_solar / solarlink.indice_mediciones,
-                "consumo_l2_proveedor": solarlink.acumulacion_consumo_l2_proveedor / solarlink.indice_mediciones,
-                "hora": time[4],
-                "dia": time[2],
-                "mes": time[1],
-                "agno": time[0],
-                "solar_ahora": (solarlink.l1 or solarlink.l2)})
-        
-        solarlink.acumulacion_consumo_l1_proveedor = 0
-        solarlink.acumulacion_consumo_l1_solar = 0
-        solarlink.acumulacion_consumo_l2_proveedor = 0
-        solarlink.acumulacion_consumo_l2_solar = 0
-        solarlink.acumulacion_consumo_red = 0
-        solarlink.acumulacion_consumo_solar = 0
-        solarlink.acumulacion_voltaje_red = 0
-        solarlink.indice_mediciones = 0
-        solarlink.hora_inicial = time[4]
+    while True:
+        data_request = uart2.read()
+        if data_request == "hr":    #Envía datos de la última hora
+            dict_medicion = solarlink.medicion
+            dict_medicion['l1'] = solarlink.l1
+            dict_medicion['l2'] = solarlink.l2
+            payload = json.dumps(solarlink.medicion)
 
-        r = requests.post("http://10.0.2.104:8080/user/load-data/", data=payload)
-        print(r.text)
+            #payload = json.dumps({"username": solarlink.username, "password": solarlink.password,
+            #        "voltaje_hora_red": solarlink.acumulacion_voltaje_red / solarlink.indice_mediciones,
+            #        "consumo_hora_solar": solarlink.acumulacion_consumo_solar / solarlink.indice_mediciones,
+            #        "consumo_hora_red": solarlink.acumulacion_consumo_red / solarlink.indice_mediciones,
+            #        "consumo_l1_solar": solarlink.acumulacion_consumo_l1_solar / solarlink.indice_mediciones,
+            #        "consumo_l1_proveedor": solarlink.acumulacion_consumo_l1_proveedor / solarlink.indice_mediciones,
+            #        "consumo_l2_solar": solarlink.acumulacion_consumo_l2_solar / solarlink.indice_mediciones,
+            #        "consumo_l2_proveedor": solarlink.acumulacion_consumo_l2_proveedor / solarlink.indice_mediciones,
+            #        "hora": time[4],
+            #        "dia": time[2],
+            #        "mes": time[1],
+            #        "agno": time[0],
+            #        "solar_ahora": (solarlink.l1 or solarlink.l2)})
+            #
+            #solarlink.acumulacion_consumo_l1_proveedor = 0
+            #solarlink.acumulacion_consumo_l1_solar = 0
+            #solarlink.acumulacion_consumo_l2_proveedor = 0
+            #solarlink.acumulacion_consumo_l2_solar = 0
+            #solarlink.acumulacion_consumo_red = 0
+            #solarlink.acumulacion_consumo_solar = 0
+            #solarlink.acumulacion_voltaje_red = 0
+            #solarlink.indice_mediciones = 0
 
+            uart2.write(payload)
 
-async def tiempo_real():
-    global solarlink
-    if solarlink.tiempo_real:
-        payload = json.dumps({"username": solarlink.username, "password": solarlink.password})
-        r = requests.get("http://10.0.2.104:8080/user/user-is-online/", data=payload)
-
-        response = json.loads(r.text)
-        
-        if response["response"]:
+        elif data_request == "nw": #Envía datos en tiempo real
             payload = json.dumps({"username": solarlink.username, "password": solarlink.password,
-                                  "voltaje": solarlink.medicion["voltaje"],
-                                  "consumo_l1": solarlink.medicion["consumo_l1"],
-                                  "consumo_l2": solarlink.medicion["consumo_l2"],
-                                  "solar_l1": solarlink.l1,
-                                  "solar_l2": solarlink.l2})
-            requests.post("http://10.0.2.104:8080/user/tiempo-real/", data = payload)
+                    "voltaje": solarlink.medicion["voltaje"],
+                    "consumo_l1": solarlink.medicion["consumo_l1"],
+                    "consumo_l2": solarlink.medicion["consumo_l2"],
+                    "solar_l1": solarlink.l1,
+                    "solar_l2": solarlink.l2})
             
-        solarlink.tiempo_real = False
+            uart2.write(payload)
+
+
+#async def tiempo_real():
+#    global solarlink
+#    if solarlink.tiempo_real:
+#        payload = json.dumps({"username": solarlink.username, "password": solarlink.password})
+#        r = requests.get("http://10.0.2.104:8080/user/user-is-online/", data=payload)
+#
+#        response = json.loads(r.text)
+#        
+#        if response["response"]:
+#            payload = json.dumps({"username": solarlink.username, "password": solarlink.password,
+#                                  "voltaje": solarlink.medicion["voltaje"],
+#                                  "consumo_l1": solarlink.medicion["consumo_l1"],
+#                                  "consumo_l2": solarlink.medicion["consumo_l2"],
+#                                  "solar_l1": solarlink.l1,
+#                                  "solar_l2": solarlink.l2})
+#            requests.post("http://10.0.2.104:8080/user/tiempo-real/", data = payload)
+#            
+#        solarlink.tiempo_real = False
 
         
 async def main():
     asyncio.create_task(mediciones())
     asyncio.create_task(display())
     asyncio.create_task(conmutacion())
-    asyncio.create_task(post())
-    asyncio.create_task(tiempo_real())
+    asyncio.create_task(timed_post())
+    #asyncio.create_task(tiempo_real())
 
 
 while 1:

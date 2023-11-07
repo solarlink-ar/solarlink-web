@@ -257,8 +257,8 @@ class Solarlink(object):
     
     def conmutador(self, l1, l2):
         self.pedido_conmutacion = True
-        self.l1 = l1
-        self.l2 = l2
+        #self.l1 = l1
+        #self.l2 = l2
     
     
 
