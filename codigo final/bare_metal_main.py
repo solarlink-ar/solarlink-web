@@ -4,18 +4,30 @@ from machine import Pin, ADC, I2C, Timer, UART
 from lcd_api import LcdApi
 from i2c_lcd import I2cLcd
 import urequests as requests
-import asyncio
-import ujson as json
 
+p2 = Pin(2, Pin.OUT)
+#pin_l1 = Pin(19, Pin.OUT)
+#pin_l2 = Pin(18, Pin.OUT)
+#pin_cruce = Pin(13, Pin.IN
+
+'''wlan = network.WLAN(network.STA_IF) #network init
+wlan.active(True)
+while not wlan.isconnected():
+    try:
+        wlan.connect('Red Alumnos', '') #network connection
+    except:
+        pass'''
+
+#
+#
 solarlink = Solarlink()
+#
+#
+sol = bytearray([0x00,0x00,0x15,0x0E,0x1B,0x0E,0x15,0x00])
+solarlink.lcd.custom_char(0, sol)
 
-async def mediciones():
-    #global solarlink
-    solarlink.medicion_default_segundo()
-
-async def display():
-    #global solarlink
-    valores = solarlink.medicion
+while 1:
+    valores = solarlink.medicion_default_segundo()
     solarlink.lcd.hal_write_command(LcdApi.LCD_HOME)
     solarlink.lcd.hide_cursor()
 
@@ -37,13 +49,17 @@ async def display():
     solarlink.lcd.putstr(f"%.2f A"% (valores["corriente_l1"]) + "        " + "%.2f A" % (valores["corriente_l2"]))
     solarlink.lcd.move_to(0,3)
     solarlink.lcd.putstr('{:0>4d} W'.format(valores["consumo_l1"]) + "        " + '{:0>4d} W'.format(valores["consumo_l2"]))
+    
 
-
-async def conmutacion():
-    #global solarlink
+    
+    voltaje = valores["voltaje"]
+    corriente_l1 = valores["corriente_l1"]
+    corriente_l2 = valores["corriente_l2"]
+    consumo_l1 = valores["consumo_l1"]
+    consumo_l2 = valores["consumo_l2"]
+    
+        
     trigger = solarlink.trigger
-    consumo_l1 = solarlink.medicion["consumo_l1"]
-    consumo_l2 = solarlink.medicion["consumo_l2"]
 
     # logica de conmutacion
     if consumo_l1 + consumo_l2 < trigger:
@@ -62,16 +78,34 @@ async def conmutacion():
         elif consumo_l1 < trigger and consumo_l2 > trigger:
             solarlink.conmutador(l1=True, l2=False)
 
+'''  
+#############
+#### WIP ####
+#############
+'''
 
-
+##Permite bloquear la ejecución de otras partes del código mientras se está ejecutando el thread seleccionado.
+##Funciona como un semáforo binario.
+'''
+def threadCommWeb():
+    test = 0
+    while True:
         
-async def main():
-    asyncio.create_task(mediciones())
-    asyncio.create_task(display())
-    asyncio.create_task(conmutacion())
+        test = True
+        while test:
+            uart2.write("maxi puto")
+            rawdata = uart2.read() #nefastius almacena la información enviada
+            data = json.loads(rawdata)
+            voltaje = data["volt_actual"]
+            consumo = data["prom_hour"]
+            test = 0
+            return voltaje, consumo
 
-while 1:
-    asyncio.run(main())
 
+_thread.start_new_thread(threadCommWeb, ())
 
+'''
 
+#############
+#### WIP ####
+#############
