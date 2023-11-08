@@ -297,12 +297,13 @@ class UserPage(View):
         now = timezone.now()
         # tiempo actual, pero adaptado a timezone para filtrar en la database
         now_for_filter = timezone_for_filter(now, -3)
-        # hoy a las 00 en UTC
-        today_start = datetime.datetime(now_for_filter.year, now_for_filter.month, now_for_filter.day, 0, 0, 0)
-        today_end = today_start + timezone.timedelta(days=1)
+        # ahora en el tz del usuario
+        now_on_tz = convert_from_utc(now, -3)
+        # comienzo del dia en el tz del usuario
+        today_start_tz = timezone_for_filter(datetime.datetime(now_on_tz.year, now_on_tz.month, now_on_tz.day, 0, 0, 0), -3)
 
-
-        today_data = models.DatosHora.objects.filter(time__range = [today_start, today_end])
+        # filtro los datos entre el comienzo del dia del usuario, y ahora
+        today_data = models.DatosHora.objects.filter(time__range = [today_start_tz, now_for_filter])
 
 
         # tiempo de hace una semana, pero adaptado a timezone para filtrar en la database
@@ -717,7 +718,7 @@ def token_clean(request):
 
 def creador(request):
     user = request.user
-    '''
+    
     models.DatosHora(user = user,
                      voltaje_hora_red = 200,
                      consumo_hora_solar = 400,
@@ -726,8 +727,8 @@ def creador(request):
                      consumo_l1_proveedor = 300,
                      consumo_l2_solar = 400,
                      consumo_l2_proveedor = 500,
-                     time = timezone.now()).save()
-    '''
+                     time = timezone.datetime(2023, 11, 7, 12, tzinfo=timezone.utc)).save()
+
     models.DatosHora(user = user,
                      voltaje_hora_red = 200,
                      consumo_hora_solar = 400,
@@ -736,7 +737,26 @@ def creador(request):
                      consumo_l1_proveedor = 300,
                      consumo_l2_solar = 400,
                      consumo_l2_proveedor = 500,
-                     time = timezone.now() - timezone.timedelta(hours=13)).save()
+                     time = timezone.datetime(2023, 11, 7, 2)).save()
+    
+    models.DatosHora(user = user,
+                     voltaje_hora_red = 200,
+                     consumo_hora_solar = 400,
+                     consumo_hora_red = 500,
+                     consumo_l1_solar = 300,
+                     consumo_l1_proveedor = 300,
+                     consumo_l2_solar = 400,
+                     consumo_l2_proveedor = 500,
+                     time = timezone.datetime(2023, 11, 7, 4)).save()
+    models.DatosHora(user = user,
+                     voltaje_hora_red = 200,
+                     consumo_hora_solar = 400,
+                     consumo_hora_red = 500,
+                     consumo_l1_solar = 300,
+                     consumo_l1_proveedor = 300,
+                     consumo_l2_solar = 400,
+                     consumo_l2_proveedor = 500,
+                     time = timezone.datetime(2023, 11, 7, 3)).save()
     
     '''
     user = request.user
