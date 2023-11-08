@@ -481,48 +481,16 @@ class shouldPost(View):
         user = auth.authenticate(username=username, password=password)
 
         # si el usuario esta logueado, mando True
-        if user.isonline.is_online:
-            return JsonResponse({"response": True})
-        else:
-            return JsonResponse({"response": False})
-        
-    def post(self, request):
-        # si el contenido esta en post
-        if request.POST:
-            # usuario posteado
-            data = request.POST
-        # si el contenido esta en body
-        if request.body and not request.POST:
-            data = json.loads(request.body)
+        return JsonResponse({"response": user.isonline.is_online})
 
-        username = data["username"]
-        password = data["password"]
-
-        user = auth.authenticate(username=username, password = password)
-
-        models.TiempoReal(user = user, 
-                          voltaje = data["voltaje"],
-                          consumo_l1 = data["consumo_l1"],
-                          solar_l1 = data["solar_l1"],
-                          consumo_l2 = data["solar_l2"],
-                          solar_l2 = data["solar_l2"],
-                          solar = ["solar"]).save()
-        
-        return JsonResponse({"response": True})
         
 
     
 class LoadData(View):
-    def post(self, request):
-        # si el contenido esta en post
-        if request.POST:
-            # usuario posteado
-            data = request.POST
-            
-        # si el contenido esta en body
-        if request.body and not request.POST:
-            data = json.loads(request.body)
-        
+
+    def do_after(self):
+
+        data = self.data
         username = data["username"]
         password = data["password"]
 
@@ -540,17 +508,29 @@ class LoadData(View):
                 consumo_l2_solar = data["consumo_l2_solar"],
                 consumo_l1_proveedor = data["consumo_l1_proveedor"],
                 consumo_l2_proveedor = data["consumo_l2_proveedor"],
-                hora = data["hora"],
-                dia = data["dia"],
-                mes = data["mes"],
-                año = data["agno"],
+                time = timezone.now(),
                 solar_ahora = data["solar_ahora"]).save()
-            
-            return JsonResponse({"response": True})
-            
 
 
-class loadDataNow(View):
+    def post(self, request):
+        # si el contenido esta en post
+        if request.POST:
+            # usuario posteado
+            self.data = request.POST
+            
+        # si el contenido esta en body
+        if request.body and not request.POST:
+            self.data = json.loads(request.body)
+                    
+        response = JsonResponse({"status": True})
+        response._resource_closers.append(self.do_after)
+        return response
+
+
+
+
+class DataNow(View):
+
     def get(self, request):
         user = request.user
         data = models.TiempoReal.objects.filter(user=user)
@@ -575,6 +555,17 @@ class loadDataNow(View):
         # si el contenido esta en body
         if request.body and not request.POST:
             data = json.loads(request.body)
+        
+        self.data = data
+        
+        response = JsonResponse({"status": True})
+        response._resource_closers.append(self.do_after)
+        return response
+
+    
+    def do_after(self):
+
+        data = self.data
 
         username = data["username"]
         password = data["password"]
@@ -592,8 +583,6 @@ class loadDataNow(View):
                           consumo_l2 = consumo_l2,
                           solar_l1 = solar_l1,
                           solar_l2 = solar_l2).save()
-        return JsonResponse({"response": True})
-        
 
 class APILogin(View):
     async def post(self, request):
