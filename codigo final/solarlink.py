@@ -134,7 +134,7 @@ class Solarlink(object):
     def medicion_default_segundo(self):
 
         # timer 0 init, timer de fin de mediciones
-        self.timer0 = Timer(0).init(period=100, mode=Timer.ONE_SHOT, callback=self.callback_fin_mediciones)
+        self.timer0 = Timer(0).init(period=1000, mode=Timer.ONE_SHOT, callback=self.callback_fin_mediciones)
 
         # pico de corriente en ambas lineas (l1, l2) en el tiempo de medicion
         pico_corriente_l1 = 0

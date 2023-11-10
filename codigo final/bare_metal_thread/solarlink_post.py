@@ -93,11 +93,11 @@ class Solarlink(object):
         #ntptime.settime()
         
         self.rtc = RTC()
-        #ntptime.settime()
-        #tm = time.localtime(time.mktime(time.localtime()) -3*3600)
-        #tm = tm[0:3] + (0,) + tm[3:6] + (0,)
-        #self.rtc.datetime(tm)
-        self.rtc.datetime((2023, 11, 8, 2, 7, 59, 0, 0))
+        ntptime.settime()
+        tm = time.localtime(time.mktime(time.localtime()) -3*3600)
+        tm = tm[0:3] + (0,) + tm[3:6] + (0,)
+        self.rtc.datetime(tm)
+        #self.rtc.datetime((2023, 11, 8, 2, 7, 59, 0, 0))
         print(self.rtc.datetime())
 
         #################################### POSTEO ######################################################
@@ -191,8 +191,11 @@ class Solarlink(object):
             index += 1
 
             # mido sensores de corriente
-            corriente_actual_l1 = self.corriente_dif_read(2, 3)
-            corriente_actual_l2 = self.corriente_dif_read(0, 1)
+            try:
+                corriente_actual_l1 = self.corriente_dif_read(2, 3)
+                corriente_actual_l2 = self.corriente_dif_read(0, 1)
+            except:
+                pass
 
             # si la corriente medida es mas alta que el pico previo, sobreescribo
             if corriente_actual_l1 > pico_corriente_l1:
@@ -260,8 +263,8 @@ class Solarlink(object):
     
     def conmutador(self, l1, l2):
         self.pedido_conmutacion = True
-        #self.l1 = l1
-        #self.l2 = l2
+        self.l1 = l1
+        self.l2 = l2
     
     
 
