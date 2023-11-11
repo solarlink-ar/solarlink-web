@@ -311,8 +311,9 @@ class UserPage(View):
  
         week_data = models.DatosHora.objects.filter(time__range=[a_week_ago_for_filter, now_for_filter])
 
-        
+        return render(request, "user_mngmnt/index.html", {"datos_hoy": True, "datos_anual": True})
 
+        
 
 '''
 #Userpage
@@ -556,11 +557,28 @@ class DataNow(View):
         if request.body and not request.POST:
             data = json.loads(request.body)
         
-        self.data = data
+        data = dict(data)
+
+        username = data["username"]
+        password = data["password"]
+        voltaje = data["voltaje"]
+        consumo_l1 = data["consumo_l1"]
+        consumo_l2 = data["consumo_l2"]
+        solar_l1 = data["solar_l1"]
+        solar_l2 = data["solar_l2"]
         
-        response = JsonResponse({"status": True})
-        response._resource_closers.append(self.do_after)
-        return response
+        user = auth.authenticate(username = username, password=password)
+
+        models.TiempoReal(user=user,
+                          voltaje=voltaje,
+                          consumo_l1 = consumo_l1,
+                          consumo_l2 = consumo_l2,
+                          solar_l1 = solar_l1,
+                          solar_l2 = solar_l2).save()
+        
+        #response = JsonResponse({"status": True})
+        #response._resource_closers.append(self.do_after)
+        return JsonResponse({"status": True})
 
     
     def do_after(self):

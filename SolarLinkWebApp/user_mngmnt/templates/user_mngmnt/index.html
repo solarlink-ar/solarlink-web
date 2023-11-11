@@ -141,7 +141,7 @@
                                 <div class="d-flex">
                                     <i class="fa fa-lightbulb fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
                                     <div class="ms-3">
-                                        <h2 class="mb-0" data-toggle="counter-up">{{total_semanaprov}}</h2>
+                                        <h2 class="mb-0" data-toggle="counter-up"><!--{{total_semanaprov}}-->3540</h2>
                                         <p class="text-primary-gradient mb-0">kW/h del proveedor</p>
                                     </div>
                                 </div>
@@ -150,7 +150,7 @@
                                 <div class="d-flex">
                                     <i class="fa fa-percent fa-2x text-secondary-gradient flex-shrink-0 mt-1"></i>
                                     <div class="ms-3">
-                                        <h2 class="mb-0" data-toggle="counter-up">{{porcentaje_ahorro}}</h2>
+                                        <h2 class="mb-0" data-toggle="counter-up"><!--{{porcentaje_ahorro}}-->31</h2>
                                         <p class="text-secondary-gradient mb-0">Ahorro en porcentaje</p>
                                     </div>
                                 </div>
@@ -159,7 +159,7 @@
                                 <div class="d-flex">
                                     <i class="fa fa-solar-panel fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
                                     <div class="ms-3">
-                                        <h2 class="mb-0" data-toggle="counter-up">{{total_semanasolar}}</h2>
+                                        <h2 class="mb-0" data-toggle="counter-up"><!--{{total_semanasolar}}-->1083</h2>
                                         <p class="text-primary-gradient mb-0">kW/h solares</p>
                                     </div>
                                 </div>
@@ -239,8 +239,8 @@
                                 const xValues = ["3/11","4/11","5/11","6/11","7/11","8/11","9/11"];
                                 const yValuesg = [0,0,200,250,230,190,150];
                                 const yValuesc = [0,0,500,450,460,400,510];
-                                const yAnualg = [0,0,0,0,0,0,0,0,0,600,460,0];
-                                const yAnualc = [0,0,0,0,0,0,0,0,0,230,170,0];
+                                const yAnualg = [0,0,0,0,0,0,0,0,0,200,140,0];
+                                const yAnualc = [0,0,0,0,0,0,0,0,0,600,460,0];
                                 const xBat = ["Consumo en porcentaje"];
                                 const xAnual = ["Enero", "Febrero", "Marzo", "Mayo", "Abril", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
                                 const xHoras = ['0 AM', '1 AM', '2 AM', '3 AM', '4 AM', '5 AM', '6 AM', '7 AM', '8 AM', '9 AM', '10 AM', '11 AM', '12 AM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM', '8 PM', '9 PM', '10 PM', '11 PM'];
@@ -375,9 +375,9 @@
                                 function actual(){
                                 fetch('/user/tiempo-real/').then(
                                 (resp) => resp.json()).then(function(data) {
-                                    document.getElementById('voltaje').innerHTML = data['voltaje'];
-                                    document.getElementById('consumo_actual_l1').innerHTML = data['consumo_l1'];
-                                    document.getElementById('consumo_actual_l2').innerHTML = data['consumo_l2'];
+                                    document.getElementById('voltaje').innerHTML = data['voltaje'] + "V";
+                                    document.getElementById('consumo_actual_l1').innerHTML = data['consumo_l1'] + "W";
+                                    document.getElementById('consumo_actual_l2').innerHTML = data['consumo_l2'] + "W";
                                     if (data['solar'] == true){
                                         document.getElementById('sistema_solar').innerHTML = 'Activado';
                                     }
