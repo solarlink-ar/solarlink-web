@@ -303,9 +303,36 @@ class UserPage(View):
         today_start_tz = timezone_for_filter(datetime.datetime(now_on_tz.year, now_on_tz.month, now_on_tz.day, 0, 0, 0), -3)
 
         # filtro los datos entre el comienzo del dia del usuario, y ahora
-        today_data = models.DatosHora.objects.filter(time__range = [today_start_tz, now_for_filter])
+        today_data = models.DatosHora.objects.filter(user = user, time__range = [today_start_tz, now_for_filter])
 
 
+        total_proveedor_semana = 0
+        total_solar_semana = 0
+        info_hoy = []
+
+        for data in today_data:
+            info_hoy.append({"hora": convert_from_utc(data.time, -3).hour,
+                             "linea_1_proveedor": data.consumo_l1_proveedor,
+                             "linea_2_proveedor":data.consumo_l2_proveedor,
+                             "linea_1_solar": data.consumo_l1_solar,
+                             "linea_2_solar": data.consumo_l2_solar})
+            total_proveedor_semana += data.consumo_l1_proveedor + data.consumo_l2_proveedor
+            total_solar_semana += data.consumo_l1_solar + data.consumo_l2_solar
+
+
+        offset = 3
+        for i in range(0, 24):
+            try:
+                info_hoy[i] = info_hoy[i]
+            except:
+                info_hoy.insert(i, {"hora": i,
+                                "linea_1_proveedor": 0,
+                                "linea_2_proveedor": 0,
+                                "linea_1_solar": 0,
+                                "linea_2_solar": 0})
+                
+
+        
         # tiempo de hace una semana, pero adaptado a timezone para filtrar en la database
         a_week_ago_for_filter = now - timezone.timedelta(days=7)
  
