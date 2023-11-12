@@ -308,37 +308,85 @@ class UserPage(View):
 
         total_proveedor_semana = 0
         total_solar_semana = 0
-        info_hoy = []
-
+        dict_hoy = []
+        
+        for i in range(0, 24):
+            dict_hoy.insert(i, {"hora": i,
+                            "consumo_l1_proveedor": 0,
+                            "consumo_l2_proveedor": 0,
+                            "consumo_l1_solar": 0,
+                            "consumo_l2_solar": 0})
+        
         for data in today_data:
-            info_hoy.append({"hora": convert_from_utc(data.time, -3).hour,
-                             "linea_1_proveedor": data.consumo_l1_proveedor,
-                             "linea_2_proveedor":data.consumo_l2_proveedor,
-                             "linea_1_solar": data.consumo_l1_solar,
-                             "linea_2_solar": data.consumo_l2_solar})
+            dict_hoy[convert_from_utc(data.time, -3).hour] = {"hora": convert_from_utc(data.time, -3).hour,
+                             "consumo_l1_proveedor": data.consumo_l1_proveedor,
+                             "consumo_l2_proveedor":data.consumo_l2_proveedor,
+                             "consumo_l1_solar": data.consumo_l1_solar,
+                             "consumo_l2_solar": data.consumo_l2_solar}
             total_proveedor_semana += data.consumo_l1_proveedor + data.consumo_l2_proveedor
             total_solar_semana += data.consumo_l1_solar + data.consumo_l2_solar
 
+        consumo_l1_solar = []
+        consumo_l2_solar = []
+        consumo_l1_proveedor = []
+        consumo_l2_proveedor = []
 
-        offset = 3
-        for i in range(0, 24):
-            try:
-                info_hoy[i] = info_hoy[i]
-            except:
-                info_hoy.insert(i, {"hora": i,
-                                "linea_1_proveedor": 0,
-                                "linea_2_proveedor": 0,
-                                "linea_1_solar": 0,
-                                "linea_2_solar": 0})
-                
+        for i in dict_hoy:
+            consumo_l1_solar.append(i["consumo_l1_solar"])
+            consumo_l2_solar.append(i["consumo_l2_solar"])
+            consumo_l1_proveedor.append(i["consumo_l1_proveedor"])
+            consumo_l2_proveedor.append(i["consumo_l2_proveedor"])
 
+        context = {"datos_anual": True}
+        if today_data:
+            context["datos_hoy"] = True
+            context["consumo_l1_solar"] = consumo_l1_solar
+            context["consumo_l2_solar"] = consumo_l2_solar
+            context["consumo_l1_prov"] = consumo_l1_proveedor
+            context["consumo_l2_prov"] = consumo_l2_proveedor
+
+        else:
+            context["datos_hoy"] = False
+
+        #### SEMANA ####
         
         # tiempo de hace una semana, pero adaptado a timezone para filtrar en la database
-        a_week_ago_for_filter = now - timezone.timedelta(days=7)
+        a_week_ago_for_filter = now_for_filter - timezone.timedelta(days=7)
  
         week_data = models.DatosHora.objects.filter(time__range=[a_week_ago_for_filter, now_for_filter])
 
-        return render(request, "user_mngmnt/index.html", {"datos_hoy": True, "datos_anual": True})
+        every_time = week_data.values_list("time")
+        every_day = []
+        for i in every_time:
+            every_day.append(i[0].day)
+
+
+        every_day = list(set(every_day))
+
+        consumo_semanasolar = []
+        consumo_semanaproveedor = []
+        consumo_diasolar = 0
+        consumo_diaproveedor = 0
+        
+        for day in every_day:
+            day_data = week_data.filter(time__day = day)
+
+            for data in day_data:
+                consumo_diaproveedor += data.consumo_l1_proveedor + data.consumo_l2_proveedor
+                consumo_diasolar += data.consumo_l1_solar + data.consumo_l2_solar
+
+            consumo_semanaproveedor.append(consumo_diaproveedor)
+            consumo_semanasolar.append(consumo_diasolar)
+            consumo_diaproveedor = 0
+            consumo_diasolar = 0
+
+
+
+
+                
+
+
+        return render(request, "user_mngmnt/index.html", context)
 
         
 
@@ -359,7 +407,8 @@ class UserPage(View):
         # datos del mes actual, filtrados de la ultima semana, ordenados desde hoy
         mes_data = models.DatosDias.objects.filter(user=user, mes__range=(prev.month, mes_actual)).order_by("-año", "-mes","-dia")
         dias = []
-        semanasolar = []
+        semanasolar = -[]
+
         semanaprov = []
         # si hay datos
         if mes_data:
