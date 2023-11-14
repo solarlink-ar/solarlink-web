@@ -42,11 +42,11 @@
 				<form class="login100-form validate-form" method="POST" action="{% block post %}{% endblock %}">
 					{% csrf_token %}
 					<span class="login100-form-title p-b-26">
-            {% block titulo %}
-            {% endblock %}
+            		{% block titulo %}
+            		{% endblock %}
 					</span>
-          {% block campos %}
-          {% endblock %}
+          			{% block campos %}
+          			{% endblock %}
 				</form>
 			</div>
 		</div>

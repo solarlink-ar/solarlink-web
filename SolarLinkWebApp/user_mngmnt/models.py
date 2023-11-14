@@ -8,6 +8,10 @@ class isOnline(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_online = models.BooleanField(default=None)
 
+class Timezone(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    timezone_offset = models.FloatField(default=None)
+
 # datos del micro por hora
 class DatosHora(models.Model):
     # usuario
