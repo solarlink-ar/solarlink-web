@@ -14,5 +14,6 @@
 - Inza Fior, Mateo
 - Palmieri Hise, Agustín
 - Testa, Maximiliano Nicolás
+-  Dias, Lara Paloma
 
 ### <a  target="_blank" href="https://www.linktr.ee/solarlink.ar">¡Contactanos!</a>
