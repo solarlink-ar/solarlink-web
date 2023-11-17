@@ -26,10 +26,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'lku#p+_&8ucbkd(jlc-48mx@pgf2r42g8eqlvm0148)(5xlovr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
+DEBUG = True
 
 # páginas host permitidas
-ALLOWED_HOSTS = ['.vercel.app', 'solarlink.ar', '127.0.0.1', '192.168.126.140']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -143,7 +144,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/Argentina/Buenos_Aires'
+TIME_ZONE = 'Etc/UCT'
 
 USE_I18N = True
 
@@ -156,8 +157,8 @@ USE_TZ = True
 
 
 STATIC_URL = "static/"
-STATIC_ROOT = "static/"
-#STATICFILES_DIRS = [BASE_DIR / "static/"]
+#STATIC_ROOT = BASE_DIR / "static/"
+STATICFILES_DIRS = [BASE_DIR / "static/"]
 
 
 # buscadores de staticfiles

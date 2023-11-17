@@ -1,5 +1,13 @@
 (function ($) {
     "use strict";
+    //User is Online
+    const a = {
+        method: 'POST',
+        body: 1,
+    };
+    $(window).on('beforeunload', function(){
+        return fetch('/user/user-set-online/',a)
+    });
 
     // Spinner
     var spinner = function () {

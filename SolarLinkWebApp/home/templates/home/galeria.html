@@ -5,52 +5,109 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solar Link-Galería</title>
+    <link rel="shortcut icon" href="{% static 'general/img/favicon-32x32.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'home/css/galeria.css' %}" >
 </head>
 
 <body>
-<h1>  Galería </h1>
+    <h1>Galería</h1>
+    <a href="{% url 'index' %}" class="close">X</a>    
+    <span class="linea"></span>
+    <a href="index.html" class="atras"></a><i class="fa-solid fa-arrow-right"></i> </a>
+    <section class="galeria">
+         <!--fotos normalitas-->
+        <a href="#g1" >
+            <img src="static/home/img/IMG_1.png" alt="">
+        </a>
+        <a href="#g2" >
+            <img src="static/home/img/IMG_8067.png" alt="">
+        </a>
+        <a href="#g3" >
+            <img src="static/home/img/galeria-13.png" alt="">
+        </a>
+        <a href="#g7" >
+            <img src="static/home/img/Galeria-1.png" alt="">
+        </a>
+        <a href="#g4" >
+            <img src="static/home/img/fotoequipo.png" alt="">
+        </a>
+        <a href="#g5" >
+            <img src="static/home/img/IMG_8084.png" alt="">
+        </a>
+        <a href="#g6" >
+            <img src="static/home/img/galeria-14.png" alt="">
+        </a>
+        <a href="#g8" >
+            <img src="static/home/img/galeria-17.png" alt="">
+        </a>
+        <a href="#g9" >
+            <img src="static/home/img/galeria-7.png" alt="">
+        </a>
+    </section> 
 
-<span class="linea"><span/>
-<section class="galeria">
-<a href="" src= "#imagen1">
-    <img src= "{% static 'home/img/IMG_8011.png' %}" alt="">
-</a>
-<a href="" src= "#imagen1">
-    <img src= "{% static 'home/img/galeria-2.png' %}" alt="">
-</a>
-<a href="" src= "#imagen1">
-    <img src= "{% static 'home/img/Galeria-4.png' %}" alt="">
-</a>
-<a href="" src= "#imagen1">
-    <img src= "{% static 'home/img/Galeria-6.png' %}" alt="">
-</a>
-<a href="" src= "#imagen1">
-    <img src= "{% static 'home/img/galeria-9.png' %}" alt="">
-</a>
-<a href="" src= "#imagen1">
-    <img src= "{% static 'home/img/galeria-10.png' %}" alt="">
-</a>
-<a href="" src= "#imagen1">
-    <img src= "{% static 'home/img/galeria-11.png' %}" alt="">
-</a>
-<a href="" src= "#imagen1">
-    <img src= "{% static 'home/img/galeria-12.png' %}" alt="">
-</a>
-<a href="" src= "#imagen1">
-    <img src= "{% static 'home/img/galeria-14.png' %}" alt="">
-</a>
-<a href="" src= "#imagen1">
-    <img src= "{% static 'home/img/IMG_7684.png' %}" alt="">
-</a>
-<a href="" src= "#imagen1">
-    <img src= "{% static 'home/img/IMG_8084.png' %}" alt="">
-</a>
-<a href="" src= "#imagen1">
-    <img src= "{% static 'home/img/fotoequipo.png' %}" alt="">
-</a>
+    <article class="lightbox" id="g1"> <!--foto1-->
+        <a href="#g9" class="next"><-</a>
+        <img src="static/home/img/IMG_1.png" alt="">
+        <a href="#g2" class="next">-></i></a>
+        <a href="" class="close">X</a>
+    </article>
 
+    <article class="lightbox" id="g2">
+        <a href="#g1" class="next"><-</a>
+        <img src="static/home/img/IMG_8067.png" alt="">
+        <a href="#g3" class="next">-></i></a>
+        <a href="" class="close">X</a>
+    </article>
 
-</section>
+    <article class="lightbox" id="g3">
+        <a href="#g2" class="next"><-</a>
+        <img src="static/home/img/galeria-13.png" alt="">
+        <a href="#g7" class="next">-></a>
+        <a href="" class="close">X</a>
+    </article>
+
+    <article class="lightbox" id="g7">
+        <a href="#g3" class="next"><-</a>
+        <img src="static/home/img/Galeria-1.png" alt="">
+        <a href="#g4" class="next">-></a>
+        <a href="" class="close">X</a>
+    </article>
+
+    <article class="lightbox" id="g4">
+        <a href="#g7" class="next"><-</a>
+        <img src="static/home/img/fotoequipo.png" alt="">
+        <a href="#g5" class="next">-></a>
+        <a href="" class="close">X</a>
+    </article>
+
+    <article class="lightbox" id="g5">
+        <a href="#g4" class="next"><-</a>
+        <img src="static/home/img/IMG_8084.png" alt="">
+        <a href="#g6" class="next">-></a>
+        <a href="" class="close">X</a>
+    </article>
+
+    <article class="lightbox" id="g6">
+        <a href="#g5" class="next"><-</a>
+        <img src="static/home/img/galeria-14.png" alt="">
+        <a href="#g8" class="next">-></a>
+        <a href="" class="close">X</a>
+    </article>
+
+    <article class="lightbox" id="g8">
+        <a href="#g6" class="next"><-</a>
+        <img src="static/home/img/Galeria-17.png" alt="">
+        <a href="#g9" class="next">-></a>
+        <a href="" class="close">X</a>
+    </article>
+
+    <article class="lightbox" id="g9">
+        <a href="#g8" class="next"><-</a>
+        <img src="static/home/img/galeria-7.png" alt="">
+        <a href="#g1" class="next">-></a>
+        <a href="" class="close">X</a>
+    </article>
 
 </body>
+
+

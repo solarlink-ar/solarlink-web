@@ -42,6 +42,13 @@
     </div>
     {{ error }}
 
+    <input id="tz" type="hidden" name="tz_offset" value="" />
+
+    <script>
+        let offset = -(new Date().getTimezoneOffset()) / 60
+        document.getElementById("tz").value = offset.toString(); 
+    </script>
+
     <div class="container-login100-form-btn">
         <div class="wrap-login100-form-btn">
             <div class="login100-form-bgbtn"></div>

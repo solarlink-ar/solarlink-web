@@ -2,10 +2,10 @@ from django.contrib.auth.decorators import login_required
 from .forms import SignupForm, PasswordSetForm, LoginForm
 from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
-
 # VERCEL NO SOPORTA CELERY, SOPORTE DESACTIVADO
 #from .tasks import no_reply_sender, creador_datos
 from django.shortcuts import render, redirect
+from asgiref.sync import sync_to_async
 from django.contrib.auth.models import User
 from django.contrib import auth
 from django.views import View
@@ -13,8 +13,10 @@ from bs4 import BeautifulSoup
 from django.core.mail import EmailMessage
 from asgiref.sync import sync_to_async
 from django.utils import timezone
+
 from . import models
 import datetime, requests, secrets, random, asyncio, json
+import dateutil.relativedelta
 
 
 ###############################################################################################################
@@ -31,7 +33,20 @@ def calculador_cantidad_true(lista:list):
 def index(request):
     return render(request, "user_mngmnt/index.html")
 
+def convert_from_utc(time, from_utc):
+    timezone_offset = timezone.timedelta(hours=abs(from_utc))
+    if from_utc > 0:
+        return time + timezone_offset
+    elif from_utc < 0:
+        return time - timezone_offset
 
+def timezone_for_filter(time, from_utc):
+    timezone_offset = timezone.timedelta(hours=abs(from_utc))
+    if from_utc > 0:
+        return time - timezone_offset
+    elif from_utc < 0:
+        return time + timezone_offset
+    
 # decorador para pestañas que solo se pueden acceder sin estar logueado (regisro, login, etc)
 def unlogued_required(redirect_link):
     def decorator(func):
@@ -60,6 +75,8 @@ class Signup(View):
         # consigo el form con los datos posteados
         form = SignupForm(request.POST)
 
+        offset = float(request.POST["tz_offset"])
+
         # si el formulario es valido
         if form.is_valid():
             # tomo los datos
@@ -83,7 +100,10 @@ class Signup(View):
             token = secrets.token_urlsafe(32)
             # lo guardo en la base de datos
             models.UsersTokens(user=user, signup_token=token).save()
+            # genero offline user y
             # deshabilito al usuario hasta que verifique por mail
+            models.isOnline(user=user, is_online = False).save()
+            models.Timezone(user=user, timezone_offset=offset).save()
             user.is_active = False
             user.save()
 
@@ -242,7 +262,7 @@ class Login(View):
             # logueo
             auth.login(request, user)
             # redirijo a index
-            return redirect('index2')
+            return redirect('userpage')
         # si el form no es valido
         else:
             # codigo de error
@@ -275,63 +295,251 @@ def logout(request):
 ################################################ DATOS ########################################################
 ###############################################################################################################
 
-#Userpage
 class UserPage(View):
-    
     def get(self, request):
+        # usuario
         user = request.user
+        # offset de timezone
+        tz_offset = user.timezone.timezone_offset
+        # ahora en UTC
+        now = timezone.now()
+        # tiempo actual, pero con +3 hs de offset para tomar solo datos en el TZ del usuario
+        now_for_filter = timezone_for_filter(now, tz_offset)
+        # ahora en el tz del usuario
+        now_on_tz = convert_from_utc(now, tz_offset)
+        # comienzo del dia en el que el usuario esta ahora
+        today_start_tz = timezone_for_filter(datetime.datetime(now_on_tz.year, now_on_tz.month, now_on_tz.day, 0, 0, 0), tz_offset)
 
+        # filtro los datos entre el comienzo del dia del usuario, y ahora
+        today_data = models.DatosHora.objects.filter(user = user, time__range = [today_start_tz, now_for_filter])
 
-        mes_data = models.DatosDias.objects.filter(user=user, mes=8).order_by("-dia")#timezone.now().month)
+        ###################### HOY ######################
+        # variables
+        total_proveedor_semana = 0
+        total_solar_semana = 0
+        dict_hoy = []
+        # para cada hora del dia, creo un dato
+        for i in range(0, 24):
+            dict_hoy.append({"hora": i,
+                            "consumo_l1_proveedor": 0,
+                            "consumo_l2_proveedor": 0,
+                            "consumo_l1_solar": 0,
+                            "consumo_l2_solar": 0})
         
-        if mes_data and len(mes_data) >= 7:
-            semanasolar = []
-            semanaprov = []
-            for i in range(7):
-                semanaprov.append(mes_data[i].consumo_dia_red)
-                semanasolar.append(mes_data[i].consumo_dia_solar)
+        # para cada dato del dia de hoy, sobreescribo el dato creado por el de la db, si lo hay
+        for data in today_data:
+            dict_hoy[convert_from_utc(data.time, tz_offset).hour] = {"hora": convert_from_utc(data.time, tz_offset).hour,
+                             "consumo_l1_proveedor": data.consumo_l1_proveedor,
+                             "consumo_l2_proveedor":data.consumo_l2_proveedor,
+                             "consumo_l1_solar": data.consumo_l1_solar,
+                             "consumo_l2_solar": data.consumo_l2_solar}
+            total_proveedor_semana += data.consumo_hora_red
+            total_solar_semana += data.consumo_hora_solar
+
+        # listas para pasar ctx al frontend
+        consumo_l1_solar = []
+        consumo_l2_solar = []
+        consumo_l1_proveedor = []
+        consumo_l2_proveedor = []
+        
+        # apendo en lista para contexto
+        for i in dict_hoy:
+            consumo_l1_solar.append(i["consumo_l1_solar"])
+            consumo_l2_solar.append(i["consumo_l2_solar"])
+            consumo_l1_proveedor.append(i["consumo_l1_proveedor"])
+            consumo_l2_proveedor.append(i["consumo_l2_proveedor"])
+
+        # contexto
+        context = {}
+        if today_data:
+            context["datos_hoy"] = True
+            context["consumo_l1_solar"] = consumo_l1_solar
+            context["consumo_l2_solar"] = consumo_l2_solar
+            context["consumo_l1_prov"] = consumo_l1_proveedor
+            context["consumo_l2_prov"] = consumo_l2_proveedor
+
         else:
-            ...
-        
-        
-        año_data = models.DatosDias.objects.filter(user=user, año = 2023)
-        consumo_total_meses = []
-        consumo_ahorrado_meses = []
+            context["datos_hoy"] = False
 
-        for mes in range(1, 13):
-            mes_data = año_data.filter(mes = mes)
+        ###################### SEMANA ######################
 
+
+        # tiempo de hace una semana, pero adaptado a timezone para filtrar en la database
+        a_week_ago_for_filter = today_start_tz - timezone.timedelta(days=7)
+        # datos de toda la semana entre el timezone del usuario
+        week_data = models.DatosHora.objects.filter(user = user, time__range=[a_week_ago_for_filter, now_for_filter])
+
+        # variables para ctx
+        consumo_semanasolar = []
+        consumo_semanaproveedor = []
+        consumo_diasolar = 0
+        consumo_diaproveedor = 0
+        dias = []
+
+        # inicio del dia
+        day_start = a_week_ago_for_filter
+
+        # para cada dia desde hoy hasta hace una semana
+        for i in range(1, 8):
+            # final del dia
+            day_end = a_week_ago_for_filter + timezone.timedelta(days=i)
+            # filtro entre el inicio y el final del dia
+            day_data = week_data.filter(time__range=[day_start, day_end])
+            # dia y mes en formato DD/MM string, pasado al timezone del usuario
+            dias.append(f"{convert_from_utc(day_start, tz_offset).day}/{convert_from_utc(day_start, tz_offset).month}")
+            # calculo consumo del proveedor y solar
+            for data in day_data:
+                consumo_diaproveedor += data.consumo_hora_red
+                consumo_diasolar += data.consumo_hora_solar
             
 
-
-        context = {"semanasolar": semanasolar, "semanaprov": semanaprov, 
-                   "total_semanasolar":int(sum(semanasolar)),
-                    "total_semanaprov": int(sum(semanaprov)),
-                    "porcentaje_ahorro": round(sum(semanaprov)/sum(semanasolar), 2)}
+            # apendo para ctx
+            consumo_semanaproveedor.append(consumo_diaproveedor)
+            consumo_semanasolar.append(consumo_diasolar)
+            consumo_diaproveedor = 0
+            consumo_diasolar = 0
+            
+            # start en este dia para filtrar el siguiente
+            day_start = day_end
         
+        # contexto
+        if week_data:
+            context["datos_7dias"] = True
+            context["semanasolar"] = consumo_semanasolar
+            context["semanaprov"] = consumo_semanaproveedor
+            context["porcentaje_ahorro"] = round(sum(consumo_semanasolar)/sum(consumo_semanaproveedor) * 100, 2)
+            context["dias"] = dias
+            context["total_semanasolar"] = int(sum(consumo_semanasolar))
+            context["total_semanaprov"] = int(sum(consumo_semanaproveedor))
+        else:
+            context["datos_7dias"] = False
+
+        ####################### AGNO #######################
+
+        # inicio del agno en el timezone del usuario
+        year_start = timezone_for_filter(timezone.datetime(year = now_for_filter.year, month = 1, day = 1), tz_offset)
+        # final del agno en el timezone del usuario
+        year_end = year_start + dateutil.relativedelta.relativedelta(years=1)
+        
+        # datos de todos el agno
+        year_data = models.DatosHora.objects.filter(user = user, time__range=[year_start, year_end])
+
+        # variables
+        consumo_messolar = 0
+        consumo_mesproveedor = 0
+        consumo_ahorrado_meses = []
+        consumo_prov_meses = []
+        month_start = year_start
+
+        # para cada mes del agno
+        for i in range(1, 13):
+            # un mes dsps del inicio
+            month_end = month_start + dateutil.relativedelta.relativedelta(months=1)
+
+            # datos del mes
+            month_data = year_data.filter(time__range = [month_start, month_end])
+
+            # para cada dato del mes, sumo a la variable mensual
+            for data in month_data:
+                consumo_mesproveedor += data.consumo_l1_proveedor + data.consumo_l2_proveedor
+                consumo_messolar += data.consumo_l1_solar + data.consumo_l2_solar
+
+            # guardo datos en lista de los meses, paso a kW/h
+            consumo_prov_meses.append(consumo_mesproveedor / 1000)
+            consumo_ahorrado_meses.append(consumo_messolar / 1000)
+
+            # reinicio variables
+            consumo_mesproveedor = 0
+            consumo_messolar = 0
+
+            # nuevo mes de inicio
+            month_start = month_end
+
+        # contexto
+        if year_data:
+            context["datos_anual"] = True
+            context["consumo_ahorrado_meses"] = consumo_ahorrado_meses
+            context["consumo_prov_meses"] = consumo_prov_meses
+        else:
+            context["datos_anual"] = False
+
+
         return render(request, "user_mngmnt/index.html", context)
 
+        
 
-
-
-    #username = request.user.username
-    #return render(request, "user_mngmnt/userpage.html", {"username": username})
-
-class UserCalc(View):
-
-    def get(self, request):
-        ...
 ###############################################################################################################
 ################################################# API #########################################################
 ###############################################################################################################
 
-
-class LoadData(View):
+class OnlineUsersUpdate(View):
+    # pone usuario offline
     def post(self, request):
-        # data posteada
-        data = request.POST.dict()
+        # usuario
+        user = request.user
+        # offline
+        user.isonline.is_online = False
+        # guardo
+        user.isonline.save()
+        # borro los datos recibidos desde el solar link en tiempo real
+        models.TiempoReal.objects.filter(user=user).delete()
+
+        return JsonResponse({"response":True})
+
+    # pone usuario online
+    def get(self, request):
+        # usuario
+        user = request.user
+        # seteo online
+        user.isonline.is_online = True
+        # guardo
+        user.isonline.save()
+
+        return JsonResponse({"response":True})
+
+class shouldPost(View):
+    def get(self, request):
+        # si el contenido esta en post
+        if request.GET:
+            # usuario posteado
+            data = request.GET
+        # si el contenido esta en body
+        if request.body and not request.GET:
+            data = json.loads(request.body)
+
+        username = data["username"]
+        password = data["password"]
+
         # autentico
-        user = auth.authenticate(username=data["username"], password=data["password"])
+        user = auth.authenticate(username=username, password=password)
+
+        # si el usuario esta logueado, mando True
+        return JsonResponse({"response": user.isonline.is_online})
+
+   
+class LoadData(View):
+
+    def do_after(self):
+
+        data = self.data
+
+
+
+    def post(self, request):
+        # si el contenido esta en post
+        if request.POST:
+            # usuario posteado
+            self.data = request.POST
+            
+        # si el contenido esta en body
+        if request.body and not request.POST:
+            data = json.loads(request.body)
+
+        username = data["username"]
+        password = data["password"]
+
+        # autentico
+        user = auth.authenticate(username=username, password=password)
         # si existe el usuario
         if user:
             # guardo datos
@@ -340,38 +548,79 @@ class LoadData(View):
                 voltaje_hora_red = data["voltaje_hora_red"],
                 consumo_hora_solar = data["consumo_hora_solar"],
                 consumo_hora_red = data["consumo_hora_red"],
-                consumo_l1 = data["consumo_l1"],
-                consumo_l2 = data["consumo_l2"],
-                hora = data["hora"],
-                dia = data["dia"],
-                mes = data["mes"],
-                año = data["año"],
-                solar_ahora = data["solar_ahora"],
-                panel_potencia = data["panel_potencia"],
-                cargando = data["cargando"],
-                voltaje_bateria = data["voltaje_bateria"],
-                errores = data["errores"]
-            ).save()
-            # respondo
-            response = {"result": True}
+                consumo_l1_solar = data["consumo_l1_solar"],
+                consumo_l2_solar = data["consumo_l2_solar"],
+                consumo_l1_proveedor = data["consumo_l1_proveedor"],
+                consumo_l2_proveedor = data["consumo_l2_proveedor"],
+                time = timezone.now(),
+                solar_ahora = data["solar_ahora"]).save()      
 
-        # si no existe
+        return JsonResponse({"status": True})
+
+
+
+
+class DataNow(View):
+
+    def get(self, request):
+        user = request.user
+        data = models.TiempoReal.objects.filter(user=user)
+        if data:
+            for d in data:
+                now = d
+            response = {"voltaje": now.voltaje,
+                        "consumo_l1": now.consumo_l1,
+                        "consumo_l2": now.consumo_l2,
+                        "solar": (now.solar_l1 or now.solar_l2)}
+            
+            return JsonResponse(response)
         else:
-            # respondo que usuario incorrecto
-            response = {"result": False}
+            return JsonResponse({"response": False})
 
-        return JsonResponse(response)
-    
+    def post(self, request):
+        # si el contenido esta en post
+        if request.POST:
+            # usuario posteado
+            data = request.POST
+            
+        # si el contenido esta en body
+        if request.body and not request.POST:
+            data = json.loads(request.body)
+        
+        data = dict(data)
+
+        username = data["username"]
+        password = data["password"]
+        voltaje = data["voltaje"]
+        consumo_l1 = data["consumo_l1"]
+        consumo_l2 = data["consumo_l2"]
+        solar_l1 = data["solar_l1"]
+        solar_l2 = data["solar_l2"]
+        
+        user = auth.authenticate(username = username, password=password)
+
+        models.TiempoReal(user=user,
+                          voltaje=voltaje,
+                          consumo_l1 = consumo_l1,
+                          consumo_l2 = consumo_l2,
+                          solar_l1 = solar_l1,
+                          solar_l2 = solar_l2).save()
+        
+        return JsonResponse({"status": True})
+
+
 class APILogin(View):
     async def post(self, request):
+        # si el contenido esta en post
         if request.POST:
             # usuario posteado
             username = request.POST["username"]
             password = request.POST["password"]
+        # si el contenido esta en body
         if request.body and not request.POST:
-            async_json_dumps = sync_to_async(json.loads, thread_sensitive=False)
-            username = (await async_json_dumps(request.body))["username"]
-            password = (await async_json_dumps(request.body))["password"]
+            async_json_loads = sync_to_async(json.loads, thread_sensitive=False)
+            username = (await async_json_loads(request.body))["username"]
+            password = (await async_json_loads(request.body))["password"]
 
         # autentico
         async_auth = sync_to_async(auth.authenticate, thread_sensitive=False)
@@ -398,72 +647,6 @@ class EdesurEdenor(View):
 
 # ADAPTACION DE CRON JOBS A VIEWS YA QUE VERCEL NO SOPORTA CELERY
 
-def ordenador(request):
-    # usuarios
-    users = models.User.objects.all()
-
-    # para cada usuario
-    for user in users:
-        # datos del usuario
-        user_data = models.DatosHora.objects.filter(user=user)
-
-        # mientras existan datos
-        while user_data:
-            # variables temporales
-            voltaje_dia_red = []
-            consumo_dia_red = 0
-            consumo_dia_solar = 0
-            solar_por_hora = []
-            potencia_dia_panel = 0
-            horas_de_carga = []
-            voltajes_bateria = []
-            errores = []
-
-            # referencia para dia, mes
-            referencia = user_data[0]
-            #datos del dia buscado
-            dia_data = user_data.filter(dia=referencia.dia, mes=referencia.mes, año=referencia.año)
-
-            # para cada dato del dia
-            for data in dia_data:
-                # acumulo en valores sumario diario
-                voltaje_dia_red.append(data.voltaje_hora_red)
-                consumo_dia_solar += data.consumo_hora_solar
-                consumo_dia_red += data.consumo_hora_red
-
-                solar_por_hora.append(data.solar_ahora)
-                potencia_dia_panel += data.panel_potencia
-                horas_de_carga.append(data.cargando)
-                voltajes_bateria.append(data.voltaje_bateria)
-
-                errores.append(data.errores)
-                product_id = data.product_id
-
-                # borro el dato
-                data.delete()
-            
-            # creo dato dia
-            models.DatosDias(user = user,
-                            voltaje_maximo_dia_red = max(voltaje_dia_red),
-                            voltaje_minimo_dia_red = min(voltaje_dia_red),
-                            consumo_dia_solar = consumo_dia_solar,
-                            consumo_dia_red = consumo_dia_red,
-
-                            dia = referencia.dia,
-                            mes = referencia.mes,
-                            año = referencia.año,
-
-                            horas_potencia_panel = calculador_cantidad_true(solar_por_hora),
-                            potencia_dia_panel = potencia_dia_panel,
-                            horas_de_carga = calculador_cantidad_true(horas_de_carga),
-                            voltajes_bateria = json.dumps(voltajes_bateria),
-                            errores = calculador_cantidad_true(errores),
-                            product_id = data.product_id).save()
-            
-            # sobreescribo user_data, para quitar los datos que acabo de borrar
-            user_data = models.DatosHora.objects.filter(user=user)
-
-
 def token_clean(request):
     # todos los tokens activos
     data = models.UsersTokens.objects.all()
@@ -483,26 +666,46 @@ def token_clean(request):
 
 def creador(request):
     user = request.user
-    lista = [True,False]
-    # se sube un dato por hora
-    for d in range(1, 31):
-        for h in range(0, 24):
-            models.DatosHora(user = user,
-                            voltaje_hora_red = random.randint(170, 240),
-                            consumo_hora_red = random.randint(0, 4000),
-                            consumo_hora_solar = random.randint(0, 340),
-                            consumo_l1 = random.randint(0, 4000),
-                            consumo_l2 = random.randint(0,4000),
-                            hora = h,
-                            dia = d,
-                            mes = 8,
-                            año = 2023,
-                            solar_ahora = random.choice(lista),
-                            panel_potencia = random.randint(0, 340),
-                            cargando = random.choice(lista),
-                            voltaje_bateria = random.randint(10, 15),
-                            errores = random.choice(lista),
-                            product_id = 'nashe23').save()
+    
+    models.DatosHora(user = user,
+                     voltaje_hora_red = 200,
+                     consumo_hora_solar = 400,
+                     consumo_hora_red = 500,
+                     consumo_l1_solar = 300,
+                     consumo_l1_proveedor = 300,
+                     consumo_l2_solar = 400,
+                     consumo_l2_proveedor = 500,
+                     time = timezone.datetime(2023, 11, 7, 12, tzinfo=timezone.utc)).save()
+
+    models.DatosHora(user = user,
+                     voltaje_hora_red = 200,
+                     consumo_hora_solar = 400,
+                     consumo_hora_red = 500,
+                     consumo_l1_solar = 300,
+                     consumo_l1_proveedor = 300,
+                     consumo_l2_solar = 400,
+                     consumo_l2_proveedor = 500,
+                     time = timezone.datetime(2023, 11, 7, 2)).save()
+    
+    models.DatosHora(user = user,
+                     voltaje_hora_red = 200,
+                     consumo_hora_solar = 400,
+                     consumo_hora_red = 500,
+                     consumo_l1_solar = 300,
+                     consumo_l1_proveedor = 300,
+                     consumo_l2_solar = 400,
+                     consumo_l2_proveedor = 500,
+                     time = timezone.datetime(2023, 11, 7, 4)).save()
+    models.DatosHora(user = user,
+                     voltaje_hora_red = 200,
+                     consumo_hora_solar = 400,
+                     consumo_hora_red = 500,
+                     consumo_l1_solar = 300,
+                     consumo_l1_proveedor = 300,
+                     consumo_l2_solar = 400,
+                     consumo_l2_proveedor = 500,
+                     time = timezone.datetime(2023, 11, 7, 3)).save()
+
                 
 def sender(request):
     no_reply_sender('ivanchicago70@gmail.com', 'nashe', 'nashe')

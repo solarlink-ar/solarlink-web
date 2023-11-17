@@ -5,6 +5,7 @@ from django.urls import path, include
 from django.shortcuts import render, redirect
 from . import views
 
+
 # no permite acceder a las pestañas estando logueado
 def unlogued_required(function, redirect_link):
     if function:
@@ -41,14 +42,14 @@ urlpatterns = [
     path("api-login/", csrf_exempt(views.APILogin.as_view()), name="api_login"),
     path("api-tarifas/", views.EdesurEdenor.as_view(), name="api_tarifas"),
     path("load-data/", csrf_exempt(views.LoadData.as_view()), name="load_data"),
-    path("userpage/", login_required(views.UserPage.as_view()), name="userpage"),
-    path("index/", views.index, name="index2"),
+    path("tiempo-real/", csrf_exempt(views.DataNow.as_view()), name="tiempo_real"),
+    path("user-set-online/", csrf_exempt(views.OnlineUsersUpdate.as_view()), name="user_set_online"),
+    path("user-is-online/", csrf_exempt(views.shouldPost.as_view()), name="user_is_online"),
+    # USERPAGE #
+    path("datos/", login_required(views.UserPage.as_view()), name="userpage"),
     # TESTS #
     #path("creador/", views.creador, name="creador"),
     path("sender/", views.sender, name="sender"),
     # VISTAS ADAPTADAS DEL CRON PQ CELERY NO ANDA EN VERCEL #
-    path("ordenador/", views.ordenador, name="ordenador"),
     path("token-clean/", views.token_clean, name="token_clean")
 ]
-
-# TEST
