@@ -3,7 +3,7 @@
 {% load static %}
 <head>
     <meta charset="utf-8">
-    <title>SolarLink</title>
+    <title>Mis datos | SolarLink</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -382,9 +382,21 @@
                                 function actual(){
                                 fetch('/user/tiempo-real/').then(
                                 (resp) => resp.json()).then(function(data) {
-                                    document.getElementById('voltaje').innerHTML = data['voltaje'] + "V";
-                                    document.getElementById('consumo_actual_l1').innerHTML = data['consumo_l1'] + "W";
-                                    document.getElementById('consumo_actual_l2').innerHTML = data['consumo_l2'] + "W";
+                                    let volt = data['voltaje'] || 'No hay datos';
+                                    let con1 = data['consumo_l1'] || 'No hay datos';
+                                    let con2 = data['consumo_l2'] || 'No hay datos';
+                                    if (volt != 'No hay datos'){
+                                        volt + ' V'
+                                    }
+                                    if (con1 != 'No hay datos'){
+                                        con1 + ' W'
+                                    }
+                                    if (con2 != 'No hay datos'){
+                                        con2 + ' W'
+                                    }
+                                    document.getElementById('voltaje').innerHTML = volt;
+                                    document.getElementById('consumo_actual_l1').innerHTML = con1;
+                                    document.getElementById('consumo_actual_l2').innerHTML = con2;
                                     if (data['solar'] == true){
                                         document.getElementById('sistema_solar').innerHTML = 'Activado';
                                     }
