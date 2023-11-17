@@ -51,6 +51,5 @@ urlpatterns = [
     path("creador/", views.creador, name="creador"),
     path("sender/", views.sender, name="sender"),
     # VISTAS ADAPTADAS DEL CRON PQ CELERY NO ANDA EN VERCEL #
-    path("ordenador/", views.ordenador, name="ordenador"),
     path("token-clean/", views.token_clean, name="token_clean")
 ]
