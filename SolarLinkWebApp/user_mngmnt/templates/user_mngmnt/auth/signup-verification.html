@@ -1,0 +1,49 @@
+{% extends 'message.html' %}
+
+{% block head %}
+    <title>Confirmación | Solar Link</title>
+{% endblock %}
+
+{% block titulo %}
+    {% if not user.is_active %}
+        ¡Gracias por registrarte!
+    {% else %}
+        ¡Listo!
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if not user.is_active %}
+        <h4 class='txt2' style="font-size: 16px">Andá a tu casilla de mail y confirmá el registro para continuar.</h4>
+        <h4 class='txt2' style="font-size: 15px">Recordá que no podés iniciar sesión hasta que actives la cuenta.</h4>
+
+        <div class="container-login100-form-btn">
+            <div class="wrap-login100-form-btn">
+                <div class="login100-form-bgbtn"></div>
+                <a href={% url 'index' %}>
+                    <button class="login100-form-btn" >
+                        Volver a inicio
+                    </button>
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <h4 class='txt2' style="font-size: 16px">Cuenta habilitada. Redirigiendote a inicio...</h4>
+        <div class="container-login100-form-btn">
+            <div class="wrap-login100-form-btn">
+                <div class="login100-form-bgbtn"></div>
+                <a href={% url 'index' %}>
+                    <button class="login100-form-btn" >
+                        Volver a inicio
+                    </button>
+                </a>
+            </div>
+        </div>
+        <script>
+            setTimeout(function(){
+                window.location = "{% url 'index' %}";
+        },2000);
+        </script>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <title>Mis datos | SolarLink</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="{% static 'general/img/favicon-32x32.png' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500&family=Jost:wght@500;600;700&display=swap" rel="stylesheet"> 
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'user_mngmnt/lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'user_mngmnt/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'user_mngmnt/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{% static 'user_mngmnt/css/style.css' %}" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="51">
+    <div class="container-xxl bg-white p-0">
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Cargando...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!-- Navbar & Hero Start -->
+        <div class="container-xxl position-relative p-0" id="home">
+            <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+                <a href="" class="navbar-brand p-0">
+                    <h1 class="m-0">Solar Link</h1>
+                    <!-- <img src="img/logo.png" alt="Logo"> -->
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="fa fa-bars"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav mx-auto py-0">
+                        <a href="#home" class="nav-item nav-link active">Inicio</a>
+                        <a href="#estado_actual" class="nav-item nav-link">Estado actual</a>
+                        <a href="#datos_ahorro" class="nav-item nav-link">Ahorro</a>
+                        <a href="#contact" class="nav-item nav-link">Contacto</a>
+                        <a href="{% url 'login' %}" class="nav-link" style="position: var(--pos);margin-left: var(--ml);margin-right: var(--mr);">{{ request.user.username }}</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-xxl bg-primary hero-header">
+                <div class="container px-lg-5">
+                    <div class="row g-3">
+                        <div class=" text-center text-lg-start">
+                            <h1 class="text-white text-center mb-4 animated slideInDown">¡Bienvenido, {{user.first_name}}!</h1>
+                            <p style="font-size:1.5em"class="text-white text-center  animated slideInDown pb-3">En esta pagina podra controlar y consultar aspectos de su unidad de Solar Link</p>
+                            <canvas style="width:100%; max-width:400px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Navbar & Hero End -->
+
+
+        <!-- Features Start -->
+        <div class="container-xxl py-5" id="estado_actual">
+            <div class="container py-5 px-lg-5">
+                <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                    <h1 class="mb-5">Estado Actual</h1>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="feature-item bg-light rounded p-4">
+                            <div class="d-inline-flex align-items-center justify-content-center bg-secondary-gradient rounded-circle mb-4" style="width: 60px; height: 60px;">
+                                <i class="fa fa-bolt text-white fs-4"></i>
+                            </div>
+                            <h5 class="mb-3">Voltaje de linea</h5>
+                            <h3 class="m-0" id='voltaje'></h3>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                        <div class="feature-item bg-light rounded p-4">
+                            <div class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle mb-4" style="width: 60px; height: 60px;">
+                                <i class="fa fa-plug text-white fs-4"></i>
+                            </div>
+                            <h5 class="mb-3">Consumo linea 1</h5>
+                            <h3 class="m-0" id='consumo_actual_l1'></h3>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                        <div class="feature-item bg-light rounded p-4">
+                            <div class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle mb-4" style="width: 60px; height: 60px;">
+                                <i class="fa fa-plug text-white fs-4"></i>
+                            </div>
+                            <h5 class="mb-3">Consumo linea 2</h5>
+                            <h3 class="m-0" id='consumo_actual_l2'></h3>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="feature-item bg-light rounded p-4">
+                            <div class="d-inline-flex align-items-center justify-content-center bg-secondary-gradient rounded-circle mb-4" style="width: 60px; height: 60px;">
+                                <i class="fa fa-sun text-white fs-4"></i>
+                            </div>
+                            <h5 class="mb-3">Sistema</h5>
+                            <h3 class="m-0" id='sistema_solar'></h3>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- Features End -->
+
+        <!-- About Start -->
+        <div class="container-xxl py-5" id="datos_ahorro">
+            <div class="container py-5 px-lg-5">
+                <div class="row g-5 align-items-center">
+                    <div class="wow fadeInUp" data-wow-delay="0.1s">
+                        <h5 class="text-primary-gradient text-center fw-medium">Ahorro</h5>
+                        <h1 class="mb-4 text-center">Ahorro generado ultimos 7 dias</h1>
+                        {% if datos_7dias %}
+                        <div class="row g-4 mb-4">
+                            <div class="col-sm-6 wow fadeIn" data-wow-delay="0.5s">
+                                <div class="d-flex">
+                                    <i class="fa fa-lightbulb fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
+                                    <div class="ms-3">
+                                        <h2 class="mb-0" data-toggle="counter-up">{{total_semanaprov}}</h2>
+                                        <p class="text-primary-gradient mb-0">W/h del proveedor</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 wow fadeIn" data-wow-delay="0.7s">
+                                <div class="d-flex">
+                                    <i class="fa fa-percent fa-2x text-secondary-gradient flex-shrink-0 mt-1"></i>
+                                    <div class="ms-3">
+                                        <h2 class="mb-0" data-toggle="counter-up">{{porcentaje_ahorro}}</h2>
+                                        <p class="text-secondary-gradient mb-0">Ahorro en porcentaje</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 wow fadeIn" data-wow-delay="0.5s">
+                                <div class="d-flex">
+                                    <i class="fa fa-solar-panel fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
+                                    <div class="ms-3">
+                                        <h2 class="mb-0" data-toggle="counter-up">{{total_semanasolar}}</h2>
+                                        <p class="text-primary-gradient mb-0">W/h solares</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <canvas id="ahorro" style="width: 100%; max-width: 1000px;"></canvas>
+                            {% else %}
+                            <div>
+                                <h2 class='mb-5' style='text-align:center;vertical-align:middle;'>Aun no hay datos</h2>
+                            </div>
+                            {% endif %}
+                            <h1 class='mb-4 text-center'>Ahorro hoy</h1>
+                            {% if datos_hoy %}
+                            <canvas id ="horas" style="width: 100%; max-width: 1000px;"></canvas>
+                            {% else %}
+                            <div>
+                                <h2 class='mb-5' style='text-align:center;vertical-align:middle;'>Aun no hay datos</h2>
+                            </div>
+                            {% endif %}
+                            <h1 class="mb-4 text-center">Ahorro anual</h1>
+                            {% if datos_anual %}
+                            <canvas id ="anual" style="width: 100%; max-width: 1000px;"></canvas>
+                            {% else %}
+                            <div>
+                                <h2 class='mb-5' style='text-align:center;vertical-align:middle;'>Aun no hay datos</h2>
+                            </div>
+                            {% endif %}
+                            <!-- 
+                            <h5 class="text-primary-gradient text-center fw-medium">Bateria</h5>
+                            <h1 class="mb-4 text-center">Uso de bateria ultima semana</h1>
+                            <div class="col-sm-6 wow fadeIn" data-wow-delay="0.5s">
+                                <div class="d-flex">
+                                    <i class="fa fa-sun fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
+                                    <div class="ms-3">
+                                        <h2 class="mb-0" data-toggle="counter-up">{{porcentaje.generado}}</h2>
+                                        <p class="text-primary-gradient mb-0">porcentaje generado</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 wow fadeIn" data-wow-delay="0.5s">
+                                <div class="d-flex">
+                                    <i class="fa fa-chart-line fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
+                                    <div class="ms-3">
+                                        <h2 class="mb-0" data-toggle="counter-up">{{porcentaje.adquirido}}</h2>
+                                        <p class="text-primary-gradient mb-0">porcentaje adquirido</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 wow fadeIn" data-wow-delay="0.5s">
+                                <div class="d-flex">
+                                    <i class="fa fa-fire fa-2x text-primary-gradient flex-shrink-0 mt-1"></i>
+                                    <div class="ms-3">
+                                        <h2 class="mb-0" data-toggle="counter-up">{{porcentaje.utilizado}}</h2>
+                                        <p class="text-primary-gradient mb-0">porcentaje utilizado</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if datos_ahorro_ok %}
+                            <canvas id="bateria" style="width: 100%; max-width: 1000px;"></canvas>
+                            {% else %}
+                            <div>
+                                <h2 class='mb-5' style='text-align:center;vertical-align:middle;'>Aun no hay datos</h2>
+                            </div>
+                            {% endif %}
+                        -->
+                            <script>
+                                window.onload = fetch('/user/user-set-online/');
+                                window.onload = setInterval(actual, 5000);
+                                let a;
+                                const yValueshg1 = [{{consumo_l1_solar.0}}, {{consumo_l1_solar.1}},{{consumo_l1_solar.2}}, {{consumo_l1_solar.3}}, {{consumo_l1_solar.4}}, {{consumo_l1_solar.5}}, {{consumo_l1_solar.6}}, {{consumo_l1_solar.7}}, {{consumo_l1_solar.8}}, {{consumo_l1_solar.9}}, {{consumo_l1_solar.10}}, {{consumo_l1_solar.11}}, {{consumo_l1_solar.12}}, {{consumo_l1_solar.13}}, {{consumo_l1_solar.14}}, {{consumo_l1_solar.15}}, {{consumo_l1_solar.16}}, {{consumo_l1_solar.17}}, {{consumo_l1_solar.18}}, {{consumo_l1_solar.19}}, {{consumo_l1_solar.20}}, {{consumo_l1_solar.21}}, {{consumo_l1_solar.22}}, {{consumo_l1_solar.23}}];
+                                const yValueshg2 = [{{consumo_l2_solar.0}}, {{consumo_l2_solar.1}},{{consumo_l2_solar.2}}, {{consumo_l2_solar.3}}, {{consumo_l2_solar.4}}, {{consumo_l2_solar.5}}, {{consumo_l2_solar.6}}, {{consumo_l2_solar.7}}, {{consumo_l2_solar.8}}, {{consumo_l2_solar.9}}, {{consumo_l2_solar.10}}, {{consumo_l2_solar.11}}, {{consumo_l2_solar.12}}, {{consumo_l2_solar.13}}, {{consumo_l2_solar.14}}, {{consumo_l2_solar.15}}, {{consumo_l2_solar.16}}, {{consumo_l2_solar.17}}, {{consumo_l2_solar.18}}, {{consumo_l2_solar.19}}, {{consumo_l2_solar.20}}, {{consumo_l2_solar.21}}, {{consumo_l2_solar.22}}, {{consumo_l2_solar.23}}];
+                                const yValueshc1 = [{{consumo_l1_prov.0}}, {{consumo_l1_prov.1}},{{consumo_l1_prov.2}}, {{consumo_l1_prov.3}}, {{consumo_l1_prov.4}}, {{consumo_l1_prov.5}}, {{consumo_l1_prov.6}}, {{consumo_l1_prov.7}}, {{consumo_l1_prov.8}}, {{consumo_l1_prov.9}}, {{consumo_l1_prov.10}}, {{consumo_l1_prov.11}}, {{consumo_l1_prov.12}}, {{consumo_l1_prov.13}}, {{consumo_l1_prov.14}}, {{consumo_l1_prov.15}}, {{consumo_l1_prov.16}}, {{consumo_l1_prov.17}}, {{consumo_l1_prov.18}}, {{consumo_l1_prov.19}}, {{consumo_l1_prov.20}}, {{consumo_l1_prov.21}}, {{consumo_l1_prov.22}}, {{consumo_l1_prov.23}}];
+                                const yValueshc2 = [{{consumo_l2_prov.0}}, {{consumo_l2_prov.1}},{{consumo_l2_prov.2}}, {{consumo_l2_prov.3}}, {{consumo_l2_prov.4}}, {{consumo_l2_prov.5}}, {{consumo_l2_prov.6}}, {{consumo_l2_prov.7}}, {{consumo_l2_prov.8}}, {{consumo_l2_prov.9}}, {{consumo_l2_prov.10}}, {{consumo_l2_prov.11}}, {{consumo_l2_prov.12}}, {{consumo_l2_prov.13}}, {{consumo_l2_prov.14}}, {{consumo_l2_prov.15}}, {{consumo_l2_prov.16}}, {{consumo_l2_prov.17}}, {{consumo_l2_prov.18}}, {{consumo_l2_prov.19}}, {{consumo_l2_prov.20}}, {{consumo_l2_prov.21}}, {{consumo_l2_prov.22}}, {{consumo_l2_prov.23}}];
+                                const xValues = ["{{dias.0}}", "{{dias.1}}", "{{dias.2}}", "{{dias.3}}", "{{dias.4}}", "{{dias.5}}", "{{dias.6}}"];
+                                const yValuesg = [{{semanasolar.0}},{{semanasolar.1}},{{semanasolar.2}},{{semanasolar.3}},{{semanasolar.4}},{{semanasolar.5}},{{semanasolar.6}}];
+                                const yValuesc = [{{semanaprov.0}},{{semanaprov.1}},{{semanaprov.2}},{{semanaprov.3}},{{semanaprov.4}},{{semanaprov.5}},{{semanaprov.6}}];
+                                const yAnualg = [{{consumo_ahorrado_meses.0}},{{consumo_ahorrado_meses.1}},{{consumo_ahorrado_meses.2}},{{consumo_ahorrado_meses.3}},{{consumo_ahorrado_meses.4}},{{consumo_ahorrado_meses.5}},{{consumo_ahorrado_meses.6}},{{consumo_ahorrado_meses.7}},{{consumo_ahorrado_meses.8}},{{consumo_ahorrado_meses.9}},{{consumo_ahorrado_meses.10}},{{consumo_ahorrado_meses.11}}];
+                                const yAnualc = [{{consumo_prov_meses.0}},{{consumo_prov_meses.1}},{{consumo_prov_meses.2}},{{consumo_prov_meses.3}},{{consumo_prov_meses.4}},{{consumo_prov_meses.5}},{{consumo_prov_meses.6}},{{consumo_prov_meses.7}},{{consumo_prov_meses.8}},{{consumo_prov_meses.9}},{{consumo_prov_meses.10}},{{consumo_prov_meses.11}}];
+                                //const yValueshg1 = [150,130,110,105,80,45,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+                                //const yValueshg2 = [130,110,90,75,30,10,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+                                //const yValueshc1 = [500,510,499,501,510,520,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+                                //const yValueshc2 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+                                //const xValues = ["3/11","4/11","5/11","6/11","7/11","8/11","9/11"];
+                                //const yValuesg = [0,0,200,250,230,190,150];
+                                //const yValuesc = [0,0,500,450,460,400,510];
+                                //const yAnualg = [0,0,0,0,0,0,0,0,0,200,140,0];
+                                //const yAnualc = [0,0,0,0,0,0,0,0,0,600,460,0];
+                                const xBat = ["Consumo en porcentaje"];
+                                const xAnual = ["Enero", "Febrero", "Marzo", "Mayo", "Abril", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                                const xHoras = ['0 AM', '1 AM', '2 AM', '3 AM', '4 AM', '5 AM', '6 AM', '7 AM', '8 AM', '9 AM', '10 AM', '11 AM', '12 AM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM', '8 PM', '9 PM', '10 PM', '11 PM'];
+                                new Chart("ahorro", {
+                                  type: "line",
+                                  data: {
+                                    labels: xValues,
+                                    datasets: [{
+                                      label: "W/h proveedor",
+                                      fill: false,
+                                      pointRadius: 1,
+                                      borderColor: "rgba(255,0,0,0.5)",
+                                      data: yValuesc
+                                    },
+                                    {
+                                      label: "W/h solares",
+                                      fill: false,
+                                      pointRadius: 1,
+                                      borderColor: "rgba(178,222,39,0.8)",
+                                      data: yValuesg
+                                    }]
+                                  },    
+                                  options: {
+                                    legend: {
+                                      display: true, 
+                                    },
+                                    title: {
+                                      display: true,
+                                      text: "Ahorro",
+                                      fontSize: 16
+                                    }
+                                  }
+                                });
+                                new Chart("horas", {
+                                    type: "line",
+                                    data: {
+                                      labels: xHoras,
+                                      datasets: [{
+                                        label: "W/h proveedor linea 1",
+                                        fill: false,
+                                        pointRadius: 1,
+                                        borderColor: "rgba(255,0,0,0.5)",
+                                        data: yValueshc1
+                                      },
+                                      {
+                                        label: "W/h proveedor linea 2",
+                                        fill: false,
+                                        pointRadius: 1,
+                                        borderColor: "rgba(255,100,0,0.5)",
+                                        data: yValueshc2
+                                      },
+                                      {
+                                        label: "W/h solares linea 1",
+                                        fill: false,
+                                        pointRadius: 1,
+                                        borderColor: "rgba(178,222,39,0.8)",
+                                        data: yValueshg1
+                                      }, 
+                                      {
+                                        label: "W/h solares linea 2",
+                                        fill: false,
+                                        pointRadius: 1,
+                                        borderColor: "rgba(178,222,90,0.8)",
+                                        data: yValueshg2
+                                      }]
+                                    },    
+                                    options: {
+                                      legend: {
+                                        display: true, 
+                                      },
+                                      title: {
+                                        display: true,
+                                        text: "Hoy",
+                                        fontSize: 16
+                                      }
+                                    }
+                                  });
+                                //new Chart("bateria", {
+                                  {% comment %} type: "bar",
+                                  data: {
+                                    labels: xBat,
+                                    datasets: [{
+                                      label: "Consumo utilizado",
+                                      backgroundColor: "rgba(255,0,0,0.5)",
+                                      data: [17.8]
+                                    },
+                                    {
+                                      label: "Consumo generado",
+                                      backgroundColor: "rgba(178,222,39,0.8)",
+                                      data: [15]
+                                    }]
+                                  },    
+                                  options: {
+                                    indexAxis: 'y',
+                                    legend: {
+                                      display: true, 
+                                    },
+                                    title: {
+                                      display: true,
+                                      text: "Porcentaje bateria",
+                                      fontSize: 16
+                                    }
+                                  }
+                                }); {% endcomment %}
+                                new Chart("anual", {
+                                  type: "bar",
+                                  data: {
+                                    labels: xAnual,
+                                    datasets: [{
+                                      label: "Consumo en KW/h",
+                                      backgroundColor: "rgba(255,0,0,0.5)",
+                                      data: yAnualc
+                                    },
+                                    {
+                                      label: "Consumo ahorrado en KW/h",
+                                      backgroundColor: "rgba(178,222,39,0.8)",
+                                      data: yAnualg
+                                    }
+                                    ]
+                                  },
+                                  options: {
+                                    legend: {
+                                      display: true, 
+                                    },
+                                    title: {
+                                      display: true,
+                                      text: "Ahorro anual",
+                                      fontSize: 16
+                                    }
+                                  }
+                                })
+                                function actual(){
+                                fetch('/user/tiempo-real/').then(
+                                (resp) => resp.json()).then(function(data) {
+                                    let volt = data['voltaje'] || 'No hay datos';
+                                    let con1 = data['consumo_l1'] || 'No hay datos';
+                                    let con2 = data['consumo_l2'] || 'No hay datos';
+                                    if (volt != 'No hay datos'){
+                                        volt + ' V'
+                                    }
+                                    if (con1 != 'No hay datos'){
+                                        con1 + ' W'
+                                    }
+                                    if (con2 != 'No hay datos'){
+                                        con2 + ' W'
+                                    }
+                                    document.getElementById('voltaje').innerHTML = volt;
+                                    document.getElementById('consumo_actual_l1').innerHTML = con1;
+                                    document.getElementById('consumo_actual_l2').innerHTML = con2;
+                                    if (data['solar'] == true){
+                                        document.getElementById('sistema_solar').innerHTML = 'Activado';
+                                    }
+                                    else {
+                                        document.getElementById('sistema_solar').innerHTML = 'Desactivado';
+                                    };
+                                })
+                                }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- About End -->
+
+        
+        <!-- Contact Start -->
+        <div class="container-xxl py-5" id="contact">
+            <div class="container py-5 px-lg-5">
+                <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                    <h5 class="text-primary-gradient fw-medium"></h5>
+                    <h1 class="mb-5">Estemos en contacto!</h1>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-9">
+                        <div class="wow fadeInUp" data-wow-delay="0.3s">
+                            <p class="text-center mb-4">Si tenes alguna consulta, necesitas un service o un chequeo del sistema, no dudes en contactarnos!</p>
+                            <form>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="name" placeholder="Your Name">
+                                            <label for="name">Nombre</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="email" class="form-control" id="email" placeholder="Your Email">
+                                            <label for="email">Mail</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="subject" placeholder="Subject">
+                                            <label for="subject">Sujeto</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <textarea class="form-control" placeholder="Leave a message here" id="message" style="height: 150px"></textarea>
+                                            <label for="message">Mensaje</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <button class="btn btn-primary-gradient py-sm-3 px-4 px-sm-5 rounded-pill mt-3" type="submit">Enviar mensaje</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Contact End -->
+        
+
+        <!-- Footer Start -->
+        <div class="container-fluid bg-primary text-light footer wow fadeIn" data-wow-delay="0.1s">
+            <div class="container py-5 px-lg-5">
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-8">
+                        <h4 class="text-white mb-4">Contacto directo</h4>
+                        <p><i class="fa fa-phone-alt me-3"></i>+53 9 11 3545-7031</p>
+                        <p><i class="fa fa-envelope me-3"></i>info@solarlink.com</p>
+                        <div class="d-flex pt-2">
+                            <a class="btn btn-outline-light btn-social" target= "_blank" href="https://instagram.com/solarlink.ar/"><i class="fab fa-instagram"></i></a>
+                            <a class="btn btn-outline-light btn-social" target= "_blank" href="https://linkedin.com/solarlink/"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <h4 class="text-white mb-4">Links</h4>
+                        <a class="btn btn-link" href="{% url 'index' %}">Nosotros</a>
+                        <a class="btn btn-link" href="mailto:info@solarlink.ar">Contactenos</a>
+                    </div>
+                </div>
+            </div>
+            <div class="container px-lg-5">
+                <div class="copyright">
+                    <div class="row">
+                        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                            &copy; <a class="border-bottom" href="#">Solarlink</a>, All Right Reserved. 
+							
+							<!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+							Designed By <a class="border-bottom" target="_blank" href="https://instagram.com/testa_45">Maximiliano Testa</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-lg-square back-to-top pt-2"><i class="bi bi-arrow-up text-white"></i></a>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'user_mngmnt/lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'user_mngmnt/lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'user_mngmnt/lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'user_mngmnt/lib/counterup/counterup.min.js' %}"></script>
+    <script src="{% static 'user_mngmnt/lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'user_mngmnt/js/main.js' %}"></script>
+</body>
+
+</html>

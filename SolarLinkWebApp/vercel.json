@@ -1,0 +1,15 @@
+{
+    "builds": [
+      {
+        "src": "SolarLinkWebApp/asgi.py",
+        "use": "@vercel/python"
+      
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "SolarLinkWebApp/asgi.py"
+      }
+    ]
+}

@@ -1,0 +1,67 @@
+{% extends 'form.html' %}
+
+{% block head %}
+    <title>Registro | Solar Link</title>
+{% endblock %}
+
+{% block titulo %}
+    Crear cuenta
+{% endblock %}
+
+{% block post %}{% url 'signup' %}{% endblock %}
+
+{% block campos %}
+    <div class="wrap-input100">
+        {{form.first_name}}
+        <span class="focus-input100" data-placeholder="Nombres"></span>
+    </div>
+
+    <div class="wrap-input100">
+        {{form.last_name}}
+        <span class="focus-input100" data-placeholder="Apellidos"></span>
+    </div>
+
+    <div class="wrap-input100">
+        {{form.email}}
+        <span class="focus-input100" data-placeholder="Email"></span>
+    </div>
+
+    <div class="wrap-input100">
+        {{form.username}}
+        <span class="focus-input100" data-placeholder="Username"></span>
+    </div>
+
+    <div class="wrap-input100">
+        {{form.password1}}
+        <span class="focus-input100" data-placeholder="Contraseña"></span>
+    </div>
+
+    <div class="wrap-input100">
+        {{form.password2}}
+        <span class="focus-input100" data-placeholder="Confirmar contraseña"></span>
+    </div>
+    {{ error }}
+
+    <input id="tz" type="hidden" name="tz_offset" value="" />
+
+    <script>
+        let offset = -(new Date().getTimezoneOffset()) / 60
+        document.getElementById("tz").value = offset.toString(); 
+    </script>
+
+    <div class="container-login100-form-btn">
+        <div class="wrap-login100-form-btn">
+            <div class="login100-form-bgbtn"></div>
+            <button class="login100-form-btn" type="submit">
+                Registrarse
+            </button>
+        </div>
+    </div>
+
+    <div class="text-center p-t-90">
+        <a class="txt2" href="{% url 'login' %}">
+            Ya tengo cuenta
+        </a>
+    </div>
+
+{% endblock %}
