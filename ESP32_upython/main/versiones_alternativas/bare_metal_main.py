@@ -5,18 +5,6 @@ from lcd_api import LcdApi
 from i2c_lcd import I2cLcd
 import urequests as requests
 
-p2 = Pin(2, Pin.OUT)
-#pin_l1 = Pin(19, Pin.OUT)
-#pin_l2 = Pin(18, Pin.OUT)
-#pin_cruce = Pin(13, Pin.IN
-
-'''wlan = network.WLAN(network.STA_IF) #network init
-wlan.active(True)
-while not wlan.isconnected():
-    try:
-        wlan.connect('Red Alumnos', '') #network connection
-    except:
-        pass'''
 
 #
 #
@@ -78,34 +66,3 @@ while 1:
         elif consumo_l1 < trigger and consumo_l2 > trigger:
             solarlink.conmutador(l1=True, l2=False)
 
-'''  
-#############
-#### WIP ####
-#############
-'''
-
-##Permite bloquear la ejecución de otras partes del código mientras se está ejecutando el thread seleccionado.
-##Funciona como un semáforo binario.
-'''
-def threadCommWeb():
-    test = 0
-    while True:
-        
-        test = True
-        while test:
-            uart2.write("maxi puto")
-            rawdata = uart2.read() #nefastius almacena la información enviada
-            data = json.loads(rawdata)
-            voltaje = data["volt_actual"]
-            consumo = data["prom_hour"]
-            test = 0
-            return voltaje, consumo
-
-
-_thread.start_new_thread(threadCommWeb, ())
-
-'''
-
-#############
-#### WIP ####
-#############

@@ -83,42 +83,6 @@ class Solarlink(object):
         self.l1 = True
         self.l2 = True
         
-        #################################### USUARIO Y CONTRASEÑA #######################################
-
-        self.username = "helyivan"
-        self.password = "12345678"
-        self.url = "http://192.168.111.250:8080"
-
-        #################################### RTC ######################################################
-        #ntptime.settime()
-        
-        self.rtc = RTC()
-        #ntptime.settime()
-        #tm = time.localtime(time.mktime(time.localtime()) -3*3600)
-        #tm = tm[0:3] + (0,) + tm[3:6] + (0,)
-        #self.rtc.datetime(tm)
-        self.rtc.datetime((2023, 11, 8, 2, 7, 59, 0, 0))
-        print(self.rtc.datetime())
-
-        #################################### POSTEO ######################################################
-
-        self.acumulacion_voltaje_red = 0
-        self.acumulacion_consumo_red = 0
-        self.acumulacion_consumo_solar = 0
-
-        self.acumulacion_consumo_l1_solar = 0
-        self.acumulacion_consumo_l1_proveedor = 0
-
-        self.acumulacion_consumo_l2_solar = 0
-        self.acumulacion_consumo_l2_proveedor = 0
-
-        self.indice_mediciones = 0
-
-        self.hora_inicial = self.rtc.datetime()[4]
-        
-        self.timer1 = Timer(1).init(period=10000, mode=Timer.PERIODIC, callback=self.callback_posteo)
-        
-        self.tiempo_real = False
 
 
     #####################################################################################################
@@ -133,23 +97,17 @@ class Solarlink(object):
     def callback_fin_mediciones(self, t):
         self.fin_mediciones = True
     
-    ##################################### CALLBACK TIMER1 ###############################################
-        
-    def callback_posteo(self, t):
-        self.tiempo_real = True
-        
     ##################################### CALLBACK CONMUT ###############################################
     
     def callback_conmutacion(self, pin):
         if self.pedido_conmutacion:
             # espero 10ms, tiempo de conmutacion del relé
-            #time.sleep_ms(10)
+            time.sleep_ms(10)
             # switcheo pines al estado elegido
             self.pin_l1(self.l1)
             self.pin_l2(self.l2)
             self.pedido_conmutacion = False
             
-
 
     ############################### CORRIENTE ADC EN DIFERENCIAL ########################################
 
@@ -176,7 +134,7 @@ class Solarlink(object):
     def medicion_default_segundo(self):
 
         # timer 0 init, timer de fin de mediciones
-        self.timer0 = Timer(0).init(period=100, mode=Timer.ONE_SHOT, callback=self.callback_fin_mediciones)
+        self.timer0 = Timer(0).init(period=1000, mode=Timer.ONE_SHOT, callback=self.callback_fin_mediciones)
 
         # pico de corriente en ambas lineas (l1, l2) en el tiempo de medicion
         pico_corriente_l1 = 0
@@ -226,30 +184,6 @@ class Solarlink(object):
                 pico_corriente_l2 = 0
                 suma_voltaje = 0
                 index = 0
-                
-                # acumulo voltaje
-                self.acumulacion_voltaje_red += voltaje
-
-                # acumulo l1
-                if self.l1:
-                    self.acumulacion_consumo_l1_solar += consumo_l1
-                    self.acumulacion_consumo_solar += consumo_l1
-                else:
-                    self.acumulacion_consumo_l1_proveedor += consumo_l1
-                    self.acumulacion_consumo_red += consumo_l1
-                # acumulo l2
-                if self.l2:
-                    self.acumulacion_consumo_l2_solar += consumo_l2
-                    self.acumulacion_consumo_solar += consumo_l2
-
-                else:
-                    self.acumulacion_consumo_l2_proveedor += consumo_l2
-                    self.acumulacion_consumo_red += consumo_l2
-                
-
-                self.indice_mediciones += 1
-
-
 
                 # reinicio la variable de callback
                 self.fin_mediciones = False
@@ -260,11 +194,6 @@ class Solarlink(object):
     
     def conmutador(self, l1, l2):
         self.pedido_conmutacion = True
-        #self.l1 = l1
-        #self.l2 = l2
-    
-    
-
-
-
+        self.l1 = l1
+        self.l2 = l2
     
