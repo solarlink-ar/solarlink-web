@@ -1,4 +1,3 @@
-
 def do_connect():
     import network
     wlan = network.WLAN(network.STA_IF)
