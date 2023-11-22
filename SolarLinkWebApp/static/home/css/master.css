@@ -27,7 +27,6 @@ body {
     grid-template-rows: 100px 1fr;
     color: #fff;
 }
-
 .hero::before {
     content: "";
     position: absolute;

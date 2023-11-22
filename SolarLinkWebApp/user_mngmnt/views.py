@@ -11,9 +11,7 @@ from django.contrib import auth
 from django.views import View
 from bs4 import BeautifulSoup
 from django.core.mail import EmailMessage
-from asgiref.sync import sync_to_async
 from django.utils import timezone
-
 from . import models
 import datetime, requests, secrets, random, asyncio, json
 import dateutil.relativedelta
