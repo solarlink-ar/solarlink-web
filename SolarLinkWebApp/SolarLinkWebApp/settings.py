@@ -27,7 +27,7 @@ SECRET_KEY = 'lku#p+_&8ucbkd(jlc-48mx@pgf2r42g8eqlvm0148)(5xlovr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-DEBUG = True
+
 
 # páginas host permitidas
 ALLOWED_HOSTS = ['*']

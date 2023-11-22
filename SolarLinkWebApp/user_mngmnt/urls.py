@@ -48,7 +48,7 @@ urlpatterns = [
     # USERPAGE #
     path("datos/", login_required(views.UserPage.as_view()), name="userpage"),
     # TESTS #
-    path("creador/", views.creador, name="creador"),
+    #path("creador/", views.creador, name="creador"),
     path("sender/", views.sender, name="sender"),
     # VISTAS ADAPTADAS DEL CRON PQ CELERY NO ANDA EN VERCEL #
     path("token-clean/", views.token_clean, name="token_clean")
