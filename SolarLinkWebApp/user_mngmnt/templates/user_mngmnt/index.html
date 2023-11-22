@@ -239,18 +239,11 @@
                                 const yValuesc = [{{semanaprov.0}},{{semanaprov.1}},{{semanaprov.2}},{{semanaprov.3}},{{semanaprov.4}},{{semanaprov.5}},{{semanaprov.6}}];
                                 const yAnualg = [{{consumo_ahorrado_meses.0}},{{consumo_ahorrado_meses.1}},{{consumo_ahorrado_meses.2}},{{consumo_ahorrado_meses.3}},{{consumo_ahorrado_meses.4}},{{consumo_ahorrado_meses.5}},{{consumo_ahorrado_meses.6}},{{consumo_ahorrado_meses.7}},{{consumo_ahorrado_meses.8}},{{consumo_ahorrado_meses.9}},{{consumo_ahorrado_meses.10}},{{consumo_ahorrado_meses.11}}];
                                 const yAnualc = [{{consumo_prov_meses.0}},{{consumo_prov_meses.1}},{{consumo_prov_meses.2}},{{consumo_prov_meses.3}},{{consumo_prov_meses.4}},{{consumo_prov_meses.5}},{{consumo_prov_meses.6}},{{consumo_prov_meses.7}},{{consumo_prov_meses.8}},{{consumo_prov_meses.9}},{{consumo_prov_meses.10}},{{consumo_prov_meses.11}}];
-                                //const yValueshg1 = [150,130,110,105,80,45,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-                                //const yValueshg2 = [130,110,90,75,30,10,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-                                //const yValueshc1 = [500,510,499,501,510,520,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-                                //const yValueshc2 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-                                //const xValues = ["3/11","4/11","5/11","6/11","7/11","8/11","9/11"];
-                                //const yValuesg = [0,0,200,250,230,190,150];
-                                //const yValuesc = [0,0,500,450,460,400,510];
-                                //const yAnualg = [0,0,0,0,0,0,0,0,0,200,140,0];
-                                //const yAnualc = [0,0,0,0,0,0,0,0,0,600,460,0];
+
                                 const xBat = ["Consumo en porcentaje"];
                                 const xAnual = ["Enero", "Febrero", "Marzo", "Mayo", "Abril", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
                                 const xHoras = ['0 AM', '1 AM', '2 AM', '3 AM', '4 AM', '5 AM', '6 AM', '7 AM', '8 AM', '9 AM', '10 AM', '11 AM', '12 AM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM', '8 PM', '9 PM', '10 PM', '11 PM'];
+                                {% if datos_7dias %}
                                 new Chart("ahorro", {
                                   type: "line",
                                   data: {
@@ -281,6 +274,8 @@
                                     }
                                   }
                                 });
+                                {% endif %}
+                                {% if datos_hoy %}
                                 new Chart("horas", {
                                     type: "line",
                                     data: {
@@ -325,6 +320,7 @@
                                       }
                                     }
                                   });
+                                {% endif %}
                                 //new Chart("bateria", {
                                   {% comment %} type: "bar",
                                   data: {
@@ -352,6 +348,7 @@
                                     }
                                   }
                                 }); {% endcomment %}
+                                {% if datos_anual %}
                                 new Chart("anual", {
                                   type: "bar",
                                   data: {
@@ -379,6 +376,7 @@
                                     }
                                   }
                                 })
+                                {% endif %}
                                 function actual(){
                                 fetch('/user/tiempo-real/').then(
                                 (resp) => resp.json()).then(function(data) {
