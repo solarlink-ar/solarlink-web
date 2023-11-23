@@ -11,8 +11,11 @@
 
 ### Integrantes:
 - Cenyko, Iván Ezequiel
+- Dias, Lara Paloma
 - Inza Fior, Mateo
 - Palmieri Hise, Agustín
 - Testa, Maximiliano Nicolás
 
-### <a  target="_blank" href="https://www.linktr.ee/solarlink.ar">¡Contactanos!</a>
+### <a  target="_blank" href="https://www.linktr.ee/solarlink.ar">¡Econtranos en LinkedIn!</a>
+
+### <a  target="_blank" href="https://www.linktr.ee/solarlink.ar">¡Seguinos en Instagram!</a>
