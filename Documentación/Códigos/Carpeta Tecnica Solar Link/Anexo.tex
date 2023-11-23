@@ -1,0 +1,927 @@
+\subsection{Código MPPT}
+\begin{listing}[H]
+\begin{minted}{c}
+float med_volt(float value){
+    float prom = 0;
+    for (int i = 0; i < 10; i++){
+        float volt = BATTERY_ADC_RATIO * adc_read() * 3.3 / (1 << 12);
+        prom = prom + volt;
+        }
+    return prom/10;
+}    
+\end{minted}
+\caption{Como el código mide el voltaje en el ADC}
+\label{Listing 1}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{c}
+    adc_select_input(ADC_CHANNEL_BATTERY);
+    battery_voltage = med_volt(x);
+    sprintf(str, "%.2f", battery_voltage);
+    lcd_set_cursor(2, 4);
+    lcd_string(str);
+\end{minted}
+\caption{Lectura ADC}
+\label{Listing 2}
+\end{listing}
+
+
+\begin{listing}[H]
+\begin{minted}{c}
+if (charging_mode == BULK_MODE){
+    if (battery_voltage > BULK_MAX_BATTERY_VOLTAGE) {
+        // Cambio modo de carga en caso de que corriente baje del umbral
+        charging_mode = ABSORTION_MODE;
+    }
+    else {
+        lcd_set_cursor(1, 11);
+        lcd_string("  BULK   ");
+    }
+}
+\end{minted}
+\caption{Lógica de cambio BULK}
+\label{Listing 3}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{c}
+if (charging_mode == BULK_MODE) {
+    float error = (BULK_MAX_CURRENT_VOLTAGE - battery_current) * 50;
+    if (battery_current > BULK_MAX_CURRENT_VOLTAGE) {
+        pwm_level = pwm_level - (-1 * error * INTEGRAL_CONSTANT);
+    }
+    else {
+        pwm_level += 1 * error * INTEGRAL_CONSTANT;
+    }
+    // Verifico que no exceda los limites
+    pwm_level = saturador(PWM_WRAP, pwm_level);
+    // Ajusto PWM
+    pwm_set_gpio_level(pwm, pwm_level);
+}
+\end{minted}
+\caption{Lógica del PWM en modo BULK}
+\label{Listing 4}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{c}
+inline static uint16_t saturador(uint16_t wrap, int16_t level) {
+    if(level > PWM_WRAP) {
+        level = PWM_WRAP;
+        return PWM_WRAP;
+    }
+    else if(level < 0) {
+        level = 0;
+        return 0;
+    }
+    return level;
+}
+\end{minted}
+\caption{Saturador}
+\label{Listing 5}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{c}
+    lcd_set_cursor(3, 14);
+    sprintf(str, "%d", (int) (pwm_level * 0.0264061262));
+    lcd_string(str);
+\end{minted}
+\caption{PWM a LCD}
+\label{Listing 6}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{c}
+int64_t alarm_callback(alarm_id_t id, void *user_data) {
+    if(cont_minute < 60){
+        prom_minute += (battery_in * battery_current);
+        cont_minute += 1;
+    }
+    else{
+        prom_hour += (prom_minute / cont_minute);
+        cont_hour += 1;
+        cont_minute = 0;
+    }
+    return 0;
+}
+add_alarm_in_ms(-1000, alarm_callback, NULL, false);
+\end{minted}
+\caption{Interrupción cada 1 segundo}
+\label{Listing 7}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{c}
+void on_uart_rx() {
+    while (uart_is_readable(UART_ID)) {
+        if (uart_is_writable(UART_ID)) {
+            real_prom = prom_hour / cont_hour;
+            sprintf(json, "{\"prom_hour\":%f,\"volt_actual\":%f}",
+            real_prom, battery_voltage);
+            uart_putc(UART_ID, *json);
+        }
+    }
+}
+\end{minted}
+\caption{Interrupción UART}
+\label{Listing 8}
+\end{listing}
+
+\subsection{Código ESP32}
+
+\begin{listing}[H]
+\begin{minted}{python}
+
+class Solarlink(object):
+
+    def __init__(self):
+
+        # direccion i2c ADC externo
+        self.i2c_corriente_dir = 72
+        # scl
+        self.scl = 22
+        # sda
+        self.sda = 21
+        # freq i2c
+        self.freq = 400000
+        # gain sensor
+        self.gain = 0
+        # pendiente de sensor de corriente
+        self.pendiente_corriente = 10.1288571642
+        # pin adc sensor voltaje
+        self.adc_pin = 33
+        # atenuacion ADC
+        self.atten = ADC.ATTN_2_5DB
+        # referencia sensor voltaje
+        self.ref = 221 / 0.5150402
+
+\end{minted}
+\caption{Main parte 1}
+\label{main-1}
+\end{listing}
+
+
+\begin{listing}[H]
+\begin{minted}{python}
+        # i2c init
+        self.i2c = I2C(1, scl=Pin(self.scl), 
+                          sda=Pin(self.sda), 
+                          freq=self.freq)
+        # ADC externo init
+        self.ads1115 = ads1115.ADS1115(self.i2c,
+                                       self.i2c_corriente_dir,
+                                       self.gain)
+        # ADC en el pin init
+        self.adc = ADC(Pin(self.adc_pin, Pin.IN))
+        # atenuacion ADC
+        self.adc.atten(self.atten)
+        # display init
+        self.lcd = I2cLcd(self.i2c, 0x27, 4, 20)
+
+        # timer 0
+        self.timer0 = None
+        # trigger fin mediciones
+        self.fin_mediciones = False
+
+        # medicion final
+        self.medicion = None
+}
+\end{minted}
+\caption{Main parte 2}
+\label{main-2}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{python}
+def callback_fin_mediciones(self, t):
+        self.fin_mediciones = True
+\end{minted}
+\caption{Clase callback\_fin\_mediciones() la librería SolarLink}
+\label{callback-mediciones}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{python}
+    # medicion de sensor de corriente en el instante
+    def corriente_dif_read(self, pin_a, pin_b):
+        # medicion sensor de corriente con ADC externo
+        medicion = self.ads1115.raw_to_v(self.ads1115.read(7, pin_a, pin_b))
+        # traspaso a RMS
+        corriente = self.pendiente_corriente * medicion / math.sqrt(2)
+
+        return corriente
+\end{minted}
+\caption{Clase corriente\_dif\_read() de la librería SolarLink}
+\label{clase corriente}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{python}
+    # medicion de sensor de voltaje en el instante
+    def voltaje_read(self):
+        # mido sensor de voltaje en el pin ADC, valor en RMS
+        voltaje = self.adc.read_uv() / 1000000 * self.ref
+
+        return voltaje
+\end{minted}
+\caption{Clase voltaje\_read() de la librería SolarLink}
+\label{clase voltaje}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{python}
+       def medicion_default_segundo(self):
+        # timer 0 init, timer de fin de mediciones
+        self.timer0 = Timer(0).init(period=1000, mode=Timer.ONE_SHOT, 
+                                    callback=self.callback_fin_mediciones) 
+
+
+        # pico de corriente en ambas lineas (l1, l2) en el tiempo de medicion
+        pico_corriente_l2 = 0
+        suma_voltaje = 0 # suma de valores de voltaje para promediar
+        index = 0         # index para promediar
+       
+        while True:
+            suma_voltaje += self.voltaje_read()
+            index += 1
+            # mido sensores de corriente
+            corriente_actual_l2 = self.corriente_dif_read(0, 1)
+
+            # si la corriente medida es mas alta que el pico previo, sobreescribo
+            if corriente_actual_l2 > pico_corriente_l2:
+                pico_corriente_l2 = corriente_actual_l2
+                
+            # si corta el timer
+            if self.fin_mediciones:
+                # saco promedio de voltaje
+                voltaje = suma_voltaje / index
+                # saco corriente linea 1 y 2
+                corriente_l2 = pico_corriente_l2
+
+                # calculo consumo linea 1 y 2
+                consumo_l2 = voltaje * corriente_l2
+               
+                # guardo en el atributo las mediciones
+                self.medicion = {"voltaje": int(voltaje),
+                                "corriente_l2": round(corriente_l2, 2),
+                                "consumo_l2": int(consumo_l2)}
+                # reinicio variables                
+                pico_corriente_l2 = 0
+                suma_voltaje = 0
+                index = 0
+                # reinicio la variable de callback
+                self.fin_mediciones = False
+                # rompo el bucle y retorno
+                return self.medicion
+\end{minted}
+\caption{Clase medicion\_default\_segundo(), ejemplo midiendo linea 2}
+\label{medicion default segundo}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{python}
+while 1:
+    valores = solarlink.medicion_default_segundo()
+
+    voltaje = valores["voltaje"]
+    corriente_l1 = valores["corriente_l1"]
+    corriente_l2 = valores["corriente_l2"]
+    consumo_l1 = valores["consumo_l1"]
+    consumo_l2 = valores["consumo_l2"]
+
+    p_l1.off()
+    p_l2.off()
+   
+    trigger = 100
+
+    if consumo_l1 + consumo_l2 < trigger:
+        p_l1.on()
+        p_l2.on()
+    else:
+        if consumo_l1 < trigger and consumo_l2 < trigger:
+            if consumo_l1 > consumo_l2:
+                p_l1.on()
+                p_l2.off()
+            else:
+                p_l1.off()
+                p_l2.on()
+        if consumo_l1 > trigger and consumo_l2 > trigger:
+            p_l1.off()
+            p_l2.off()
+        elif consumo_l1 > trigger and consumo_l2 < trigger:
+            p_l1.off()
+            p_l2.on()
+        elif consumo_l1 < trigger and consumo_l2 > trigger:
+            p_l1.on()
+            p_l2.off()
+\end{minted}
+\caption{Bucle principal del main.py}
+\label{bucle main}
+\end{listing}
+
+\subsection{Código web}
+
+
+\begin{listing}[H]
+\begin{minted}{python}
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    # path de la app home
+    path('', include("home.urls")),
+    # path de la app user_mngmnt
+    path('user/', include('user_mngmnt.urls'))
+]
+\end{minted}
+\caption{urls.py raíz}
+\label{urls.py_raiz}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{python}
+# páginas host permitidas
+ALLOWED_HOSTS = ['.vercel.app', 'solarlink.ar']
+# Application definition
+INSTALLED_APPS = [
+    # apps
+    'home',
+    'user_mngmnt',
+    # modulo django-crontab
+    "django_crontab",
+    # modulo django-compressor
+    "compressor"]
+MIDDLEWARE = [
+    # middleware de white noise
+    'whitenoise.middleware.WhiteNoiseMiddleware']
+    
+# Static files (CSS, JavaScript, Images)
+STATIC_ROOT = "static/"
+STATIC_URL = "static/"
+
+# django-compress configuracion
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),)
+    
+# buscadores de staticfiles
+STATICFILES_FINDERS = (
+    # django-compressor
+    'compressor.finders.CompressorFinder',)
+# default URL para redireccionar cuando no está logueado
+LOGIN_URL = "login"
+
+# CRONTAB
+CRONJOBS = [
+    # todos los dias a 00:45
+    ('45 0 * * *', 'user_mngmnt.cron.ordenador'),
+    # cada 10 mins
+    ('*/10 * * * *', 'user_mngmnt.cron.token_clean')]
+    
+# EMAIL
+EMAIL_HOST = 'smtppro.zoho.com'
+EMAIL_HOST_USER = 'no-reply@solarlink.ar'
+# nombre custom
+DEFAULT_FROM_EMAIL= 'Solar Link Accounts<no-reply@solarlink.ar>'
+\end{minted}
+\caption{Configuraciones especiales para el proyecto en el settings.py}
+\label{settings.py}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{django}
+{% comment %}
+- HEAD, cargo los static y el compresor -
+{% endcomment %}
+{% load static %}
+{% load compress static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<title>Home</title>
+<link rel="stylesheet" href="{% static 'home/css/normalice.css' %}">
+{% comment %}
+    Compresor para poder usar static directions en el master.scss
+{% endcomment %}
+{% compress css %}
+<link rel="stylesheet" href="{% static "home/css/master.scss" %}" />
+{% endcompress %}
+{% block head %}
+{% endblock %}
+</head>
+{% comment %}
+-BARRA SUPERIOR- Si el usuario está logueado
+{% endcomment %}
+{% if request.user.is_authenticated %}
+<li class="nav__items">
+    <p class="nav__links"> ¡Hola, {{ request.user.first_name }}!</p>
+</li>
+<li class="nav__items">
+    <a href="{% url 'index2' %}"class="nav__links">Mis datos</a>
+</li>
+<li class="nav__items">
+    <a href="{% url 'logout' %}"class="nav__links">Cerrar sesión</a>
+{% else %}
+<li class="nav__items">
+    <a href="{% url 'login' %}"class="nav__links">Iniciar sesión</a>
+</li>
+<li class="nav__items">
+    <a href="{% url 'signup' %}"class="nav__links">Registrarse</a>
+</li>
+{% endif %}
+{% comment %} Aqui se extiende el header de home.html {% endcomment %}
+{% block header %}
+{% endblock %}
+\end{minted}
+\caption{Secciones head y barra superior del home.html}
+\label{home.html}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{python}
+urlpatterns = [
+    # path home
+    path("", views.index, name="index"),
+    # path galeria
+    path("galeria", views.galeria, name="galeria")
+]
+\end{minted}
+\caption{urls.py de la app home}
+\label{urls.py_home}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{python}
+# vista de home
+def index(request):
+    return render(request, "home/index.html")
+# vista de galeria
+def galeria(request):
+    return render(request, "home/galeria.html")
+\end{minted}
+\caption{views.py de la app home}
+\label{views.py_home}
+\end{listing}
+
+
+\begin{listing}[H]
+\begin{minted}{python}
+class Signup(View):
+    # si se rellena un login
+    def post(self, request):     
+        # consigo el form con los datos posteados
+        form = SignupForm(request.POST)
+
+        # si el formulario es valido
+        if form.is_valid():
+            # tomo los datos
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            email = form.cleaned_data['email']
+            username = form.cleaned_data['username']
+            password1 = form.cleaned_data['password1']
+            password2 = form.cleaned_data['password2']
+
+            # creo el usuario
+            User.objects.create_user(email=email, 
+                                        username=username, 
+                                        password=password1, 
+                                        first_name= first_name, 
+                                        last_name = last_name)
+            # lo autentico y logueo
+            user = auth.authenticate(username=username, password = password1)
+            auth.login(request, user)
+            # genero token de confirmacion de registro
+            token = secrets.token_urlsafe(32)
+            # lo guardo en la base de datos
+            models.UsersTokens(user=user, signup_token=token).save()
+            # deshabilito al usuario hasta que verifique por mail
+            user.is_active = False
+            user.save()
+            
+            # mando mail
+            no_reply_sender.delay(#argumentos y ctx)
+
+            # redirijo a pestaña a continuación
+            return render(request, 'user_mngmnt/auth/signup_verification.html')    
+    # si entro a la web con un GET
+    def get(self, request, *args, **kwargs):
+        form = SignupForm()
+        return render(request, 'user_mngmnt/auth/signup.html', {'form': form})
+\end{minted}
+\caption{Lógica del registro}
+\label{signup_user_mngmnt}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{python}
+
+# verificacion de registro
+class SignupVerification(View):
+    def get(self, request, token):
+        # busco en la tabla de tokens un token igual al ingresado
+        data = models.UsersTokens.objects.filter(signup_token=token)
+        # si el token esta entre los tokens guardados
+        if data and token in data[0].signup_token:
+            user = data[0].user
+            # activo al usuario
+            user.is_active = True
+            user.save()
+            # borro el token
+            models.UsersTokens.objects.filter(signup_token = token).delete()
+            # aviso por mail que el usuario se ha verificado
+            no_reply_sender.delay(email=user.email, 
+                                  subject="¡Tu cuenta se ha verificado!",
+                                  html_message=f"""
+¡Felicidades, {user.first_name}! El usuario de Solar Link 
+{user.username} se ha verificado. ¡Ya podés acceder a la 
+plataforma!""")
+            # devuelvo que el usuario se registro adecuadamente
+            return render(request, 'user_mngmnt/auth/signup_verification.html')
+        # si no hay token o es invalido, devuelvo signup
+        else:
+            return redirect('signup')
+\end{minted}
+\caption{Lógica de la verificación de registro}
+\label{signup_verification_user_mngmnt}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{python}
+# Password reset
+class PasswordReset(View):
+    def get(self, request):
+        return render(request, "user_mngmnt/auth/password-reset.html")
+    
+    def post(self, request):
+        # tomo mail
+        email = request.POST['email']
+        # busco usuarios con ese mail
+        users = User.objects.filter(email=email)
+        # si hay usuarios
+        if users:
+            # para cada usuario
+            for user in users:
+                # genero token
+                token = secrets.token_urlsafe(32)
+                # guardo token a usuario
+                models.UsersTokens(user=user, password_rst_token=token).save()
+
+                # mando mail
+                no_reply_sender.delay(email = user.email, 
+                subject='Cambio de contraseña',
+                html_message=render_to_string(
+                            "user_mngmnt/auth/confirmacion_password.html",
+                            context))
+        # devuelvo vista con booleano para avisar que ya se envió mail
+        return render(request, 
+                      'user_mngmnt/auth/password-reset.html', 
+                      {'done': True})
+\end{minted}
+\caption{Lógica del password reset}
+\label{password_reset_user_mngmnt}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{python}
+class Login(View):
+
+    def get(self, request):
+        form = LoginForm()
+        return render(request, "user_mngmnt/auth/login.html", {"form":form})
+    
+    def post(self, request):
+        form = LoginForm(request.POST)
+
+        # si el form es valido
+        if form.is_valid():
+            #obtengo user y pass
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+
+            # autentico si existe usuario
+            user = auth.authenticate(username=username, password = password)
+            # logueo
+            auth.login(request, user)
+            # redirijo a index
+            return redirect('index2')
+        # si el form no es valido
+        else:
+            # codigo de error
+            try:
+                # intento encontrar mensaje de error
+                error = form.errors.as_data()['__all__'][0].message
+            # si no lo encuentro
+            except:
+                # hago diccionario de errores
+                errors = form.errors.as_data()
+                # para cada error
+                for i in errors:
+                    # busco el ultimo mensaje
+                    error = errors[i][0].message
+                # si el mensaje es el mencionado abajo
+                if error == 'This field is required.':
+                    # devuelvo error
+                    error = 'Caracteres no validos'
+                
+            return render(request, 'user_mngmnt/auth/login.html', 
+                          {"form": form, 'error': error})
+\end{minted}
+\caption{Lógica del login}
+\label{login_user_mngmnt}
+\end{listing}
+
+
+
+
+
+\begin{listing}[H]
+\begin{minted}{python}
+# no permite acceder a las pestañas estando logueado
+def unlogued_required(function, redirect_link):
+    if function:
+        def check(request):
+            if request.user.username == '':
+                return function(request)
+            else:
+                return redirect(redirect_link)
+        return check
+
+    else:
+        def decorator(func):
+            def check(request):
+                if request.user.username == '':
+                    return func(request)
+                else:
+                    return redirect(redirect_link)
+            return check
+        return decorator
+
+urlpatterns = [
+    # login
+    path('login/', unlogued_required(views.Login.as_view(), 
+         redirect_link='index'), name='login'),
+    path('logout/', views.logout, name='logout'),
+    # signup
+    path("signup/", unlogued_required(views.Signup.as_view(), 
+         redirect_link='index'), name="signup"),
+    path("signup-verification/<token>/", views.SignupVerification.as_view(), 
+         name="signup_verification"),
+    # password reset
+    path("password-set/<token>", views.PasswordSet.as_view(), 
+         name="password_set"),
+    path("password-set/", views.PasswordSet.as_view(), 
+         name="password_set"),
+    path("password-reset/", views.PasswordReset.as_view(), 
+         name="password_reset"),
+    # USER INFO #
+    path("api-login/", csrf_exempt(views.APILogin.as_view()), 
+         name="api_login"),
+    path("load-data/", csrf_exempt(views.LoadData.as_view()),
+         name="load_data"),
+    path("index/", views.index, name="index2")]
+\end{minted}
+\caption{urls.py de la app User Management}
+\label{urls.py_user_mngmnt}
+\end{listing}
+
+
+\begin{listing}[H]
+\begin{minted}{python}
+class LoginForm(forms.Form):
+    username = forms.CharField(label='Username:', max_length=16,
+               widget=forms.TextInput(attrs={'placeholder': 'Username', 
+                                             "class": "controls"}))
+    password = forms.CharField(label='Contraseña:', max_length=32, 
+               min_length=8, 
+               widget=forms.PasswordInput(attrs={'placeholder':'Contraseña', 
+                                                 "class": "controls"}))
+
+    def clean(self):
+        try:
+            password = self.cleaned_data["password"]
+            username = self.cleaned_data["username"]
+        except:
+            # si hay problemas con lo ingresado, derivo la resolucion al backend
+            return self.cleaned_data
+        # me fijo si existe un usuario con ese username
+        username_confirmation = User.objects.filter(username = username)
+        # autentico si existe un usuario con ese username y contraseña
+        user = auth.authenticate(username=username, password = password)
+
+        # si no existe el usuario
+        if not username_confirmation:
+            raise ValidationError('El usuario no existe')
+
+        # si existe el usuario pero su cuenta no está activa
+        if username_confirmation and not username_confirmation[0].is_active:
+            raise ValidationError('Verifica tu cuenta para iniciar sesión')
+        
+        # si existe el usuario pero no con esa contraseña
+        elif username_confirmation and not user:
+            raise ValidationError('La contraseña es incorrecta')
+        
+        return self.cleaned_data
+\end{minted}
+\caption{forms.py de la app User Management}
+\label{forms.py_user_mngmnt}
+\end{listing}
+
+
+\begin{listing}[H]
+\begin{minted}{python}
+# para cada usuario
+for user in users:
+    # datos del usuario
+    user_data = models.DatosHora.objects.filter(user=user)
+    # mientras existan datos
+    while user_data:
+        # variables temporales
+        voltaje_dia_red = []
+        consumo_dia_red = 0
+        consumo_dia_solar = 0
+        solar_por_hora = []
+        potencia_dia_panel = 0
+        horas_de_carga = []
+        voltajes_bateria = []
+        errores = []
+
+        # referencia para dia, mes
+        referencia = user_data[0]
+        #datos del dia buscado
+        dia_data = user_data.filter(dia=referencia.dia, mes=referencia.mes, 
+                                    año=referencia.año)
+
+        # para cada dato del dia
+        for data in dia_data:
+            # acumulo en valores sumario diario
+            voltaje_dia_red.append(data.voltaje_hora_red)
+            consumo_dia_solar += data.consumo_hora_solar
+            consumo_dia_red += data.consumo_hora_red
+
+            solar_por_hora.append(data.solar_ahora)
+            potencia_dia_panel += data.panel_potencia
+            horas_de_carga.append(data.cargando)
+            voltajes_bateria.append(data.voltaje_bateria)
+
+            errores.append(data.errores)
+            product_id = data.product_id
+
+            # borro el dato
+            data.delete()
+##############################################################################
+# terminada la acumulacion diaria, se guarda en otra tabla de la base de datos
+# y se actualiza user_data
+##############################################################################
+\end{minted}
+\caption{Algoritmo de limpieza y resumen de la base de datos}
+\label{algoritmo_sorter_user_mngmnt}
+\end{listing}
+
+
+
+\begin{listing}[H]
+\begin{minted}{python}
+def token_clean():
+    # todos los tokens activos
+    data = models.UsersTokens.objects.all()
+    # hora en timezone
+    actual = timezone.now()
+    # para cada dato
+    for d in data:
+        # si el tiempo entre que el token fue creado y el actual es mayor a 2hs
+        if (actual - d.time) > datetime.timedelta(hours=2):
+            # borro el token
+            d.delete()
+\end{minted}
+\caption{Función que borra los tokens}
+\label{algoritmo_borra_tokens_user_mngmnt}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{python}
+# datos del micro por hora
+class DatosHora(models.Model):
+    # usuario
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    # promedio del voltaje en la hora proveniente de la red
+    voltaje_hora_red = models.FloatField(default=None)
+    # consumo total en la hora de origen solar
+    consumo_hora_solar = models.FloatField(default=None)
+    # consumo total en la hora proveniente de la red
+    consumo_hora_red = models.FloatField(default=None)
+    # consumo linea 1
+    consumo_l1 = models.FloatField(default=None)
+    # consumo linea 2
+    consumo_l2 = models.FloatField(default=None)
+
+
+    hora = models.IntegerField(default=None)
+    dia = models.IntegerField(default=None)
+    mes = models.IntegerField(default=None)
+    año = models.IntegerField(default=None)
+
+    # booleano que indica si las lineas estan alimentadas ahora 
+    # por el sistema solar
+    solar_ahora = models.BooleanField(default=None)
+    # potencia entregada por el panel en esa hora
+    panel_potencia = models.IntegerField(default=None)
+    # booleano que indica si la bateria esta cargando ahora
+    cargando = models.BooleanField(default=None)
+    # voltaje de la bateria actual, con esto se puede sacar el porcentaje 
+    # de la bateria
+    voltaje_bateria = models.IntegerField(default=None)
+
+    # booleano que indica que en esta hora hubo errores
+    errores = models.BooleanField(default=None)
+
+    # id de producto
+    product_id = models.CharField(max_length=50)
+
+    class Meta:
+        ordering = ["user", "año", "mes", "dia", "hora"]
+\end{minted}
+\caption{Tabla de la base de datos de los datos por hora}
+\label{models.py_DatosHora_user_mngmnt}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{python}
+@shared_task()
+def no_reply_sender(email, subject, html_message):
+    mail = EmailMessage(subject, html_message, to=[email])
+    # aclaracion de tipo de contenido
+    mail.content_subtype = 'html'
+    mail.send()
+\end{minted}
+\caption{Subproceso que manda mails}
+\label{tasks.py_mails_user_mngmnt}
+\end{listing}
+
+
+\begin{listing}[H]
+\begin{minted}{json}
+{
+    "builds": [
+      {
+        "src": "SolarLinkWebApp/wsgi.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "SolarLinkWebApp/wsgi.py"
+      }
+    ]
+}
+\end{minted}
+\caption{vercel.json}
+\label{vercel.json}
+\end{listing}
+
+\begin{listing}[H]
+\begin{minted}{text}
+                        amqp==5.1.1
+                        asgiref==3.7.2
+                        beautifulsoup4==4.12.2
+                        billiard==4.1.0
+                        bs4==0.0.1
+                        celery==5.3.4
+                        certifi==2023.7.22
+                        charset-normalizer==3.2.0
+                        click==8.1.7
+                        click-didyoumean==0.3.0
+                        click-plugins==1.1.1
+                        click-repl==0.3.0
+                        Django==4.2.5
+                        django-appconf==1.0.5
+                        django-compressor==4.4
+                        django-crontab==0.7.1
+                        django-libsass==0.9
+                        idna==3.4
+                        kombu==5.3.2
+                        libsass==0.22.0
+                        prompt-toolkit==3.0.39
+                        python-dateutil==2.8.2
+                        pytz==2023.3.post1
+                        rcssmin==1.1.1
+                        requests==2.31.0
+                        rjsmin==1.2.1
+                        six==1.16.0
+                        soupsieve==2.5
+                        sqlparse==0.4.4
+                        tzdata==2023.3
+                        urllib3==2.0.4
+                        vine==5.0.0
+                        wcwidth==0.2.6
+                        whitenoise==6.5.0
+\end{minted}
+\caption{requirements.txt}
+\label{requirements.txt}
+\end{listing}
+
+\clearpage
+
+\subsection{Referencias}
+\input{Fuentes}
