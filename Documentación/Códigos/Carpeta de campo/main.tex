@@ -1,0 +1,67 @@
+%% Overleaf			
+%% Software Manual and Technical Document Template	
+%% 									
+%% This provides an example of a software manual created in Overleaf.
+
+\documentclass{ol-softwaremanual}
+
+% Packages used in this example
+\usepackage{graphicx}  % for including images
+\usepackage{microtype} % for typographical enhancements
+\usepackage{minted}    % for code listings
+\usepackage{amsmath}   % for equations and mathematics
+\setminted{style=friendly,fontsize=\small}
+\renewcommand{\listoflistingscaption}{List of Code Listings}
+\usepackage[a4paper,top=4.2cm,bottom=4.2cm,left=3.5cm,right=3.5cm]{geometry} % for setting page size and
+\usepackage{subcaption}
+\usepackage[export]{adjustbox}
+\usepackage{wrapfig}
+\usepackage[spanish]{babel}
+\usepackage{array}
+\usepackage{etoolbox}
+\usepackage{tabularray}
+\usepackage{hyperref}  % for hyperlinks
+
+\usemintedstyle{friendly}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+
+% Custom macros used in this example document
+\newcommand{\doclink}[2]{\href{#1}{#2}\footnote{\url{#1}}}
+\newcommand{\cs}[1]{\texttt{\textbackslash #1}}
+
+\begin{document}
+
+\begin{figure}[b]
+\centering
+\includegraphics[width=0.4\textwidth]{main/logo-impa.png}
+\end{figure}
+
+
+% Frontmatter data; appears on title page
+\softwarelogo{\includegraphics[width=9cm]{main/SolarLink logo.png}}
+\title{Solar Link \\ Carpeta de campo}
+\author{Cenyko, Ivan Ezequiel \\ Dias, Lara Paloma \\ Inza Fior, Mateo \\ Palmieri Hise, Agustín \\ Testa, Maximiliano Nicolas}
+\date{\textit{2023}}
+
+\maketitle
+
+\tableofcontents
+\renewcommand\listoflistingscaption{Lista de códigos}
+\listoflistings % Now typeset the list
+\newpage
+
+\section{Informes de avance}
+
+\input{infomes}
+
+\section{Papeles de campo}
+
+\end{document}
