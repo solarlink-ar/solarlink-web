@@ -2,7 +2,7 @@
 
 # Proyecto Solar Link
 
-<img src="\Imagenes\SolarLink logo.png" height="200"/>
+<img src="\Imagenes\SolarLink logazo fondo celeste.png" height="240"/>
 
 | Página web | Email | Instagram |
 |------------|-------|-----------|
