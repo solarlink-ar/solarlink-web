@@ -1,6 +1,6 @@
 # Proyecto Solar Link
 
-<img src="\Imagenes\SolarLink logo.png" height="100"/>
+<img src="\Imagenes\SolarLink logo.png" height="400"/>
 
 | Página web | Email | Instagram |
 |------------|-------|-----------|
@@ -18,7 +18,7 @@
 
 ## Integrantes:
 
-<img src="\Imagenes\Equipo Solar Link.png" height="100"/>
+<img src="\Imagenes\Equipo Solar Link.jpg" height="300"/>
 
 ### Iván Ezequiel Cenyko
 Programación en microPython y desarrollo web Back-End.
