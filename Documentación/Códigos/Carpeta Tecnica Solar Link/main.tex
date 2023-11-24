@@ -1,0 +1,112 @@
+%% Overleaf			
+%% Software Manual and Technical Document Template	
+%% 									
+%% This provides an example of a software manual created in Overleaf.
+
+\documentclass{ol-softwaremanual}
+
+% Packages used in this example
+\usepackage{graphicx}  % for including images
+\usepackage{microtype} % for typographical enhancements
+\usepackage{minted}    % for code listings
+\usepackage{amsmath}   % for equations and mathematics
+\setminted{style=friendly,fontsize=\small}
+\renewcommand{\listoflistingscaption}{List of Code Listings}
+\usepackage[a4paper,top=4.2cm,bottom=4.2cm,left=3.5cm,right=3.5cm]{geometry} % for setting page size and
+\usepackage{subcaption}
+\usepackage[export]{adjustbox}
+\usepackage{wrapfig}
+\usepackage[spanish]{babel}
+\usepackage{array}
+\usepackage{etoolbox}
+\usepackage{tabularray}
+\usepackage{hyperref}  % for hyperlinks
+
+\usemintedstyle{friendly}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+
+% Custom macros used in this example document
+\newcommand{\doclink}[2]{\href{#1}{#2}\footnote{\url{#1}}}
+\newcommand{\cs}[1]{\texttt{\textbackslash #1}}
+
+\begin{document}
+
+\begin{figure}[b]
+\centering
+\includegraphics[width=0.4\textwidth]{Main/logo-impa.png}
+\end{figure}
+
+
+% Frontmatter data; appears on title page
+\softwarelogo{\includegraphics[width=9cm]{Main/SolarLink logo.png}}
+\title{Solar Link \\ Carpeta Técnica}
+\author{Cenyko, Ivan Ezequiel \\ Dias, Lara Paloma \\ Inza Fior, Mateo \\ Palmieri Hise, Agustín \\ Testa, Maximiliano Nicolas}
+\date{\textit{2023}}
+
+\maketitle
+
+\tableofcontents
+\renewcommand\listoflistingscaption{Lista de códigos}
+\listoflistings % Now typeset the list
+\newpage
+
+\section{Preámbulo}
+\input{preambulo}
+
+\section{Introducción}
+
+\input{introduccion}
+
+\clearpage
+
+\section{Desarrollo técnico}
+
+\input{analisis-tecnico}
+
+\clearpage
+
+\section{Cargador MPPT de 3 etapas}
+
+\input{MPPT}
+
+\clearpage
+
+\section{Hardware del módulo Solar Link}
+
+\input{hardware}
+
+\clearpage
+
+\section{Programación del microcontrolador ESP32}
+
+\input{micro}
+
+\clearpage
+
+\section{Desarrollo de página web}
+
+\input{web}
+
+\clearpage
+
+\section{Prototipo final}
+
+\input{proto-final}
+
+\clearpage
+
+\section{Anexo}
+
+\input{Anexo}
+
+\clearpage
+
+\end{document}

@@ -1,0 +1,88 @@
+%% Overleaf			
+%% Software Manual and Technical Document Template	
+%% 									
+%% This provides an example of a software manual created in Overleaf.
+
+\documentclass{ol-softwaremanual}
+
+% Packages used in this example
+\usepackage{graphicx}  % for including images
+\usepackage{microtype} % for typographical enhancements
+\usepackage{float}
+\usepackage{amsmath}   % for equations and mathematics
+\usepackage[a4paper,top=4.2cm,bottom=4.2cm,left=3.5cm,right=3.5cm]{geometry} % for setting page size and
+\usepackage{subcaption}
+\usepackage[export]{adjustbox}
+\usepackage{wrapfig}
+\usepackage[spanish]{babel}
+\usepackage{array}
+\usepackage{etoolbox}
+\usepackage{tabularray}
+\usepackage{hyperref}  % for hyperlinks
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+
+% Custom macros used in this example document
+\newcommand{\doclink}[2]{\href{#1}{#2}\footnote{\url{#1}}}
+\newcommand{\cs}[1]{\texttt{\textbackslash #1}}
+
+\begin{document}
+
+\begin{figure}[b]
+\centering
+\includegraphics[width=0.4\textwidth]{Main/logo-impa.png}
+\end{figure}
+
+
+% Frontmatter data; appears on title page
+\softwarelogo{\includegraphics[width=9cm]{Main/SolarLink logo.png}}
+\title{Solar Link \\ Propuesta ambiental de futuro sostenible}
+\author{Cenyko, Ivan Ezequiel \\ Dias, Lara Paloma \\ Inza Fior, Mateo \\ Palmieri Hise, Agustín \\ Testa, Maximiliano Nicolas}
+\date{\textit{2023}}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Preámbulo}
+
+\input{preambulo}
+
+\clearpage
+
+\section{Resumen del proyecto}
+
+\input{resumen}
+
+\section{Desarrollo del proyecto}
+
+\input{desarrollo}
+
+\section{Impacto ambiental}
+
+\input{ambiente}
+
+\section{Beneficios sociales}
+
+\input{social}
+
+\section{Conclusiones}
+
+Solar Link aprovecha sus cualidades como gestor inteligente para poder aprovechar la energía solar al máximo. Usualmente, la instalación de una fuente de energía solar por sí sóla no daría abasto para toda la casa (recordemos que en nuestro ejemplo sólo cubría el 30\%), y otros tipos de implementación alternativas a una red inteligente serían rígidas e ineficientes. A través de Solar Link, buscamos que con el control automático de consumo y la separación modular de las redes de la casa logremos maximizar la eficiencia en el consumo, y minimizar los gastos posibles.\\
+
+Nuestro objetivo es introducir al país un sistema capaz de evitar energía cuya generación es, en su mayoría, resultado de fomentar el cambio climático, introduciendo energías renovables y control y concientización del consumo a sus usuarios, en otras palabras un smart grid con energías renovables. Por otro lado, otorga a sus usuarios energía generada por ellos mismos para su hogar, y por lo tanto, no deben pagar por ella. \\
+
+Entre sus beneficios están, el uso de energías renovables, la producción de energía en el propio entorno de uso, que reduciría el consumo en la boleta, una aplicación web que permite ver el consumo y configurarlo, dando control al usuario de su consumo y que sea consciente de este. 
+
+\section{Anexo}
+
+\input{fuentes}
+
+\end{document}
