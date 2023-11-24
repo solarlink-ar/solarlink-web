@@ -1,3 +1,5 @@
+<div align="center">
+
 # Proyecto Solar Link
 
 <img src="\Imagenes\SolarLink logo.png" height="400"/>
@@ -5,6 +7,8 @@
 | Página web | Email | Instagram |
 |------------|-------|-----------|
 |[Página Web](https://www.solarlink.ar)|info@solarlink.ar|[@solarlink.ar](https://www.instagram.com/solarlink.ar/)|
+
+</div>
 
 ## ¿Qué es Solar Link?
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Solar Link es un sistema inteligente que optimiza el uso de una energía renovable (por ejemplo, energía solar mediante paneles solares), de manera tal que siempre intentará usar toda la capacidad instalada para ahorrar energía y no consumirla de la red. Es un sistema microprocesado, con conexión a internet y adicionalmente se diseñará una aplicación que  le comunicará al usuario si está ahorrando, cuanto ahorró y una estimación de cuanto ahorrará según el pronóstico del clima.<br>
@@ -17,8 +21,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nosotros nos encargamos del diseño y la planificación de los diferentes sistemas que forman parte de Solar Link, como el desarrollo íntegro de las placas y los circuitos, la programación del microprocesador, así como la aplicación en su totalidad. Esto conlleva mucho trabajo y esfuerzo de nuestra parte, puesto que siempre buscamos la excelencia en todo lo que hacemos.<br>
 
 ## Integrantes:
+<div align="center">
 
 <img src="\Imagenes\Equipo Solar Link.jpg" height="300"/>
+
+</div>
 
 ### Iván Ezequiel Cenyko
 Programación en microPython y desarrollo web Back-End.
