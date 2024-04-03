@@ -11,22 +11,22 @@
 
 
 #define PWM_WRAP                        3787  // Definimos frecuencia del micro, sin prescaler, 33kHz
-#define ADC_GPIO_BATTERY                26
+#define ADC_GPIO_BATTERY                28
 #define ADC_IN                          27
-#define ADC_CURRENT_BATTERY             28
-#define ADC_CHANNEL_BATTERY             0
+#define ADC_CURRENT_BATTERY             29
+#define ADC_CHANNEL_BATTERY             2
 #define ADC_CHANNEL_IN                  1
-#define ADC_CURRENT_CHANNEL_BATTERY     2
+#define ADC_CURRENT_CHANNEL_BATTERY     3
 
 #define BATTERY_ADC_RATIO               5.5     // Habra un ratio de 5 a 1 en el voltaje leido por el ADC y la bat
 #define BATTERY_IN_RATIO                14.8    
 
 #define BULK_MAX_BATTERY_VOLTAGE        14.5
-#define BULK_MAX_CURRENT_VOLTAGE        4
+#define BULK_MAX_CURRENT_VOLTAGE        6
 
 #define ABSORTION_MAX_BATTERY_VOLTAGE   14.5   // Umbral de tension del modo ABSORTION
-#define ABSORTION_MAX_PANEL_CURRENT     4
-#define ABSORTION_MIN_PANEL_CURRENT     0.2
+#define ABSORTION_MAX_PANEL_CURRENT     6
+#define ABSORTION_MIN_PANEL_CURRENT     0.3
 
 #define FLOAT_MAX_BATTERY_VOLTAGE       13.5
 #define FLOAT_MIN_BATTERY_VOLTAGE       12
@@ -45,8 +45,8 @@
 #define MAX_LINES      4
 #define MAX_CHARS      20
 
-#define PICO_DEFAULT_I2C_SDA_PIN    4
-#define PICO_DEFAULT_I2C_SCL_PIN    5
+#define PICO_DEFAULT_I2C_SDA_PIN    2
+#define PICO_DEFAULT_I2C_SCL_PIN    3
 
 
 #define UART_ID     uart0
@@ -55,8 +55,8 @@
 #define STOP_BITS   1
 #define PARITY      UART_PARITY_NONE
 
-#define UART_TX_PIN 1
-#define UART_RX_PIN 2
+#define UART_TX_PIN 4
+#define UART_RX_PIN 5
 
 float prom_minute = 0;
 float prom_hour = 0;

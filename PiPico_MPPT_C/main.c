@@ -3,25 +3,28 @@
 #include "hardware/pwm.h"
 
 #define PWM_WRAP                        3787  // Definimos frecuencia del micro, sin prescaler, 33kHz
-#define ADC_GPIO_BATTERY                26
-#define ADC_CURRENT_BATTERY             27
-#define ADC_OUT                         28
-#define ADC_CHANNEL_BATTERY             0
-#define ADC_CURRENT_CHANNEL_BATTERY     1
-#define ADC_CHANNEL_OUT                 2
+
+//cambiar configuracion ADC
+
+#define ADC_GPIO_BATTERY                28 
+#define ADC_CURRENT_BATTERY             29 
+#define ADC_OUT                         27 
+#define ADC_CHANNEL_BATTERY             2 
+#define ADC_CURRENT_CHANNEL_BATTERY     3
+#define ADC_CHANNEL_OUT                 1
 
 #define BATTERY_ADC_RATIO               5     // Habra un ratio de 5 a 1 en el voltaje leido por el ADC y la bat
 
 #define BULK_MAX_BATTERY_VOLTAGE        14.4
-#define BULK_MAX_CURRENT_VOLTAGE        2000
+#define BULK_MAX_CURRENT_VOLTAGE        6000
 
 #define ABSORTION_MAX_BATTERY_VOLTAGE   14.6   // Umbral de tension del modo ABSORTION
-#define ABSORTION_MAX_PANEL_CURRENT     2000
-#define ABSORTION_MIN_PANEL_CURRENT     100
+#define ABSORTION_MAX_PANEL_CURRENT     6000
+#define ABSORTION_MIN_PANEL_CURRENT     300
 
 #define FLOAT_MAX_BATTERY_VOLTAGE       13.8
 #define FLOAT_MIN_BATTERY_VOLTAGE       13.5
-#define FLOAT_MAX_CURRENT_VOLTAGE       120
+#define FLOAT_MAX_CURRENT_VOLTAGE       350
  
 #define BATTERY_MIN_VOLTAGE     12.9       
 
@@ -68,7 +71,7 @@ int main() {
     /* Inicializa el standard input/output de la pico */
     stdio_init_all();
     
-    uint8_t pwm = 22;
+    uint8_t pwm = 11;
     uint8_t slice = pwm_gpio_to_slice_num(pwm);
     int16_t pwm_level = PWM_WRAP / 2;
 
